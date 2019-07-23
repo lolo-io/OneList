@@ -1,0 +1,19 @@
+<resources>
+    <string name="prefix">en</string>
+    <string name="empty" />
+    <string name="add_item_hint_focused">Item Name</string>
+    <string name="list_title">List name</string>
+    <string name="delete_list_forever_warning">This will delete the list and all the items it contains. Are you sure you want to delete this list ? (this can\'t be undone)</string>
+    <string name="list_default_name">My List</string>
+    <string name="cancel">Cancel</string>
+    <string name="validate">Validate</string>
+    <string name="warning">Warning</string>
+    <string name="clear_list">Just clear list</string>
+    <string name="expand_item">Expand Item</string>
+    <string name="delete_list">Delete List</string>
+    <string name="edit_list">Edit List</string>
+    <string name="add_list">Add List</string>
+    <string name="add">Add</string>
+    <string name="clear_comment">Clear comment</string>
+    <string name="add_comment">Add comment</string>
+</resources>

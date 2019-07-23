@@ -1,0 +1,77 @@
+[
+    {
+        "items": [
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302146238,
+                "title": "Cliquez sur le + en haut à droite pour ajouter une liste"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302178459,
+                "title": "Changez de liste en cliquant sur une autre liste"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302245540,
+                "title": "Un appui long sur une liste permet de la déplacer ou d'afficher ses options (modifier/supprimer)"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302331188,
+                "title": "ajoutez un objet à la liste sélectionnée en grâce à la zone de texte \"Add\""
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302500921,
+                "title": "Glissez un objet vers la gauche pour le supprimer"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302513975,
+                "title": "Glissez un objet vers la droite pour le modifier"
+            },
+            {
+                "comment": "💡 Ajoutez un commentaire rapidement en cliquant sur la flèche qui apparaît en dessous de la zone \"Add\" lorsque vous commencez à écrire !",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302687298,
+                "title": "Montrez le commentaire associé à un objet en cliquand sur la flèche à sa droite --->"
+            },
+            {
+                "comment": "et comme à faire en recliquant dessus! \nL'objet se déplacera en haut ou en bas de la liste en fonction de son statut.",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302932736,
+                "title": "Marquez un objet comme fait en cliquand simplement dessus."
+            }
+        ],
+        "stableId": 1560302093030,
+        "title": "Tuto ❓"
+    },
+    {
+        "items": [
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560334182589,
+                "title": "Profitez de l'application ! 😃 100% GRATUIT / 0 pub !"
+            }
+        ],
+        "stableId": 1560295782567,
+        "title": "TODO🗒️"
+    }
+]

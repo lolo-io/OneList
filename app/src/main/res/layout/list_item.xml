@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/editIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        app:srcCompat="@drawable/ic_mode_edit_accent_24dp"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/deleteIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        app:srcCompat="@drawable/ic_delete_forever_primary_24dp"
+        tools:ignore="ContentDescription" />
+
+    <RelativeLayout
+        android:id="@+id/containerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:colorBackground"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:id="@+id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <ImageView
+                android:id="@+id/badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/text"
+                android:layout_alignParentTop="true"
+                android:paddingStart="10dp"
+                android:paddingLeft="10dp"
+                android:paddingEnd="5dp"
+                android:paddingRight="5dp"
+                android:scaleType="center"
+                app:srcCompat="@drawable/ic_bullet_outline"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/expandImg"
+                android:layout_toLeftOf="@id/expandImg"
+                android:layout_toEndOf="@+id/badge"
+                android:layout_toRightOf="@+id/badge"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+                android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+            <TextView
+                android:id="@+id/comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text"
+                android:layout_toEndOf="@+id/badge"
+                android:layout_toRightOf="@+id/badge"
+                android:gravity="center_vertical"
+                android:paddingStart="?android:attr/listPreferredItemPaddingLeft"
+                android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingRight"
+                android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+                android:paddingBottom="?android:attr/listPreferredItemPaddingRight"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
+            <ImageView
+                android:id="@+id/expandImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/text"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:tint="@color/colorAccentLight"
+                app:srcCompat="@drawable/ic_expand_more_add"
+                android:contentDescription="@string/expand_item" />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/leftBar"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/content"
+            android:layout_alignBottom="@+id/content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:background="@color/colorAccent" />
+
+        <View
+            android:id="@+id/rightBar"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/content"
+            android:layout_alignBottom="@+id/content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@color/colorPrimary" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

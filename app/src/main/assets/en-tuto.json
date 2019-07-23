@@ -1,0 +1,77 @@
+[
+    {
+        "items": [
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302146238,
+                "title": "Click on top right + to add a list"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302178459,
+                "title": "Switch lists by clicking on them"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302245540,
+                "title": "Long click a list to move it or show its options (edit & delete)"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302331188,
+                "title": "Add an item to the selected list with the top \"Add\" text box"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302500921,
+                "title": "Swipe an item left to delete it"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302513975,
+                "title": "Swipe an item right to edit it"
+            },
+            {
+                "comment": "💡 Quickly add a comment by clicking the arrow appearing under the \"Add\" edit box when you start typing !",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302687298,
+                "title": "Show an item comments by clicking on the arrow at the end of it ---> "
+            },
+            {
+                "comment": "And as undone by clicking on it again !\nIt will move it to the top or the bottom of the list depending on its status.",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302932736,
+                "title": "Mark item as done simply by clicking on it"
+            }
+        ],
+        "stableId": 1560302093030,
+        "title": "Tuto ❓"
+    },
+    {
+        "items": [
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560334182589,
+                "title": "Enjoy the app ! 😃 100% FREE / 0 ads !"
+            }
+        ],
+        "stableId": 1560295782567,
+        "title": "TODO🗒️"
+    }
+]
