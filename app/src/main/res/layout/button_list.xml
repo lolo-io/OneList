@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:background="@drawable/button_list_bg"
+    android:gravity="center"
+    android:minWidth="30dp"
+    android:paddingStart="10dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="5dp"
+    android:paddingEnd="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="5dp"
+    android:textAllCaps="false"
+    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+    android:textColor="@color/colorAccent" />

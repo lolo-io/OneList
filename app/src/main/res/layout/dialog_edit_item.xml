@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_borders_primary"
+    android:orientation="vertical"
+    android:padding="2dp">
+
+    <EditText
+        android:id="@+id/item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:drawableStart="@drawable/ic_bullet_outline"
+        android:drawableLeft="@drawable/ic_bullet_outline"
+        android:drawablePadding="5dp"
+        android:hint="@string/add_item_hint_focused"
+        android:imeOptions="actionNext"
+        android:inputType="textCapSentences"
+        android:importantForAutofill="no"
+        android:lines="1"
+        android:maxLines="1"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        tools:ignore="UnusedAttribute" />
+
+    <View
+        android:id="@+id/separator1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/item_title"
+        android:background="@color/material_gray_100" />
+
+    <EditText
+        android:id="@+id/item_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator1"
+        android:background="@color/transparent"
+        android:drawableStart="@drawable/ic_more_horizontal_accent_light_18dp"
+        android:drawableLeft="@drawable/ic_more_horizontal_accent_light_18dp"
+        android:drawablePadding="5dp"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine|textCapSentences"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:textColor="@color/colorAccent"
+        android:textStyle="italic"
+        tools:ignore="LabelFor,UnusedAttribute" />
+
+
+    <View
+        android:id="@+id/separator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/item_comment"
+        android:background="@color/material_gray_100" />
+
+    <ImageButton
+        android:id="@+id/validateEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator2"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/transparent"
+        android:padding="10dp"
+        android:tint="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_check_black_24dp"
+        android:contentDescription="@string/validate"/>
+
+    <ImageButton
+        android:id="@+id/cancelEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator2"
+        android:layout_toStartOf="@id/validateEdit"
+        android:layout_toLeftOf="@id/validateEdit"
+        android:background="@color/transparent"
+        android:padding="10dp"
+        android:tint="@color/colorAccentLight"
+        app:srcCompat="@drawable/ic_clear_black_24dp"
+        android:contentDescription="@string/cancel" />
+
+</RelativeLayout>

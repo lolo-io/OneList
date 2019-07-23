@@ -1,0 +1,19 @@
+<resources>
+    <string name="prefix">fr</string>
+    <string name="empty" />
+    <string name="add_item_hint_focused">Nom de l\'objet</string>
+    <string name="list_title">Nom de la liste</string>
+    <string name="delete_list_forever_warning">Cette action supprimera la liste et tous les objets qu\'elle contient. Êtes-vous sûr de vouloir supprimer cette liste ? (vous ne pourrez plus annuler)</string>
+    <string name="list_default_name">Ma Liste</string>
+    <string name="cancel">Annuler</string>
+    <string name="validate">Valider</string>
+    <string name="warning">Attention</string>
+    <string name="clear_list">Vider seulement</string>
+    <string name="expand_item">Déveolpper</string>
+    <string name="delete_list">Supprimer la liste</string>
+    <string name="edit_list">Editer la liste</string>
+    <string name="add_list">Ajouter une liste</string>
+    <string name="add">Ajouter</string>
+    <string name="clear_comment">Effacer le commentaire</string>
+    <string name="add_comment">Ajouter un commentaire</string>
+</resources>
