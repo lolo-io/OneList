@@ -1,0 +1,1 @@
+Application simple et efficace pour gérer plusieurs listes depuis un seul écran.
