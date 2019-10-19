@@ -3,7 +3,13 @@
 1List is a simple app to manage several lists from only one screen.
 
 ## Download :
-<a href="https://play.google.com/store/apps/details?id=com.lolo.io.onelist"> <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="165" height="64" /></a><a href="https://f-droid.org/packages/com.lolo.io.onelist/"> <img alt="Get it on Google Play" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="165" height="64" /></a>
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/com.lolo.io.onelist/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=com.lolo.io.onelist)
 
 ## Target platforms :
 
