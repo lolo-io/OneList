@@ -1,4 +1,4 @@
-package com.lolo.io.onelist
+package com.lolo.io.onelist.util
 
 import android.animation.ObjectAnimator
 import android.text.Editable
@@ -6,6 +6,8 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.EditText
+import com.lolo.io.onelist.App
+import com.lolo.io.onelist.R
 
 const val BUTTON_ANIM_DURATION: Long = 150
 

@@ -1,7 +1,8 @@
 <resources>
-    <string name="prefix">en</string>
-    <string name="empty" />
-    <string name="add_item_hint_focused">Item Name</string>
+    <string name="locale">en</string>
+    <string name="app_link" translatable="false">https://play.google.com/store/apps/details?id=com.lolo.io.onelist</string>
+    <string name="empty" translatable="false"/>
+    <string name="item_name">Item Name</string>
     <string name="list_title">List name</string>
     <string name="delete_list_forever_warning">This will delete the list and all the items it contains. Are you sure you want to delete this list ? (this can\'t be undone)</string>
     <string name="list_default_name">My List</string>
@@ -16,4 +17,42 @@
     <string name="add">Add</string>
     <string name="clear_comment">Clear comment</string>
     <string name="add_comment">Add comment</string>
+    <string name="change_list_location">Change list storage folder</string>
+    <string name="app_private_storage">App private storage</string>
+    <string name="choose_folder">Choose folder …</string>
+    <string name="more_options">more options</string>
+    <string name="import_from_file">Import</string>
+    <string name="warning_new_file">⚠ New file created for this list, you might want to delete the former one manually.</string>
+    <string name="list_created_with_one1ist">List created with 1List.</string>
+    <string name="settings">Settings</string>
+    <string name="list_added">The list %s has been added to your lists !</string>
+    <string name="list_copied">The list %s has been copied into your lists !</string>
+    <string name="list_already_in_your_lists">This list is already in your lists.</string>
+    <string name="error_opening_file">Error while opening list file.</string>
+    <string name="error_opening_filepath">Error while getting your list from %s. Displaying cached one instead.</string>
+    <string name="error_saving_to_path">Error while saving your list to %s</string>
+    <string name="file_deleted">File deleted.</string>
+    <string name="error_deleting_list_file">Error while deleting list file.</string>
+    <string name="also_delete_file">Also delete file on the filesystem</string>
+    <string name="show_menu">Show menu</string>
+    <string name="storage">Storage</string>
+    <string name="about">About</string>
+    <string name="app_version">App Version</string>
+    <string name="default_storage_folder">Default storage folder</string>
+    <string name="show_last_release_note">Show last release note</string>
+    <string name="help">Help</string>
+    <string name="changeFolderHelp">Concurrent modifications of files are not properly handled in 1List. New content will overwrite the file. Be sure you refresh your list before editing it if you are using a shared file. (Pull the list down to refresh it)</string>
+    <string name="not_a_1list_file">The selected file is not a .1list file.</string>
+    <string name="ok_with_tick">✓ OK</string>
+    <string name="storage_chooser_select_label">Select</string>
+    <string name="storage_chooser_create_label">Create</string>
+    <string name="storage_chooser_new_folder_label">New Folder</string>
+    <string name="storage_chooser_cancel_label">Cancel</string>
+    <string name="storage_chooser_overview_heading">Storage Devices</string>
+    <string name="storage_chooser_internal_storage_text">Internal Storage</string>
+    <string name="storage_chooser_free_space_text">%s free</string>
+    <string name="storage_chooser_folder_created_toast_text">Folder Created</string>
+    <string name="storage_chooser_folder_error_toast_text">Error occurred while creating folder. Try again.</string>
+    <string name="storage_chooser_text_field_hint_text">Folder Name</string>
+    <string name="storage_chooser_text_field_error_text">Empty Folder Name</string>
 </resources>

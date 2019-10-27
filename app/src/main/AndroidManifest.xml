@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.lolo.io.onelist">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name="com.lolo.io.onelist.App"
         android:allowBackup="true"
@@ -16,8 +18,23 @@
         <activity android:name="com.lolo.io.onelist.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="*/*" />
+                <data android:host="*" />
+                <data android:pathPattern=".*\\.1list" />
+                <data android:pathPattern=".*\\..*\\.1list" />
+                <data android:pathPattern=".*\\..*\\..*\\.1list" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.1list" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.1list" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.1list" />
             </intent-filter>
         </activity>
     </application>

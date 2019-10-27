@@ -28,19 +28,22 @@
             android:paddingLeft="15dp"
             android:paddingEnd="15dp"
             android:paddingRight="15dp"
-            android:paddingBottom="10dp">
+            android:paddingBottom="10dp"
+            android:animateLayoutChanges="true">
 
             <RelativeLayout
                 android:id="@+id/titleLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:animateLayoutChanges="true">
 
                 <ImageView
                     android:id="@+id/icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/logo_inv"
+                    android:layout_centerVertical="true"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -51,9 +54,21 @@
                     android:layout_marginLeft="5dp"
                     android:layout_toEndOf="@id/icon"
                     android:layout_toRightOf="@id/icon"
+                    android:layout_centerVertical="true"
                     android:text="@string/app_name"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                     android:textColor="@color/black" />
+
+                <ImageView
+                    android:id="@+id/menu_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_expand_more_add"
+                    android:layout_toRightOf="@id/title"
+                    android:layout_toEndOf="@id/title"
+                    android:contentDescription="@string/show_menu"/>
 
                 <RelativeLayout
                     android:id="@+id/buttonsLayout"
@@ -64,7 +79,8 @@
                     android:layout_toEndOf="@id/title"
                     android:layout_toRightOf="@id/title"
                     android:clipChildren="false"
-                    android:clipToPadding="false">
+                    android:clipToPadding="false"
+                    android:animateLayoutChanges="true">
 
                     <ImageButton
                         android:id="@+id/buttonRemoveList"
@@ -73,9 +89,9 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:alpha="0"
-                        android:background="@color/transparent"
+                        android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/delete_list"
-                        android:paddingBottom="10dp"
+                        android:padding="5dp"
                         android:tint="@color/colorPrimary"
                         app:srcCompat="@drawable/ic_delete_forever_primary_24dp" />
 
@@ -87,11 +103,9 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:alpha="0"
-                        android:background="@color/transparent"
+                        android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/edit_list"
-                        android:paddingBottom="10dp"
-                        android:scaleX="0.9"
-                        android:scaleY="0.9"
+                        android:padding="5dp"
                         app:srcCompat="@drawable/ic_mode_edit_accent_24dp" />
 
                     <ImageButton
@@ -100,11 +114,29 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:background="@color/transparent"
+                        android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/add_list"
-                        android:paddingBottom="10dp"
+                        android:padding="5dp"
                         android:tint="@color/black"
+                        android:scaleX="1.1"
+                        android:scaleY="1.1"
                         app:srcCompat="@drawable/ic_add_24dp" />
+
+
+                    <ImageButton
+                        android:id="@+id/buttonShareList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/add_list"
+                        android:padding="5dp"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
+                        app:srcCompat="@drawable/ic_share_black_24dp" />
 
                 </RelativeLayout>
 
@@ -121,7 +153,7 @@
                     android:id="@+id/listsRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never"/>
+                    android:overScrollMode="never" />
 
             </RelativeLayout>
         </RelativeLayout>
@@ -136,13 +168,17 @@
         android:clipToPadding="false"
         android:orientation="vertical">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/itemsRecyclerView"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/addItemLayout"
-            android:requiresFadingEdge="vertical" />
+            android:layout_height="match_parent"
+            android:layout_below="@id/addItemLayout">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/itemsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:requiresFadingEdge="vertical" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <RelativeLayout
             android:id="@+id/addItemLayout"
@@ -170,7 +206,6 @@
                 android:elevation="1dp"
                 android:focusableInTouchMode="true"
                 android:hint="@string/add"
-
                 android:imeOptions="actionDone"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences"

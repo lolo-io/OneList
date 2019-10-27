@@ -4,11 +4,12 @@ import android.view.*
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.lolo.io.onelist.model.ItemList
 import kotlinx.android.synthetic.main.button_list.view.*
 
 
-class ListsAdapterKt(val lists: MutableList<ItemList>, val callback: ListsCallbacks) :
-        RecyclerView.Adapter<ListsAdapterKt.ListViewHolder>(),
+class ListsAdapter(val lists: MutableList<ItemList>, val callback: ListsCallbacks) :
+        RecyclerView.Adapter<ListsAdapter.ListViewHolder>(),
         ItemTouchHelperAdapter {
 
     private var selectedItemList = ItemList()

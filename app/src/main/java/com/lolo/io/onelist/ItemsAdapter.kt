@@ -15,11 +15,12 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemConstant
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionDefault
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionMoveToSwipedDirection
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder
+import com.lolo.io.onelist.model.Item
 import kotlinx.android.synthetic.main.list_item.view.*
 
-class ItemsAdapterKt(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAdapterKt.ItemViewHolder>(),
-        SwipeableItemAdapter<ItemsAdapterKt.ItemViewHolder>,
-        DraggableItemAdapter<ItemsAdapterKt.ItemViewHolder> {
+class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAdapter.ItemViewHolder>(),
+        SwipeableItemAdapter<ItemsAdapter.ItemViewHolder>,
+        DraggableItemAdapter<ItemsAdapter.ItemViewHolder> {
 
 
     var items: MutableList<Item> = arrayListOf()

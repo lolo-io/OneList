@@ -1,5 +1,8 @@
 package com.lolo.io.onelist
 
+import com.lolo.io.onelist.model.Item
+import com.lolo.io.onelist.model.ItemList
+
 interface ItemsCallbacks {
     fun onRemoveItem(item: Item)
     fun onEditItem(item: Item)

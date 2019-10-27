@@ -4,17 +4,17 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.NinePatchDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -25,18 +25,26 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager
+import com.lolo.io.onelist.dialogs.*
+import com.lolo.io.onelist.model.Item
+import com.lolo.io.onelist.model.ItemList
+import com.lolo.io.onelist.updates.UpdateHelper
+import com.lolo.io.onelist.util.*
+import com.skydoves.powermenu.MenuAnimation
+import com.skydoves.powermenu.PowerMenu
+import com.skydoves.powermenu.PowerMenuItem
+import com.skydoves.powermenu.kotlin.createPowerMenu
 import kotlinx.android.synthetic.main.fragment_one_list.*
 import java.util.*
 
 class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity.OnDispatchTouchEvent {
 
+    private var container: ViewGroup? = null
     private val mainActivity: MainActivity
         get() {
             if (activity is MainActivity) return activity as MainActivity
@@ -44,36 +52,52 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         }
 
     private val allLists: MutableList<ItemList> = arrayListOf()
-    private var listsAdapter: ListsAdapterKt = ListsAdapterKt(allLists, this)
-    private val itemsAdapter = ItemsAdapterKt(this)
+    private var listsAdapter: ListsAdapter = ListsAdapter(allLists, this)
+    private val itemsAdapter = ItemsAdapter(this)
 
     private var selectedList: ItemList = ItemList("")
 
-    private lateinit var prefs: SharedPreferencesHelper
-
-    private val itemsSwipeManager: RecyclerViewSwipeManager = RecyclerViewSwipeManager()
-    private val itemsDragDropManager: RecyclerViewDragDropManager = RecyclerViewDragDropManager()
-
-    private lateinit var dialogs: DialogsKt
+    private val persistence: PersistenceHelper
+        get() = mainActivity.persistence
 
     private val isAddCommentShown
         get() = addCommentEditText.height > 0
 
+    private val popupMenu: PowerMenu? by lazy {
+        context?.let {
+            createPowerMenu(it) {
+                addItem(PowerMenuItem(getString(R.string.settings), R.drawable.ic_settings_accent_24dp))
+                setAnimation(MenuAnimation.SHOWUP_TOP_LEFT)
+                setMenuRadius(10f)
+                setMenuShadow(10f)
+                setTextGravity(Gravity.START)
+                setTextTypeface(Typeface.DEFAULT)
+                setMenuColor(Color.WHITE)
+                setShowBackground(false)
+                setAutoDismiss(true)
+                setOnMenuItemClickListener { _, _ ->
+                    parentFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.zoom_out, R.anim.zoom_in, R.anim.exit_to_right)
+                            .add(container?.id ?: 0, PreferenceFragment())
+                            .hide(this@OneListFragment)
+                            .addToBackStack(null).commit()
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefs = SharedPreferencesHelper(mainActivity)
-        dialogs = DialogsKt(mainActivity)
-
-        if (prefs.firstLaunch && activity != null) {
-            prefs.allLists = Gson().fromJson(loadJSONFromAsset(activity!!, getString(R.string.prefix) + "-tuto.json"), object : TypeToken<List<ItemList>>() {
-            }.type)
-            prefs.firstLaunch = false
-        }
-
+        UpdateHelper.applyUpdatePatches(mainActivity, allLists)
+        val ver = mainActivity.packageManager.getPackageInfo(mainActivity.packageName, 0).versionName
+        if (persistence.version != ver) persistence.version = ver
     }
 
     @SuppressLint("InflateParams")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_one_list, null)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        this.container = container
+        return inflater.inflate(R.layout.fragment_one_list, null)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -81,11 +105,28 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
         addItemEditText.setOnEditorActionListener { _, actionId, _ -> if (actionId == EditorInfo.IME_ACTION_DONE) addItem(); true }
         validate.setOnClickListener { addItem() }
-        buttonAddList.setOnClickListener { dialogs.promptAddOrEditList { title -> createList(ItemList(title)) }.show() }
+        buttonAddList.setOnClickListener { editListDialog(mainActivity) { list -> createList(list) }.show() }
         buttonEditList.setOnClickListener { editList() }
         buttonRemoveList.setOnClickListener { deleteList(selectedList) }
         buttonAddComment.setOnClickListener { switchCommentSection() }
         buttonClearComment.setOnClickListener { addCommentEditText.text.clear() }
+        buttonShareList.setOnClickListener { persistence.shareList(selectedList) }
+
+        menu_arrow.setOnTouchListener { v, e ->
+            if (e.action == MotionEvent.ACTION_DOWN) {
+                if (popupMenu?.isShowing == false)
+                    popupMenu?.showAsAnchorLeftTop(v, dpToPx(12), dpToPx(12))
+                else popupMenu?.dismiss()
+            }
+            true
+        }
+
+        swipeContainer.setOnRefreshListener {
+            persistence.refreshAllLists(allLists)
+            listsAdapter.notifyDataSetChanged()
+            itemsAdapter.notifyDataSetChanged()
+            swipeContainer.isRefreshing = false
+        }
 
         validate.visibility = View.INVISIBLE
         buttonAddComment.visibility = View.INVISIBLE
@@ -104,16 +145,36 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             else buttonClearComment.visibility = View.GONE
         }
 
-        initLists()
-    }
-
-    private fun initLists() {
         setupListsRecyclerView()
         setupItemsRecyclerView()
-        if (allLists.isEmpty()) {
-            allLists.addAll(prefs.allLists)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        allLists.apply {
+            clear()
+            addAll(persistence.getAllLists())
         }
-        val selectedListIndex = prefs.selectedListIndex
+
+        // in case files have changed during pause
+        listsAdapter.notifyDataSetChanged()
+        itemsAdapter.notifyDataSetChanged()
+
+        if (arguments?.containsKey("EXT_FILE_URI") == true) { // opened an external file
+            try {
+                val imported = persistence.createListFromUri(arguments?.getParcelable("EXT_FILE_URI"))
+                persistence.saveListAsync(imported)
+                allLists.add(imported)
+                persistence.updateListIdsTableAsync(allLists)
+                Toast.makeText(activity, getString(R.string.list_copied, imported.title), Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                Toast.makeText(activity, e.message, Toast.LENGTH_LONG).show()
+            }
+            activity?.finish()
+        }
+
+        val selectedListIndex = persistence.selectedListIndex
         if (allLists.size > selectedListIndex) {
             onSelectList(allLists[selectedListIndex])
         }
@@ -139,6 +200,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     private fun setupItemsRecyclerView() {
 
+        val itemsDragDropManager = RecyclerViewDragDropManager()
+        val itemsSwipeManager = RecyclerViewSwipeManager()
         var wrappedAdapter = itemsDragDropManager.createWrappedAdapter(itemsAdapter)
         wrappedAdapter = itemsSwipeManager.createWrappedAdapter(wrappedAdapter)
         itemsRecyclerView.adapter = wrappedAdapter
@@ -195,25 +258,30 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         allLists.add(itemList)
         listsAdapter.notifyItemInserted(allLists.indexOf(itemList))
         onSelectList(itemList)
-        prefs.allLists = allLists
+        persistence.apply {
+            saveListAsync(itemList)
+            updateListIdsTableAsync(allLists)
+        }
         addItemEditText.requestFocus()
     }
 
+
     private fun editList() {
-        dialogs.promptAddOrEditList(selectedList.title) { title ->
-            selectedList.title = title
+        editListDialog(mainActivity, selectedList) {
             listsAdapter.notifyItemChanged(allLists.indexOf(selectedList))
-            prefs.allLists = allLists
+            persistence.apply {
+                saveListAsync(selectedList)
+                updateListIdsTableAsync(allLists)
+            }
             hideEditionButtons()
         }.show()
-        prefs.allLists = allLists
     }
 
     private fun deleteList(itemList: ItemList) {
-        dialogs.promptDeleteList(itemList) { action ->
+        deleteListDialog(mainActivity, itemList) { action ->
             itemList.items.clear()
             itemsAdapter.notifyDataSetChanged()
-            if (action == DialogsKt.ACTION_DELETE) {
+            if (action and ACTION_DELETE != 0) {
                 val position = allLists.indexOf(itemList)
                 allLists.remove(itemList)
                 listsAdapter.notifyItemRemoved(position)
@@ -222,14 +290,18 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
                 } else if (position > 0) {
                     onSelectList(allLists[position - 1])
                 }
+
+                if (action and ACTION_RM_FILE != 0) {
+                    persistence.removeListFile(itemList)
+                }
             }
-            prefs.allLists = allLists
+            persistence.updateListIdsTableAsync(allLists)
             hideEditionButtons()
         }.show()
     }
 
     override fun onSelectList(itemList: ItemList) {
-        if (selectedList != itemList) {
+        if (selectedList !== itemList) {
             itemsAdapter.items = itemList.items
 
             listsAdapter.selectList(itemList)
@@ -239,7 +311,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
             selectedList = itemList
 
-            prefs.selectedListIndex = allLists.indexOf(selectedList)
+            persistence.selectedListIndex = allLists.indexOf(selectedList)
         }
     }
 
@@ -260,8 +332,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             }
             listsAdapter.notifyItemMoved(fromPosition, toPosition)
         }
-        prefs.allLists = allLists
-        prefs.selectedListIndex = allLists.indexOf(selectedList)
+        persistence.updateListIdsTableAsync(allLists)
+        persistence.selectedListIndex = allLists.indexOf(selectedList)
     }
 
     // Items handlers :
@@ -282,21 +354,21 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             }
 
             addCommentEditText.setText(R.string.empty)
-            prefs.allLists = allLists
+            persistence.saveListAsync(selectedList)
         } else listOf(addItemEditText, validate).forEach { it.shake() }
     }
 
     override fun onRemoveItem(item: Item) {
         itemsAdapter.notifyItemRemoved(selectedList.items.indexOf(item))
         selectedList.items.remove(item)
-        prefs.allLists = allLists
+        persistence.saveListAsync(selectedList)
     }
 
     override fun onEditItem(item: Item) {
-        dialogs.promptEditItem(item) { updatedItem ->
+        editItemDialog(mainActivity, item) { updatedItem ->
             item.title = updatedItem.title
             item.comment = updatedItem.comment
-            prefs.allLists = allLists
+            persistence.saveListAsync(selectedList)
             itemsAdapter.notifyItemChanged(selectedList.items.indexOf(item))
         }.show()
     }
@@ -314,20 +386,20 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         itemsAdapter.notifyItemMoved(oldPosition, newPosition)
         val scrolledToTop = (itemsRecyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0
         if (scrolledToTop || oldPosition == 0) itemsRecyclerView.scrollToPosition(0)
-        prefs.allLists = allLists
+        persistence.saveListAsync(selectedList)
     }
 
     override fun onShowOrHideComment(item: Item) {
         item.commentDisplayed = !item.commentDisplayed
         itemsAdapter.notifyItemChanged(selectedList.items.indexOf(item))
-        prefs.allLists = allLists
+        persistence.saveListAsync(selectedList)
     }
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         val fromItem = selectedList.items[fromPosition]
         selectedList.items.removeAt(fromPosition)
         selectedList.items.add(toPosition, fromItem)
-        prefs.allLists = allLists
+        persistence.saveListAsync(selectedList)
     }
 
     // hide keyboard when touch outside an EditText
@@ -361,6 +433,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     }
 
     private fun showEditionButtons() {
+        buttonShareList.visibility = View.GONE
         buttonRemoveList.animShowFlip()
         buttonAddList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
         buttonEditList.animShowFlip()
@@ -368,6 +441,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     }
 
     private fun hideEditionButtons() {
+        buttonShareList.visibility = View.VISIBLE
         buttonAddList.animShowFlip()
         buttonRemoveList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
         buttonEditList.animHideFlip()
