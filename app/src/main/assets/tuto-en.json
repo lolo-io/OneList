@@ -12,6 +12,13 @@
                 "comment": "",
                 "commentDisplayed": false,
                 "done": false,
+                "stableId": 1560302146239,
+                "title": "You can import a list or chose its storage folder by clicking on 'more option' in the list creation window"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
                 "stableId": 1560302178459,
                 "title": "Switch lists by clicking on them"
             },
@@ -44,18 +51,25 @@
                 "title": "Swipe an item right to edit it"
             },
             {
-                "comment": "💡 Quickly add a comment by clicking the arrow appearing under the \"Add\" edit box when you start typing !",
+                "comment": "💡 Quickly add a comment by clicking the \"⌄\" button appearing under the \"Add\" edit box when you start typing !",
                 "commentDisplayed": false,
                 "done": false,
                 "stableId": 1560302687298,
-                "title": "Show an item comments by clicking on the arrow at the end of it ---> "
+                "title": "Show an item comments by clicking on the \"⌄\" button at the end of the line ---> "
             },
             {
-                "comment": "And as undone by clicking on it again !\nIt will move it to the top or the bottom of the list depending on its status.",
+                "comment": "And as undone by clicking on it again !",
                 "commentDisplayed": false,
                 "done": false,
                 "stableId": 1560302932736,
                 "title": "Mark item as done simply by clicking on it"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302146240,
+                "title": "Access the settings from the \"⌄\" button at the top of the screen"
             }
         ],
         "stableId": 1560302093030,

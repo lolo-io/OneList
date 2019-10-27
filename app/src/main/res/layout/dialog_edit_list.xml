@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/rounded_borders_primary"
+    android:orientation="vertical"
+    android:padding="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/listTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:hint="@string/list_title"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="textCapSentences"
+            android:lines="1"
+            android:maxLines="1"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+            android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+            android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+            android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="UnusedAttribute" />
+
+        <View
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/listTitle"
+            android:background="@color/material_gray_100"
+            app:layout_constraintTop_toBottomOf="@+id/listTitle"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/moreOptionsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/separator">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/moreOptionsCursor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tint="@color/colorAccentLight"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_expand_more_add" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="@string/more_options"
+                android:textColor="@color/colorAccentLight"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toBottomOf="@+id/moreOptionsCursor"
+                app:layout_constraintStart_toEndOf="@+id/moreOptionsCursor"
+                app:layout_constraintTop_toTopOf="@+id/moreOptionsCursor" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/optionsLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cancelEditList"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/moreOptionsLayout">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/listImportButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="?attr/selectableItemBackground"
+                app:drawableStartCompat="@drawable/ic_add_circle_outline_accent_24dp"
+                app:drawableLeftCompat="@drawable/ic_add_circle_outline_accent_24dp"
+                android:drawablePadding="8dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="24dp"
+                android:paddingLeft="24dp"
+                android:paddingEnd="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/import_from_file"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/listStorageButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="?attr/selectableItemBackground"
+                app:drawableStartCompat="@drawable/ic_save_accent_24dp"
+                app:drawableLeftCompat="@drawable/ic_save_accent_24dp"
+                android:drawablePadding="8dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="24dp"
+                android:paddingLeft="24dp"
+                android:paddingEnd="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/app_private_storage"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/listImportButton" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/validateEditList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/separator"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/validate"
+            android:padding="10dp"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/separator"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/ic_check_black_24dp" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/cancelEditList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/separator"
+            android:layout_toStartOf="@id/validateEditList"
+            android:layout_toLeftOf="@id/validateEditList"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/cancel"
+            android:padding="10dp"
+            android:tint="@color/colorAccentLight"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/validateEditList"
+            app:layout_constraintTop_toBottomOf="@+id/separator"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/ic_cancel_black_24dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

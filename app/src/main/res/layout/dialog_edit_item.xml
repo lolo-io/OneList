@@ -16,10 +16,10 @@
         android:drawableStart="@drawable/ic_bullet_outline"
         android:drawableLeft="@drawable/ic_bullet_outline"
         android:drawablePadding="5dp"
-        android:hint="@string/add_item_hint_focused"
+        android:hint="@string/item_name"
         android:imeOptions="actionNext"
-        android:inputType="textCapSentences"
         android:importantForAutofill="no"
+        android:inputType="textCapSentences"
         android:lines="1"
         android:maxLines="1"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
@@ -72,11 +72,11 @@
         android:layout_below="@id/separator2"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:background="@color/transparent"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/validate"
         android:padding="10dp"
         android:tint="@color/colorPrimary"
-        app:srcCompat="@drawable/ic_check_black_24dp"
-        android:contentDescription="@string/validate"/>
+        app:srcCompat="@drawable/ic_check_black_24dp" />
 
     <ImageButton
         android:id="@+id/cancelEdit"
@@ -85,10 +85,10 @@
         android:layout_below="@id/separator2"
         android:layout_toStartOf="@id/validateEdit"
         android:layout_toLeftOf="@id/validateEdit"
-        android:background="@color/transparent"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/cancel"
         android:padding="10dp"
         android:tint="@color/colorAccentLight"
-        app:srcCompat="@drawable/ic_clear_black_24dp"
-        android:contentDescription="@string/cancel" />
+        app:srcCompat="@drawable/ic_cancel_black_24dp" />
 
 </RelativeLayout>

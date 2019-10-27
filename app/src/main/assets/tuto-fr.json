@@ -12,6 +12,13 @@
                 "comment": "",
                 "commentDisplayed": false,
                 "done": false,
+                "stableId": 1560302146239,
+                "title": "Vous pouveez importer une liste ou choisir son dossier de stockage en cliquant sur \"plus d'options\" dans la fenêtre de création de liste"
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
                 "stableId": 1560302178459,
                 "title": "Changez de liste en cliquant sur une autre liste"
             },
@@ -27,7 +34,7 @@
                 "commentDisplayed": false,
                 "done": false,
                 "stableId": 1560302331188,
-                "title": "ajoutez un objet à la liste sélectionnée en grâce à la zone de texte \"Add\""
+                "title": "Ajoutez un objet à la liste sélectionnée grâce à la zone de texte \"Ajouter\""
             },
             {
                 "comment": "",
@@ -44,18 +51,25 @@
                 "title": "Glissez un objet vers la droite pour le modifier"
             },
             {
-                "comment": "💡 Ajoutez un commentaire rapidement en cliquant sur la flèche qui apparaît en dessous de la zone \"Add\" lorsque vous commencez à écrire !",
+                "comment": "💡 Ajoutez un commentaire rapidement en cliquant sur le bouton \"⌄\" qui apparaît en dessous de la zone \"Ajouter\" lorsque vous commencez à écrire !",
                 "commentDisplayed": false,
                 "done": false,
                 "stableId": 1560302687298,
-                "title": "Montrez le commentaire associé à un objet en cliquand sur la flèche à sa droite --->"
+                "title": "Montrez le commentaire associé à un objet en cliquant sur le bouton \"⌄\" à droite --->"
             },
             {
-                "comment": "et comme à faire en recliquant dessus! \nL'objet se déplacera en haut ou en bas de la liste en fonction de son statut.",
+                "comment": "Et comme à faire en recliquant dessus!",
                 "commentDisplayed": false,
                 "done": false,
                 "stableId": 1560302932736,
-                "title": "Marquez un objet comme fait en cliquand simplement dessus."
+                "title": "Marquez un objet comme fait en cliquant simplement dessus."
+            },
+            {
+                "comment": "",
+                "commentDisplayed": false,
+                "done": false,
+                "stableId": 1560302146240,
+                "title": "Accédez aux réglages grâce au bouton \"⌄\" en haut de l'écran"
             }
         ],
         "stableId": 1560302093030,

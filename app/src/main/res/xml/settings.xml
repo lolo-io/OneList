@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="cat_storage"
+        android:title="@string/storage">
+        <Preference
+            android:icon="@drawable/ic_save_accent_24dp"
+            android:key="storage"
+            android:title="@string/default_storage_folder"
+            android:summary="App private storage"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="cat_about"
+        android:title="@string/about">
+        <Preference
+            android:key="version"
+            android:title="@string/app_version"
+            android:selectable="false"/>
+        <Preference
+            android:key="releaseNote"
+            android:title="@string/show_last_release_note"
+            android:selectable="true"/>
+    </PreferenceCategory>
+</PreferenceScreen>

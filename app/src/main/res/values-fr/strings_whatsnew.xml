@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onelist_updated">1List a été mis à jour !</string>
+    <string name="external_folder_title">Enregistrez vos listes dans un dossier externe</string>
+    <string name="external_folder_content">Depuis la fenêtre d\'édition de liste, sous le bouton \'plus d\'options\'.</string>
+    <string name="import_title">Importez des listes</string>
+    <string name="import_content">Depuis la fenêtre de création de liste, sous le bouton \'plus d\'options\'.</string>
+    <string name="pull_title">Pull to refresh</string>
+    <string name="pull_content">Tirez une liste vers le bas pour la rafraîchir, au cas où quelqu\'un d\'autre aurait modifié le fichier ailleurs.</string>
+    <string name="settings_title">Écran de réglages</string>
+    <string name="settings_content">Cliquez sur le bouton "⌄" en haut de l\'écran pour accéder à l\'écran des réglages.</string>
+    <string name="share_title">Partagez vos listes</string>
+    <string name="share_content">Cliquez sur l\'icone de partage pour partager votre liste en format texte avec quelqu\'un d\'autre.</string>
+    <string name="see_again_in_settings">Vous pouvez revoir cette note de version depuis l\écran des réglages.</string>
+    <string name="continue_button">Continuer</string>
+</resources>
