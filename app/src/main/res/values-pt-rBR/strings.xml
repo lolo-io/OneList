@@ -1,0 +1,19 @@
+<resources>
+    <string name="prefix">pt-rBR</string>
+    <string name="empty" />
+    <string name="add_item_hint_focused">Nome Do Item</string>
+    <string name="list_title">Nome Da Lista</string>
+    <string name="delete_list_forever_warning">Isso irá apagar a lista e todos os itens contidos na mesma. Tem certeza que deseja apagar a lista? (isso não poderá ser desfeito)</string>
+    <string name="list_default_name">Minha lista</string>
+    <string name="cancel">Cancelar</string>
+    <string name="validate">Validar</string>
+    <string name="warning">Atenção</string>
+    <string name="clear_list">Limpar lista apenas</string>
+    <string name="expand_item">Expandir lista</string>
+    <string name="delete_list">Apagar lista</string>
+    <string name="edit_list">Editar lista</string>
+    <string name="add_list">Adicionar lista</string>
+    <string name="add">Adicionar</string>
+    <string name="clear_comment">Limpar comentário</string>
+    <string name="add_comment">Adicionar comentário</string>
+</resources>
