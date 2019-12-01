@@ -10,19 +10,21 @@ import com.lolo.io.onelist.util.loadJSONFromAsset
 object UpdateHelper {
     fun applyUpdatePatches(activity: MainActivity, allLists: MutableList<ItemList>) {
         val persistence = activity.persistence
-        if (persistence.firstLaunchCompat) {
+        if (persistence.compat.firstLaunchCompat) {
             allLists.addAll(Gson().fromJson(loadJSONFromAsset(activity, "tuto-${activity.getString(R.string.locale)}.json"), object : TypeToken<List<ItemList>>() {
             }.type))
             persistence.updateListIdsTable(allLists)
             allLists.forEach { persistence.saveList(it) }
-            persistence.firstLaunchCompat = false
-        } else if (!persistence.firstLaunchCompat && !persistence.version.startsWith("1.1")) {
+            persistence.compat.firstLaunchCompat = false
+        } else if (!persistence.compat.firstLaunchCompat && !persistence.version.startsWith("1.")) {
             migrateToMaj1Min1(activity, allLists)
             persistence.updateListIdsTable(allLists)
             allLists.forEach { persistence.saveList(it) }
             ReleaseNote.releasesNotes["1.1"]?.show(activity)
+        } else if (persistence.version.startsWith("1.1")) { //1.1 to 1.2
+            ReleaseNote.releasesNotes["1.2"]?.show(activity)
         }
     }
 
-    private fun migrateToMaj1Min1(activity: MainActivity, allLists: MutableList<ItemList>) = allLists.addAll(activity.persistence.allListsCompat)
+    private fun migrateToMaj1Min1(activity: MainActivity, allLists: MutableList<ItemList>) = allLists.addAll(activity.persistence.compat.allListsCompat)
 }

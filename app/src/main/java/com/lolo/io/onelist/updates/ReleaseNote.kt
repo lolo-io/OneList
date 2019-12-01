@@ -13,7 +13,8 @@ import io.github.tonnyl.whatsnew.util.PresentationOption
 object ReleaseNote {
 
     val releasesNotes = linkedMapOf(
-            "1.1" to maj1Min1
+            "1.1" to maj1Min1,
+            "1.2" to maj1Min2
     )
 
     private val maj1Min1
@@ -52,6 +53,28 @@ object ReleaseNote {
                     content = appContext.getString(R.string.share_content)
                     imageRes = R.drawable.ic_share_whatsnew_24dp
                 }
+                item {
+                    content = appContext.getString(R.string.see_again_in_settings)
+                }
+            }
+
+    private val maj1Min2
+        get() =
+            whatsNew {
+                titleText = appContext.getString(R.string.onelist_updated)
+                titleColor = ContextCompat.getColor(appContext, R.color.colorPrimaryDark)
+                iconColor = ContextCompat.getColor(appContext, R.color.colorPrimaryDark)
+                buttonBackground = ContextCompat.getColor(appContext, R.color.colorPrimaryDark)
+                buttonText = appContext.getString(R.string.continue_button)
+                buttonTextColor = ContextCompat.getColor(appContext, R.color.white)
+                presentationOption = PresentationOption.ALWAYS
+
+                item {
+                    title = appContext.getString(R.string.external_folder_title_1_2)
+                    content = appContext.getString(R.string.external_folder_content_1_2)
+                    imageRes = R.drawable.ic_save_whatsnew_24dp
+                }
+
                 item {
                     content = appContext.getString(R.string.see_again_in_settings)
                 }

@@ -2,6 +2,7 @@ package com.lolo.io.onelist.dialogs
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -9,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.documentfile.provider.DocumentFile
 import com.lolo.io.onelist.model.ItemList
 import com.lolo.io.onelist.MainActivity
 import com.lolo.io.onelist.R
@@ -19,12 +21,14 @@ import kotlin.math.abs
 @SuppressLint("InflateParams")
 fun editListDialog(activity: MainActivity, list: ItemList = ItemList(), onPositiveClicked: (list: ItemList) -> Any?): AlertDialog {
 
-    val create = list.title.isEmpty()
+    val isNewList = list.title.isEmpty()
 
     val originalPath = list.path
     var pathChanged = false
 
-    if (list.title.isEmpty() && (activity as MainActivity).persistence.defaultPath.isNotEmpty()) { // new list / custom path
+    var treeUri: Uri? = null
+
+    if (list.title.isEmpty() && activity.persistence.defaultPath.isNotEmpty()) { // new list / custom path
         list.path = "${activity.persistence.defaultPath}/${list.fileName}"
         pathChanged = true
     }
@@ -63,28 +67,40 @@ fun editListDialog(activity: MainActivity, list: ItemList = ItemList(), onPositi
             if (canValidate(listTitle)) {
                 list.title = view.listTitle.text.toString()
                 dialog.dismiss()
+
+                treeUri?.let { uri ->
+                    DocumentFile.fromTreeUri(activity, uri)?.createFile("text/x-json", list.fileName)?.let {
+                        list.path = it.uri.toString()
+                    }
+                }
+
                 onPositiveClicked(list)
                 if (originalPath.isNotBlank() && originalPath != list.path) warningNewFile(activity)
             }
         }
 
         listStorageButton.apply {
-            text = if (list.path.isNotBlank()) list.path else context.getString(R.string.app_private_storage)
+            text = if (list.path.toUri != null) list.path.toUri!!.path!!.beautify() else if (list.path.isNotBlank()) list.path else context.getString(R.string.app_private_storage)
             setOnClickListener {
-                storagePathDialog(activity) {
-                    list.path = if (it.isNotBlank()) "$it/${list.fileName}" else ""
-                    listStorageButton.text = if (list.path.isNotEmpty()) list.path else context.getString(R.string.app_private_storage)
+                storagePathDialog(activity) { path ->
+                    treeUri = path.toUri
+                    list.path = if (treeUri == null && path.isNotBlank()) "$it/${list.fileName}" else ""
+                    listStorageButton.text = when {
+                        list.path.isNotEmpty() -> list.path
+                        treeUri != null -> treeUri!!.path?.beautify()
+                        else -> context.getString(R.string.app_private_storage)
+                    }
                     pathChanged = true
                 }
             }
         }
 
         listImportButton.apply {
-            visibility = if (create) View.VISIBLE else View.GONE
+            visibility = if (isNewList) View.VISIBLE else View.GONE
             setOnClickListener {
                 selectFile(activity) {
                     try {
-                        val imported = (activity as MainActivity).persistence.importList(it).apply { path = it }
+                        val imported = activity.persistence.importList(it).apply { path = it }
                         onPositiveClicked(imported)
                         Toast.makeText(activity, context.getString(R.string.list_added, imported.title), Toast.LENGTH_LONG).show()
                     } catch (e: Exception) {

@@ -13,4 +13,7 @@
     <string name="share_content">Click the share icon to share your list as text with someone else.</string>
     <string name="see_again_in_settings">You can see this release note again from the settings screen.</string>
     <string name="continue_button">Continue</string>
+
+    <string name="external_folder_title_1_2">Save your lists on your SD Card</string>
+    <string name="external_folder_content_1_2">You can now save your lists on your SD Card ! (experimental)</string>
 </resources>

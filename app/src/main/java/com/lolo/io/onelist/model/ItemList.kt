@@ -1,8 +1,10 @@
 package com.lolo.io.onelist.model
 
+import android.net.Uri
 import com.google.gson.annotations.SerializedName
 import com.lolo.io.onelist.App
 import com.lolo.io.onelist.R
+import java.net.URI
 
 data class ItemList(@SerializedName("title") var title: String = "", @SerializedName("items") val items: MutableList<Item> = arrayListOf(), @SerializedName("stableId") val stableId: Long = System.currentTimeMillis(), @Transient var path: String = "") {
     override fun toString(): String {

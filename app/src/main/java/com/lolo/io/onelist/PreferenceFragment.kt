@@ -12,6 +12,8 @@ import androidx.preference.get
 import com.lolo.io.onelist.dialogs.defaultPathDialog
 import com.lolo.io.onelist.updates.ReleaseNote
 import com.lolo.io.onelist.updates.show
+import com.lolo.io.onelist.util.beautify
+import com.lolo.io.onelist.util.toUri
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 class PreferenceFragment : PreferenceFragmentCompat() {
@@ -61,8 +63,10 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     private fun displayDefaultPath() {
         this.preferenceScreen.get<Preference>("storage")
                 ?.summary =
-                if (mainActivity.persistence.defaultPath.isNotBlank())
-                    mainActivity.persistence.defaultPath
+                if (mainActivity.persistence.defaultPath.isNotBlank()) {
+                    val uri = mainActivity.persistence.defaultPath.toUri
+                    uri?.path?.beautify() ?: mainActivity.persistence.defaultPath
+                }
                 else getString(R.string.app_private_storage)
 
     }

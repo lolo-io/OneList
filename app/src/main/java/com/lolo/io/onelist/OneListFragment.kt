@@ -145,6 +145,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             else buttonClearComment.visibility = View.GONE
         }
 
+        allLists.addAll(persistence.getAllLists())
+
         setupListsRecyclerView()
         setupItemsRecyclerView()
     }
@@ -152,18 +154,9 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     override fun onResume() {
         super.onResume()
 
-        allLists.apply {
-            clear()
-            addAll(persistence.getAllLists())
-        }
-
-        // in case files have changed during pause
-        listsAdapter.notifyDataSetChanged()
-        itemsAdapter.notifyDataSetChanged()
-
         if (arguments?.containsKey("EXT_FILE_URI") == true) { // opened an external file
             try {
-                val imported = persistence.createListFromUri(arguments?.getParcelable("EXT_FILE_URI"))
+                val imported = persistence.createListFromUri(arguments?.getParcelable("EXT_FILE_URI")?:throw IllegalArgumentException("uri must not be null"))
                 persistence.saveListAsync(imported)
                 allLists.add(imported)
                 persistence.updateListIdsTableAsync(allLists)

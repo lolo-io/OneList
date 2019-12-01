@@ -1,7 +1,8 @@
 package com.lolo.io.onelist.dialogs
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.Intent
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -11,8 +12,12 @@ import com.codekidlabs.storagechooser.StorageChooser
 import com.lolo.io.onelist.App
 import com.lolo.io.onelist.MainActivity
 import com.lolo.io.onelist.R
+import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT
+import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT_TREE
 import com.lolo.io.onelist.util.withStoragePermission
 import kotlinx.android.synthetic.main.dialog_list_path.view.*
+import java.io.File
+import java.net.URI
 
 
 @SuppressLint("InflateParams")
@@ -63,45 +68,55 @@ fun displayDialog(view: View, activity: MainActivity, onPathChosen: (String) -> 
 
 fun selectDirectory(activity: MainActivity, onPathChosen: (String) -> Any?) {
     withStoragePermission(activity) {
-        @Suppress("DEPRECATION")
-        StorageChooser.Builder()
-                .withActivity(activity)
-                .withContent(storageChooserLocales)
-                .withFragmentManager(activity.fragmentManager) // activity.fragmentManager deprecated, but lib StorageChooser hasn't fully migrated to androidx yet.
-                .withMemoryBar(true)
-                .allowCustomPath(true)
-                .allowAddFolder(true)
-                .setType(StorageChooser.DIRECTORY_CHOOSER)
-                .build()
-                .apply {
-                    show()
-                    setOnSelectListener {
-                        onPathChosen(it)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.onPathChosenActivityResult = onPathChosen
+            activity.startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), REQUEST_CODE_OPEN_DOCUMENT_TREE)
+        } else {
+            @Suppress("DEPRECATION")
+            StorageChooser.Builder()
+                    .withActivity(activity)
+                    .withContent(storageChooserLocales)
+                    .withFragmentManager(activity.fragmentManager) // activity.fragmentManager deprecated, but lib StorageChooser hasn't fully migrated to androidx yet.
+                    .withMemoryBar(true)
+                    .allowCustomPath(true)
+                    .allowAddFolder(true)
+                    .setType(StorageChooser.DIRECTORY_CHOOSER)
+                    .build()
+                    .apply {
+                        show()
+                        setOnSelectListener {
+                            onPathChosen(it)
+                        }
                     }
-                }
+        }
     }
 }
 
 fun selectFile(activity: MainActivity, onPathChosen: (String) -> Any?) {
     withStoragePermission(activity) {
-        @Suppress("DEPRECATION")
-        StorageChooser.Builder()
-                .withActivity(activity)
-                .withFragmentManager(activity.fragmentManager) // activity.fragmentManager deprecated, but lib StorageChooser hasn't fully migrated to androidx yet.
-                .withMemoryBar(true)
-                .allowCustomPath(true)
-                .setType(StorageChooser.FILE_PICKER)
-                .build()
-                .apply {
-                    show()
-                    setOnSelectListener {
-                        if(it.endsWith(".1list")) {
-                            onPathChosen(it)
-                        } else {
-                            Toast.makeText(activity, activity.getString(R.string.not_a_1list_file), Toast.LENGTH_LONG).show()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.onPathChosenActivityResult = onPathChosen
+            activity.startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT).apply { type = "*/*" }, REQUEST_CODE_OPEN_DOCUMENT)
+        } else {
+            @Suppress("DEPRECATION")
+            StorageChooser.Builder()
+                    .withActivity(activity)
+                    .withFragmentManager(activity.fragmentManager) // activity.fragmentManager deprecated, but lib StorageChooser hasn't fully migrated to androidx yet.
+                    .withMemoryBar(true)
+                    .allowCustomPath(true)
+                    .setType(StorageChooser.FILE_PICKER)
+                    .build()
+                    .apply {
+                        show()
+                        setOnSelectListener {
+                            if (it.endsWith(".1list")) {
+                                onPathChosen(it)
+                            } else {
+                                Toast.makeText(activity, activity.getString(R.string.not_a_1list_file), Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
-                }
+        }
     }
 }
 

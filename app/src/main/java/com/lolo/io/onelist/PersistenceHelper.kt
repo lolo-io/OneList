@@ -8,15 +8,14 @@ import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lolo.io.onelist.model.ItemList
+import com.lolo.io.onelist.util.toUri
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
 import java.util.*
 
 class PersistenceHelper(private val app: Activity) {
-
-    private val firstLaunchPrefCompat = "firstLaunch"
-    private val listsPrefsCompat = "lists"
 
     var versionPref: String = "version"
     private val selectedListPref = "selectedList"
@@ -49,32 +48,6 @@ class PersistenceHelper(private val app: Activity) {
             editor.apply()
         }
 
-    var firstLaunchCompat: Boolean
-        get() {
-            val sp = app.getPreferences(Context.MODE_PRIVATE)
-            return sp.getBoolean(firstLaunchPrefCompat, true)
-        }
-        set(value) {
-            val sp = app.getPreferences(Context.MODE_PRIVATE)
-            val editor = sp.edit()
-            editor.putBoolean(firstLaunchPrefCompat, value)
-            editor.apply()
-        }
-
-    val allListsCompat: List<ItemList>
-        get() {
-            val sp = app.getPreferences(Context.MODE_PRIVATE)
-            val gson = Gson()
-            val json = sp.getString(listsPrefsCompat, null)
-            var lists: List<ItemList> = ArrayList()
-            if (json != null) {
-                lists = gson.fromJson(json, object : TypeToken<List<ItemList>>() {
-                }.type)
-            }
-            return lists
-        }
-
-
     fun getAllLists(): List<ItemList> {
         return runBlocking {
             listsIds = getListIdsTable()
@@ -102,7 +75,6 @@ class PersistenceHelper(private val app: Activity) {
         }
     }
 
-
     fun updateListIdsTable(lists: List<ItemList>) {
         listsIds = lists.map { it.stableId to it.path }.toMap()
         val sp = app.getPreferences(Context.MODE_PRIVATE)
@@ -123,12 +95,13 @@ class PersistenceHelper(private val app: Activity) {
         } else mapOf()
     }
 
-    fun createListFromUri(uri: Uri?): ItemList {
+    fun createListFromUri(uri: Uri): ItemList {
         try {
             val gson = Gson()
-            val content = app.contentResolver.openInputStream(uri!!)?.bufferedReader()?.use { it.readText() }
+            val content = app.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
             val list = gson.fromJson(content, ItemList::class.java)
             list.path = ""
+            if (uri.path?.startsWith("/tree/") == true) list.path = uri.toString()
             require(!listsIds.containsKey(list.stableId)) { app.getString(R.string.list_already_in_your_lists) }
             return list
         } catch (e: IllegalArgumentException) {
@@ -138,12 +111,25 @@ class PersistenceHelper(private val app: Activity) {
         }
     }
 
-
     fun importList(filePath: String): ItemList {
         try {
             val gson = Gson()
-            val json = File(filePath).readText()
-            val list = gson.fromJson(json, ItemList::class.java)
+            val fileUri = filePath.toUri
+            val list = fileUri?.let { uri ->
+                var ins: InputStream? = null
+                try {
+                    ins = App.instance.contentResolver.openInputStream(uri)
+                    gson.fromJson(ins!!.reader(), ItemList::class.java)
+                } catch (e: Exception) {
+                    throw Exception()
+                } finally {
+                    ins?.close()
+                }
+            } ?: filePath.takeIf { it.isNotBlank() }?.let {
+                val json = File(it).readText()
+                gson.fromJson(json, ItemList::class.java)
+            } ?: throw Exception()
+
             require(!listsIds.containsKey(list.stableId)) { app.getString(R.string.list_already_in_your_lists) }
             return list
         } catch (e: IOException) {
@@ -151,26 +137,38 @@ class PersistenceHelper(private val app: Activity) {
         }
     }
 
-
     private fun getListAsync(listId: Long): Deferred<ItemList> {
         return GlobalScope.async {
-            val filePath = listsIds[listId]
+            val path = listsIds[listId]
             val gson = Gson()
             val sp = app.getPreferences(Context.MODE_PRIVATE)
-            val list = (if (filePath?.isNotBlank() == true) {
+            val fileUri = path.toUri
+            val list = fileUri?.let { uri ->
+                var ins: InputStream? = null
                 try {
-                    val json = File(filePath).readText()
+                    ins = App.instance.contentResolver.openInputStream(uri)
+                    gson.fromJson(ins!!.reader(), ItemList::class.java)
+                } catch (e: Exception) {
+                    app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_opening_filepath, uri), Toast.LENGTH_LONG).show() }
+                    null
+                } finally {
+                    ins?.close()
+                }
+            } ?: path.takeIf { it?.isNotBlank() == true }?.let {
+                try {
+                    val json = File(path).readText()
                     gson.fromJson(json, ItemList::class.java)
                 } catch (e: Exception) {
-                    app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_opening_filepath, filePath), Toast.LENGTH_LONG).show() }
+                    app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_opening_filepath, path), Toast.LENGTH_LONG).show() }
                     null
                 }
-            } else null
-                    ) ?: gson.fromJson(sp.getString(listId.toString(), ""), ItemList::class.java)
-            list.apply { path = filePath ?: "" }
+            } ?: gson.fromJson(sp.getString(listId.toString(), ""), ItemList::class.java)
+
+            list.apply {
+                this.path = path ?: ""
+            }
         }
     }
-
 
     fun saveListAsync(list: ItemList) {
         GlobalScope.launch {
@@ -183,12 +181,22 @@ class PersistenceHelper(private val app: Activity) {
         val editor = sp.edit()
         val gson = Gson()
         val json = gson.toJson(list)
-        if (list.path.isNotBlank()) {
-            try {
+        try {
+            val fileUri = list.path.toUri
+            fileUri?.let { uri ->
+                val out = App.instance.contentResolver.openOutputStream(uri)
+                try {
+                    out!!.write(json.toByteArray(Charsets.UTF_8)) // NPE is catched below
+                } catch (e: Exception) {
+                    app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_saving_to_path, list.path), Toast.LENGTH_LONG).show() }
+                } finally {
+                    out?.close()
+                }
+            } ?: if (list.path.isNotBlank()) {
                 File(list.path).writeText(json)
-            } catch (e: Exception) {
-                app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_saving_to_path, list.path), Toast.LENGTH_LONG).show() }
             }
+        } catch (e: Exception) {
+            app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_saving_to_path, list.path), Toast.LENGTH_LONG).show() }
         }
 
         // save in prefs anyway
@@ -232,4 +240,38 @@ class PersistenceHelper(private val app: Activity) {
                 editor.apply()
             }
         }
+
+    // Only to handle architecture updates between versions. do not use
+    val compat = Compat()
+
+    inner class Compat {
+
+        private val firstLaunchPrefCompat = "firstLaunch"
+        private val listsPrefsCompat = "lists"
+
+        val allListsCompat: List<ItemList>
+            get() {
+                val sp = app.getPreferences(Context.MODE_PRIVATE)
+                val gson = Gson()
+                val json = sp.getString(listsPrefsCompat, null)
+                var lists: List<ItemList> = ArrayList()
+                if (json != null) {
+                    lists = gson.fromJson(json, object : TypeToken<List<ItemList>>() {
+                    }.type)
+                }
+                return lists
+            }
+
+        var firstLaunchCompat: Boolean
+            get() {
+                val sp = app.getPreferences(Context.MODE_PRIVATE)
+                return sp.getBoolean(firstLaunchPrefCompat, true)
+            }
+            set(value) {
+                val sp = app.getPreferences(Context.MODE_PRIVATE)
+                val editor = sp.edit()
+                editor.putBoolean(firstLaunchPrefCompat, value)
+                editor.apply()
+            }
+    }
 }
