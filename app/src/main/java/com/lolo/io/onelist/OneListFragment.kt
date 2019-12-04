@@ -173,6 +173,14 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        // in case things have changed while stopped
+        persistence.refreshAndFetchNewLists(allLists)
+        listsAdapter.notifyDataSetChanged()
+        itemsAdapter.notifyDataSetChanged()
+    }
+
     private fun setupListsRecyclerView() {
 
         listsRecyclerView.adapter = listsAdapter

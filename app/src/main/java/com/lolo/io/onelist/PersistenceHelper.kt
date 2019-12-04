@@ -60,6 +60,20 @@ class PersistenceHelper(private val app: Activity) {
         }
     }
 
+
+    fun refreshAndFetchNewLists(lists: MutableList<ItemList>) {
+        runBlocking {
+            val newIds = getListIdsTable()
+            newIds.forEach { fetchedId ->
+                if (!listsIds.keys.contains(fetchedId.key)) {
+                    lists.add(getListAsync(fetchedId.key).await())
+                }
+            }
+            listsIds = newIds
+            refreshAllLists(lists)
+        }
+    }
+
     fun refreshAllLists(lists: List<ItemList>) {
         runBlocking {
             lists.forEach {
@@ -101,7 +115,6 @@ class PersistenceHelper(private val app: Activity) {
             val content = app.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
             val list = gson.fromJson(content, ItemList::class.java)
             list.path = ""
-            if (uri.path?.startsWith("/tree/") == true) list.path = uri.toString()
             require(!listsIds.containsKey(list.stableId)) { app.getString(R.string.list_already_in_your_lists) }
             return list
         } catch (e: IllegalArgumentException) {
