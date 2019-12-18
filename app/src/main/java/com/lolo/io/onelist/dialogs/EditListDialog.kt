@@ -28,8 +28,8 @@ fun editListDialog(activity: MainActivity, list: ItemList = ItemList(), onPositi
 
     var treeUri: Uri? = null
 
-    if (list.title.isEmpty() && activity.persistence.defaultPath.isNotEmpty()) { // new list / custom path
-        list.path = "${activity.persistence.defaultPath}/${list.fileName}"
+    if (isNewList && activity.persistence.defaultPath.isNotEmpty()) { // new list / custom path
+        treeUri = activity.persistence.defaultPath.toUri
         pathChanged = true
     }
 
@@ -80,16 +80,17 @@ fun editListDialog(activity: MainActivity, list: ItemList = ItemList(), onPositi
         }
 
         listStorageButton.apply {
-            text = if (list.path.toUri != null) list.path.toUri!!.path!!.beautify() else if (list.path.isNotBlank()) list.path else context.getString(R.string.app_private_storage)
+            text = list.path.toUri?.path?.beautify()
+                    ?: treeUri?.path?.beautify()
+                    ?: list.path.takeIf { it.isNotBlank() }
+                            ?:  context.getString(R.string.app_private_storage)
             setOnClickListener {
                 storagePathDialog(activity) { path ->
                     treeUri = path.toUri
                     list.path = if (treeUri == null && path.isNotBlank()) "$it/${list.fileName}" else ""
-                    listStorageButton.text = when {
-                        list.path.isNotEmpty() -> list.path
-                        treeUri != null -> treeUri!!.path?.beautify()
-                        else -> context.getString(R.string.app_private_storage)
-                    }
+                    listStorageButton.text = treeUri?.path?.beautify()
+                            ?: list.path.takeIf { it.isNotBlank() }
+                                    ?: context.getString(R.string.app_private_storage)
                     pathChanged = true
                 }
             }

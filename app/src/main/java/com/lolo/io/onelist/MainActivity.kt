@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         val fragment = OneListFragment().apply {
             if (intent.action == "android.intent.action.VIEW")
                 arguments = Bundle().apply {
@@ -84,7 +85,7 @@ class MainActivity : AppCompatActivity() {
 
             if (requestCode == REQUEST_CODE_OPEN_DOCUMENT_TREE || requestCode == REQUEST_CODE_OPEN_DOCUMENT)
                 data?.data?.let { uri ->
-                    contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                     onPathChosenActivityResult(uri.toString())
                     onPathChosenActivityResult = { }
                 }

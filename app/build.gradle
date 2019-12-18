@@ -12,8 +12,8 @@ android {
         applicationId "com.lolo.io.onelist"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 9
-        versionName "1.2.1"
+        versionCode 11
+        versionName "1.2.2"
         vectorDrawables.useSupportLibrary = true
     }
 

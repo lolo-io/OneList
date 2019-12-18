@@ -70,7 +70,9 @@ fun selectDirectory(activity: MainActivity, onPathChosen: (String) -> Any?) {
     withStoragePermission(activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.onPathChosenActivityResult = onPathChosen
-            activity.startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), REQUEST_CODE_OPEN_DOCUMENT_TREE)
+            activity.startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+                addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
+            }, REQUEST_CODE_OPEN_DOCUMENT_TREE)
         } else {
             @Suppress("DEPRECATION")
             StorageChooser.Builder()
