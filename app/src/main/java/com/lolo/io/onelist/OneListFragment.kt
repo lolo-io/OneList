@@ -88,7 +88,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        UpdateHelper.applyUpdatePatches(mainActivity, allLists)
+        UpdateHelper.applyUpdatePatches(mainActivity)
+        allLists.addAll(persistence.getAllLists())
         val ver = mainActivity.packageManager.getPackageInfo(mainActivity.packageName, 0).versionName
         if (persistence.version != ver) persistence.version = ver
     }
@@ -144,8 +145,6 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             if (it.isNotEmpty()) buttonClearComment.visibility = View.VISIBLE
             else buttonClearComment.visibility = View.GONE
         }
-
-        allLists.addAll(persistence.getAllLists())
 
         setupListsRecyclerView()
         setupItemsRecyclerView()
