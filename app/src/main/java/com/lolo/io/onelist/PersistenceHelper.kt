@@ -2,16 +2,20 @@ package com.lolo.io.onelist
 
 import android.app.Activity
 import android.app.Application
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
+import android.widget.RemoteViews
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lolo.io.onelist.model.ItemList
 import com.lolo.io.onelist.util.toUri
+import com.lolo.io.onelist.widget.SimpleListWidget
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException

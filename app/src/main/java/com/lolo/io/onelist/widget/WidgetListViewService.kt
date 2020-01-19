@@ -4,6 +4,7 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.StrikethroughSpan
 import android.util.Log
@@ -41,16 +42,21 @@ import com.lolo.io.onelist.model.ItemList
  *
  *
  */
+
+
 class WidgetListViewService: RemoteViewsService() {
 
-    //http://www.worldbestlearningcenter.com/answers/1524/using-listview-in-home-screen-widget-in-android
+    companion object {
+        private val TAG = "WidgetListViewService"
+        val INTENT_STABLE_ID = "INTENT_STABLE_ID"
+    }
 
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
-        Log.d("test123", "123" )
         return ListViewRemoteViewsFactory(this.applicationContext, intent)
     }
 
     internal class ListViewRemoteViewsFactory() : RemoteViewsFactory {
+
         private var context: Context? = null
         private var appWidgetId = 0
 
@@ -62,9 +68,9 @@ class WidgetListViewService: RemoteViewsService() {
         constructor(context: Context, intent: Intent?): this() {
             this.context=context
             appWidgetId = intent?.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID) ?:
-                    Log.d("test123", "455$appWidgetId")
+                    Log.e(TAG, "Error retrieving widgetid: $appWidgetId!")
 
-            Log.d("test123", "455$appWidgetId")
+            Log.e(TAG, "IntentID: $appWidgetId")
 
 
             persistence = PersistenceHelper(Activity())
@@ -74,9 +80,11 @@ class WidgetListViewService: RemoteViewsService() {
 
 
         private fun updateWidgetListView() {
-            val sp = context?.getSharedPreferences(SimpleListWidget.PREFERENCE,Context.MODE_PRIVATE)
+
+            val sp = context?.getSharedPreferences(SimpleListWidget.PREFERENCE, Context.MODE_PRIVATE)
             val int = sp?.getInt(appWidgetId.toString(),0) ?: 0
             widgetList = persistence.getAllLists()[int]
+            Log.e("WidgetListViewService", "updatelist($appWidgetId) ${sp?.getInt(appWidgetId.toString(),0)}")
         }
 
         override fun getCount(): Int {
@@ -92,9 +100,6 @@ class WidgetListViewService: RemoteViewsService() {
         }
 
         override fun getViewAt(position: Int): RemoteViews? {
-            Log.d("WidgetCreatingView", "WidgetCreatingView")
-
-            Log.d("Loading", widgetList.items[position].title)
             var remoteView = RemoteViews(context!!.packageName, R.layout.listview_row_item)
 
             if(widgetList.items[position].done){
@@ -106,11 +111,22 @@ class WidgetListViewService: RemoteViewsService() {
 
 
                 remoteView.setTextViewText(R.id.tv,  spannableString1)
+                remoteView.setOnClickFillInIntent(R.id.row_done, getFillInIntent(widgetList.items[position].stableId))
             }else{
                 remoteView.setTextViewText(R.id.tv, widgetList.items[position].title)
+                remoteView.setOnClickFillInIntent(R.id.row, getFillInIntent(widgetList.items[position].stableId))
             }
-
             return remoteView
+        }
+
+        fun getFillInIntent(id: Long): Intent {
+
+            val extras = Bundle()
+            extras.putLong(INTENT_STABLE_ID, id)
+
+            val intent = Intent()
+            intent.putExtras(extras)
+            return intent
         }
 
         override fun getViewTypeCount(): Int {
@@ -132,6 +148,7 @@ class WidgetListViewService: RemoteViewsService() {
         override fun onDestroy() {
             widgetList = ItemList()
         }
+
     }
 
 }

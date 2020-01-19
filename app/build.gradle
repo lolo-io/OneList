@@ -1,8 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'io.fabric'
 
 android {
 
@@ -78,8 +76,6 @@ dependencies {
     implementation 'com.github.skydoves:powermenu:2.1.2'
     implementation 'com.karumi:dexter:6.0.0'
     implementation 'io.github.tonnyl:whatsnew:0.1.2'
-    googlePlayImplementation 'com.google.firebase:firebase-core:17.2.1'
-    googlePlayImplementation 'com.google.firebase:firebase-core:17.2.1'
 }
 
 def props = new Properties()
