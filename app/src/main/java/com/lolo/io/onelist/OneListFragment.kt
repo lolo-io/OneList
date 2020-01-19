@@ -148,6 +148,10 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
         setupListsRecyclerView()
         setupItemsRecyclerView()
+
+
+        //Set the context so that the widgets are getting updated
+        persistence.setC(App.instance.context)
     }
 
     override fun onResume() {

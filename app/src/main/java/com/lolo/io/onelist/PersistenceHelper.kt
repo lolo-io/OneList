@@ -1,7 +1,6 @@
 package com.lolo.io.onelist
 
 import android.app.Activity
-import android.app.Application
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -9,7 +8,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
-import android.widget.RemoteViews
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -21,6 +19,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
+
 
 class PersistenceHelper(private val app: Activity) {
 
@@ -228,6 +227,17 @@ class PersistenceHelper(private val app: Activity) {
         // save in prefs anyway
         editor.putString(list.stableId.toString(), json)
         editor.apply()
+
+        if(::context.isInitialized){
+            val intent = Intent(context, SimpleListWidget::class.java)
+            intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            val man = AppWidgetManager.getInstance(context)
+            val ids: IntArray = man.getAppWidgetIds(ComponentName(context, SimpleListWidget::class.java))
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+            context.sendBroadcast(intent)
+
+            Log.e("TAG","Update widgets!")
+        }
     }
 
     fun removeListFile(list: ItemList) {
