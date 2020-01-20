@@ -42,7 +42,7 @@
         android:layout_centerInParent="true"
         android:layout_marginLeft="8dp"
         android:background="@null"
-        android:src="@drawable/ic_cancel_black_24dp" />
+        android:src="@drawable/ic_clear_accent_light_18dp" />
 
 </RelativeLayout>
 </FrameLayout>

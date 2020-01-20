@@ -2,6 +2,7 @@ package com.lolo.io.onelist.widget
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -71,6 +72,7 @@ class WidgetListViewService: RemoteViewsService() {
                     Log.e(TAG, "Error retrieving widgetid: $appWidgetId!")
 
             Log.e(TAG, "IntentID: $appWidgetId")
+            Log.e(TAG, "constructor")
 
 
             persistence = PersistenceHelper(Activity())
@@ -81,14 +83,20 @@ class WidgetListViewService: RemoteViewsService() {
 
         private fun updateWidgetListView() {
 
+            Log.e(TAG, "update")
+
             val sp = context?.getSharedPreferences(SimpleListWidget.PREFERENCE, Context.MODE_PRIVATE)
             val int = sp?.getInt(appWidgetId.toString(),0) ?: 0
             widgetList = persistence.getAllLists()[int]
             Log.e("WidgetListViewService", "updatelist($appWidgetId) ${sp?.getInt(appWidgetId.toString(),0)}")
+
         }
 
         override fun getCount(): Int {
-            return widgetList.items.size
+            if(widgetList.items.size>0){
+                return widgetList.items.size
+            }
+            return 1
         }
 
         override fun getItemId(position: Int): Long {
@@ -100,6 +108,13 @@ class WidgetListViewService: RemoteViewsService() {
         }
 
         override fun getViewAt(position: Int): RemoteViews? {
+
+            if(widgetList.items.size==0){
+                var remoteView = RemoteViews(context!!.packageName, R.layout.listview_row_item_empty)
+                remoteView.setOnClickFillInIntent(R.id.row_empty, getFillInIntent(-1))
+                return remoteView
+            }
+
             var remoteView = RemoteViews(context!!.packageName, R.layout.listview_row_item)
 
             if(widgetList.items[position].done){
@@ -130,7 +145,7 @@ class WidgetListViewService: RemoteViewsService() {
         }
 
         override fun getViewTypeCount(): Int {
-            return 2
+            return 3
         }
 
         override fun hasStableIds(): Boolean {

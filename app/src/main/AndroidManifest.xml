@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+
         <receiver android:name=".widget.SimpleListWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -24,8 +25,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/simple_list_widget_info" />
         </receiver>
-        <service android:name=".widget.WidgetListViewService"
+
+        <service
+            android:name=".widget.WidgetListViewService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -78,17 +78,17 @@ class SimpleListWidget : AppWidgetProvider() {
                 int=maxlist
             }
         } else if (intent.action == UPDATE_ACTION) {
-            var l = p.getAllLists()[int]
-
-            for (i in l.items){
-                if(i.stableId==intent.getLongExtra(WidgetListViewService.INTENT_STABLE_ID,0)){
-                    i.done = !i.done
-                    Log.e(TAG, "Save: ${i.title}  ${i.done}")
+            val id = intent.getLongExtra(WidgetListViewService.INTENT_STABLE_ID, 0)
+            if(id > 0L){
+                var l = p.getAllLists()[int]
+                for (i in l.items){
+                    if(i.stableId==id){
+                        i.done = !i.done
+                        Log.e(TAG, "Save: ${i.title}  ${i.done}")
+                    }
                 }
+                p.saveList(l)
             }
-
-            p.saveList(l)
-
         } else {
             Log.e(TAG, "unknown action: ${intent.action}")
         }
@@ -106,8 +106,7 @@ class SimpleListWidget : AppWidgetProvider() {
         }
 
         Log.e(TAG, "got  listid: ${getListID(context!!, appWidgetId)}")
-        Log.e(TAG, "got  listid: ${
-        appWidgetManager.getAppWidgetIds(ComponentName(context, SimpleListWidget::class.java)).size}")
+        Log.e(TAG, "got  listid: ${appWidgetManager.getAppWidgetIds(ComponentName(context, SimpleListWidget::class.java)).size}")
 
 
 
@@ -119,8 +118,12 @@ class SimpleListWidget : AppWidgetProvider() {
         val thisWidget = ComponentName(context, SimpleListWidget::class.java)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget)
 
+
+        Log.e(TAG, "notify $appWidgetId")
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_view)
+        Log.e(TAG, "update1")
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
+        Log.e(TAG, "update2")
         appWidgetManager.updateAppWidget(thisWidget, remoteViews)
     }
 
