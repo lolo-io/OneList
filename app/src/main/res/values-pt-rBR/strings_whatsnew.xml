@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onelist_updated">1List foi atualizado !</string>
+    <string name="external_folder_title">Salve suas listas em uma pasta externa</string>
+    <string name="external_folder_content">Na janela de edição da lista, no botão \'mais opções\'.</string>
+    <string name="import_title">Importar listas externas</string>
+    <string name="import_content">Na janela de criação da lista, no botão \ 'mais opções \'.</string>
+    <string name="pull_title">Puxe para atualizar</string>
+    <string name="pull_content">Puxe o conteúdo da sua lista para baixo para atualizá-lo, caso o arquivo tenha sido atualizado por outra pessoa em outro lugar.</string>
+    <string name="settings_title">Configurações de tela</string>
+    <string name="settings_content">Aperte o botão "⌄" no topo superior da tela para acessar as configurações.</string>
+    <string name="share_title">Compartilhe suas listas</string>
+    <string name="share_content">Aperte o ícone de compartilhar para passar sua lista como texto a outros pares.</string>
+    <string name="see_again_in_settings">Voce pode ver essa nota de versão novamente nas configurações de tela.</string>
+    <string name="continue_button">Continuar</string>
+
+    <string name="external_folder_title_1_2">Salve suas listas no cartão SD</string>
+    <string name="external_folder_content_1_2">Agora voce pode salvar suas listas no seu cartão SD ! (experimental)</string>
+</resources>
