@@ -28,3 +28,21 @@ API 16 or later
 ## Screenshots :
 
 <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen1.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen2.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen3.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen4.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen5.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen6.png" width="200" />
+
+## Donations :
+
+[<img src="https://image.flaticon.com/icons/svg/931/931949.svg?sanitize=true"
+     alt="Beer"
+     height="20"> Buy me a beer](https://www.paypal.me/loicteyssier/5)
+
+[<img src="https://image.flaticon.com/icons/svg/1404/1404894.svg?sanitize=true"
+     alt="Beer"
+     height="20"> Buy me a pizza](https://www.paypal.me/loicteyssier/10)
+
+[<img src="https://image.flaticon.com/icons/svg/2424/2424721.svg?sanitize=true"
+     alt="Beer"
+     height="20"> Buy me a meal](https://www.paypal.me/loicteyssier/20)
+
+[<img src="https://image.flaticon.com/icons/svg/535/535183.svg?sanitize=true"
+     alt="Beer"
+     height="20"> Buy me whatever you want](https://www.paypal.me/loicteyssier)
