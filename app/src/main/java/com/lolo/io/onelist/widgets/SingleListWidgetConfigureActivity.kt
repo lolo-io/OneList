@@ -6,9 +6,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.EditText
 import android.widget.ListView
 import com.lolo.io.onelist.PersistenceHelper
 import com.lolo.io.onelist.R
@@ -105,7 +103,6 @@ internal fun deleteTitlePref(context: Context, appWidgetId: Int) {
 // Read the prefix from the SharedPreferences object for this widget.
 // If there is no preference saved, get the default from a resource
 internal fun loadTitlePref(context: Context, appWidgetId: Int): Long {
-    Log.e(TAG, "loadTitlePref: $appWidgetId")
     val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
     val titleValue = prefs.getLong(PREF_PREFIX_KEY + appWidgetId, 0)
     return titleValue ?: 0

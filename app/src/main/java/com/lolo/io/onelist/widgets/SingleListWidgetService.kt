@@ -9,12 +9,11 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.StrikethroughSpan
-import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.lolo.io.onelist.PersistenceHelper
 import com.lolo.io.onelist.R
-import kotlinx.coroutines.channels.consumesAll
+import com.lolo.io.onelist.widgets.SingleListWidget.Companion.UPDATE_SERVICE_WIDGET_ID
 import kotlin.properties.Delegates
 
 /**
@@ -49,7 +48,6 @@ import kotlin.properties.Delegates
 class SingleListWidgetService: RemoteViewsService() {
 
     companion object {
-        private val TAG = "SingleListWidgetService"
         val INTENT_STABLE_ID = "INTENT_STABLE_ID"
         val INTENT_TYPE = "INTENT_TYPE"
         val INTENT_TYPE_CLICK = "INTENT_TYPE_CLICK"
@@ -62,7 +60,7 @@ class SingleListWidgetService: RemoteViewsService() {
     }
 
     internal class ListViewRemoteViewsFactory() : RemoteViewsFactory, BroadcastReceiver() {
-
+        private var TAG = "SingleListWidgetService"
         private var context: Context? = null
         private lateinit var persistence: PersistenceHelper
         private var id by Delegates.notNull<Long>()
@@ -77,14 +75,12 @@ class SingleListWidgetService: RemoteViewsService() {
             val intentID = intent!!.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0)
 
             id = getListId(context, intentID)
+            TAG +=  intent!!.data
 
             setupIntentListener()
-            Log.e(TAG, "constructor")
-
         }
 
         override fun getCount(): Int {
-            Log.e(TAG, "getCount: id: $id")
             if(persistence.getListByStableID(id)!!.items.size>0){
                 return persistence.getListByStableID(id)!!.items.size
             }
@@ -156,20 +152,13 @@ class SingleListWidgetService: RemoteViewsService() {
 
         }
 
-        override fun onReceive(context: Context?, intent1: Intent?) {
-
+        override fun onReceive(context: Context?, intent: Intent?) {
         }
 
         private fun getListId(context: Context, appWidgetId: Int): Long {
             val p = PersistenceHelper(Activity())
             p.setContextInsteadOfActivity(context)
-
-            val l = loadTitlePref(context, appWidgetId)
-            Log.e(TAG, "getListId($appWidgetId): $l")
-
-            return l
-
-            //return p.getAllLists()[0].stableId;
+            return loadTitlePref(context, appWidgetId)
         }
 
         private var mIntentListener: BroadcastReceiver? = null
@@ -178,12 +167,10 @@ class SingleListWidgetService: RemoteViewsService() {
             if (mIntentListener == null) {
                 mIntentListener = object : BroadcastReceiver() {
                     override fun onReceive(context: Context, intent: Intent) { // Update mUrl through BroadCast Intent
-                        Log.e(TAG, "setupIntentListener:  intentListener: onReceive")
-
                     }
                 }
                 val filter = IntentFilter()
-                //filter.addAction(CONSUME_UNUSED)
+                filter.addAction(UPDATE_SERVICE_WIDGET_ID)
                 context?.registerReceiver(mIntentListener, filter)
             }
         }

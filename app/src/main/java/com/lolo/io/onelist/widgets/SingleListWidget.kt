@@ -7,7 +7,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import android.net.Uri
 import android.widget.RemoteViews
 import com.lolo.io.onelist.PersistenceHelper
 import com.lolo.io.onelist.R
@@ -23,7 +23,7 @@ class SingleListWidget : AppWidgetProvider() {
         const val APPWIDGET_ID_EXTRA = "appwidgetid"
         const val TAG: String = "SimpleListWidget"
 
-        const val NEXT: String = "NEXT"
+        const val UPDATE_SERVICE_WIDGET_ID: String = "UPDATE_SERVICE_WIDGET_ID"
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
@@ -51,24 +51,11 @@ class SingleListWidget : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent) {
 
         val appWidgetId = intent.getIntExtra(APPWIDGET_ID_EXTRA,0)
-        Log.e(TAG, "onRecieve: Widgetid: $appWidgetId")
-
 
         val appWidgetManager = AppWidgetManager.getInstance(context)
 
-        if (intent.action == NEXT) {
-            if (context != null) {
-                broadcast(NEXT, appWidgetId, context)
-            }
-
-        }
-        Log.e(TAG, "onRecieve: unknown action: ${intent.action}")
-
         if(intent.action == SingleListWidgetService.ACTION_CLICK_LIST_ITEM){
-            val type = intent.getStringExtra(SingleListWidgetService.INTENT_TYPE);
-            val stable = intent.getLongExtra(SingleListWidgetService.INTENT_STABLE_ID, 0);
-            Log.e(TAG, "onRecieve: type: $type")
-            Log.e(TAG, "onRecieve: stable: $stable")
+            val stable = intent.getLongExtra(SingleListWidgetService.INTENT_STABLE_ID, 0)
 
             val p = PersistenceHelper(Activity())
             if (context != null) {
@@ -77,7 +64,6 @@ class SingleListWidget : AppWidgetProvider() {
                 for(item in list!!.items){
                     if(item.stableId == stable){
                         item.done = !item.done
-                        Log.e(TAG, "onRecieve: Save: ${item.title}  ${item.done}")
                     }
                 }
                 p.saveList(list)
@@ -88,17 +74,11 @@ class SingleListWidget : AppWidgetProvider() {
 
         val thisWidget = ComponentName(context, SingleListWidget::class.java)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget)
-
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_view)
+
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
 
         super.onReceive(context, intent)
-    }
-
-    fun broadcast(action: String, appWidgetId: Int, context: Context ){
-        val broadcastIntent = Intent(action)
-        broadcastIntent.putExtra(APPWIDGET_ID_EXTRA, appWidgetId)
-        context.sendBroadcast(broadcastIntent)
     }
 }
 
@@ -106,7 +86,7 @@ fun getPendingSelfIntent(context: Context, action: String, id: Int): PendingInte
     val intent = Intent(context, SingleListWidget::class.java)
     intent.action = action
     intent.putExtra(SingleListWidget.APPWIDGET_ID_EXTRA, id)
-    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    return PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 }
 
 fun getListId(context: Context, appWidgetId: Int): Long {
@@ -125,8 +105,6 @@ fun getListTitle(context: Context, listid: Long): String {
 fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
         val widgetText = loadTitlePref(context.applicationContext, appWidgetId)
 
-        Log.e(TAG, "update: " + widgetText + " " + getListTitle(context, widgetText))
-
         // Construct the RemoteViews object
         val views = RemoteViews(context.packageName, R.layout.single_list_widget)
         //views.setTextViewText(R.id.appwidget_text, widgetText)
@@ -136,12 +114,16 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
 
         val intent = Intent(context, SingleListWidgetService::class.java)
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+
+        //https://stackoverflow.com/questions/50992720/same-widgets-with-different-listview-data
+        //set random data to initialize new Factory
+        intent.data = Uri.fromParts("", appWidgetId.toString(), null)
+
         views.setRemoteAdapter(R.id.list_view, intent)
         appWidgetManager.updateAppWidget(appWidgetId, views)
 
         val clickPendingIntentTemplate = getPendingSelfIntent(context, SingleListWidgetService.ACTION_CLICK_LIST_ITEM, appWidgetId)
         views.setPendingIntentTemplate(R.id.list_view, clickPendingIntentTemplate)
-
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views)
