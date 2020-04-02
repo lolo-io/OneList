@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.StrikethroughSpan
 import android.util.Log
@@ -49,6 +50,10 @@ class SingleListWidgetService: RemoteViewsService() {
 
     companion object {
         private val TAG = "SingleListWidgetService"
+        val INTENT_STABLE_ID = "INTENT_STABLE_ID"
+        val INTENT_TYPE = "INTENT_TYPE"
+        val INTENT_TYPE_CLICK = "INTENT_TYPE_CLICK"
+        val ACTION_CLICK_LIST_ITEM = "ACTION_CLICK_LIST_ITEM"
     }
 
 
@@ -99,7 +104,7 @@ class SingleListWidgetService: RemoteViewsService() {
             val widgetList= persistence.getListByStableID(id)
             if(widgetList?.items?.size==0){
                 var remoteView = RemoteViews(context!!.packageName, R.layout.listview_row_item_empty)
-                //remoteView.setOnClickFillInIntent(R.id.row_empty, getFillInIntent(-1))
+                remoteView.setOnClickFillInIntent(R.id.row_empty, getFillInIntent(-1))
                 return remoteView
             }
             var remoteView = RemoteViews(context!!.packageName, R.layout.listview_row_item)
@@ -113,12 +118,23 @@ class SingleListWidgetService: RemoteViewsService() {
 
 
                 remoteView.setTextViewText(R.id.tv,  spannableString1)
-                //remoteView.setOnClickFillInIntent(R.id.row_done, getFillInIntent(widgetList.items[position].stableId))
+                remoteView.setOnClickFillInIntent(R.id.row_done, getFillInIntent(widgetList.items[position].stableId))
             }else{
                 remoteView.setTextViewText(R.id.tv, widgetList.items[position].title)
-                //remoteView.setOnClickFillInIntent(R.id.row, getFillInIntent(widgetList.items[position].stableId))
+                remoteView.setOnClickFillInIntent(R.id.row, getFillInIntent(widgetList.items[position].stableId))
             }
             return remoteView
+        }
+
+        fun getFillInIntent(id: Long): Intent {
+            val extras = Bundle()
+            extras.putLong(INTENT_STABLE_ID, id)
+            extras.putString(INTENT_TYPE, INTENT_TYPE_CLICK)
+
+            val intent = Intent()
+            intent.action=ACTION_CLICK_LIST_ITEM
+            intent.putExtras(extras)
+            return intent
         }
 
         override fun getViewTypeCount(): Int {
