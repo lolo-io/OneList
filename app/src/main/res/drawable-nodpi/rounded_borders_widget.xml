@@ -6,7 +6,7 @@
             <solid android:color="@color/white"/>
             <stroke
                 android:color="@color/colorPrimaryDark"
-                android:width="3dp"/>
+                android:width="2dp"/>
         </shape>
     </item>
 </selector>
