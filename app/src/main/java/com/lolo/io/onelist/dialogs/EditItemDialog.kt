@@ -7,6 +7,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import com.lolo.io.onelist.model.Item
 import com.lolo.io.onelist.R
+import com.lolo.io.onelist.model.ITEM_NOT_DELETED
 import com.lolo.io.onelist.util.shake
 import kotlinx.android.synthetic.main.dialog_edit_item.*
 import kotlinx.android.synthetic.main.dialog_edit_item.view.*
@@ -36,7 +37,7 @@ fun editItemDialog(activity: Activity, item: Item, onDoneEditing: (_: Item) -> A
             if (view.item_title.text.toString().isEmpty()) {
                 dialog.item_title.shake()
             } else {
-                val newItem = Item(view.item_title.text.toString(), view.item_comment.text.toString(), item.done, item.commentDisplayed)
+                val newItem = Item(view.item_title.text.toString(), view.item_comment.text.toString(), ITEM_NOT_DELETED ,item.done, item.commentDisplayed)
                 onDoneEditing(newItem)
                 dialog.dismiss()
             }

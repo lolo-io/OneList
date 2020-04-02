@@ -55,4 +55,6 @@
     <string name="storage_chooser_folder_error_toast_text">Error occurred while creating folder. Try again.</string>
     <string name="storage_chooser_text_field_hint_text">Folder Name</string>
     <string name="storage_chooser_text_field_error_text">Empty Folder Name</string>
+    <string name="delete_undo">Undo</string>
+    <string name="delete_undo_description">Deleted: </string>
 </resources>
