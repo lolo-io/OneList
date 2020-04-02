@@ -38,6 +38,17 @@ class PersistenceHelper(private val app: Activity) {
         return app.getPreferences(Context.MODE_PRIVATE)
     }
 
+    fun getListByStableID(stableid: Long): ItemList? {
+        for(list in getAllLists()){
+            if (list.stableId==stableid){
+                return list;
+            }
+        }
+        return getAllLists()[0]
+    }
+
+
+
     var defaultPath: String
         get() {
             val sp = getPref()
