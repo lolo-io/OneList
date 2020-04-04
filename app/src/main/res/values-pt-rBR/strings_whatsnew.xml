@@ -4,7 +4,7 @@
     <string name="external_folder_title">Salve suas listas em uma pasta externa</string>
     <string name="external_folder_content">Na janela de edição da lista, no botão \'mais opções\'.</string>
     <string name="import_title">Importar listas externas</string>
-    <string name="import_content">Na janela de criação da lista, no botão \ 'mais opções \'.</string>
+    <string name="import_content">Na janela de criação da lista, no botão \'mais opções \'.</string>
     <string name="pull_title">Puxe para atualizar</string>
     <string name="pull_content">Puxe o conteúdo da sua lista para baixo para atualizá-lo, caso o arquivo tenha sido atualizado por outra pessoa em outro lugar.</string>
     <string name="settings_title">Configurações de tela</string>
