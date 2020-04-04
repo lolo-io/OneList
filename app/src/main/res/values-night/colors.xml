@@ -2,8 +2,8 @@
 <resources>
     <color name="app_color">#b71c1c</color>
 
-    <color name="black">@android:color/black</color>
-    <color name="white">@android:color/white</color>
+    <color name="black">@android:color/white</color>
+    <color name="white">@android:color/black</color>
     <color name="transparent">@android:color/transparent</color>
     <color name="colorBackground">#31373A</color>
 

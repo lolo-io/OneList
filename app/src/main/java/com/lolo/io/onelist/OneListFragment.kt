@@ -72,7 +72,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
                 setMenuShadow(10f)
                 setTextGravity(Gravity.START)
                 setTextTypeface(Typeface.DEFAULT)
-                setMenuColor(Color.WHITE)
+                setMenuColor(ContextCompat.getColor(it, R.color.colorBackground))
                 setShowBackground(false)
                 setAutoDismiss(true)
                 setOnMenuItemClickListener { _, _ ->

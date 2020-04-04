@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@id/listTitle"
-            android:background="@color/material_gray_100"
+            android:background="@color/list_seperator"
             app:layout_constraintTop_toBottomOf="@+id/listTitle"
             tools:layout_editor_absoluteX="16dp" />
 

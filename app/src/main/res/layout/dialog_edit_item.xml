@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/item_title"
-        android:background="@color/material_gray_100" />
+        android:background="@color/list_seperator" />
 
     <EditText
         android:id="@+id/item_comment"
@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/item_comment"
-        android:background="@color/material_gray_100" />
+        android:background="@color/list_seperator" />
 
     <ImageButton
         android:id="@+id/validateEdit"

@@ -36,7 +36,7 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/material_gray_100"
+        android:background="@color/list_seperator"
         app:layout_constraintTop_toBottomOf="@+id/listPathTitle"
         tools:layout_editor_absoluteX="10dp" />
 
@@ -90,7 +90,7 @@
         android:id="@+id/separator2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/material_gray_100"
+        android:background="@color/list_seperator"
         app:layout_constraintTop_toBottomOf="@+id/chooseFolderButton"
         tools:layout_editor_absoluteX="2dp" />
 
