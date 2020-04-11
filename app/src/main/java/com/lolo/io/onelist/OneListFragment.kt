@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
@@ -14,6 +15,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -25,12 +27,15 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager
 import com.lolo.io.onelist.dialogs.*
+import com.lolo.io.onelist.model.ITEM_NOT_DELETED
 import com.lolo.io.onelist.model.Item
 import com.lolo.io.onelist.model.ItemList
 import com.lolo.io.onelist.updates.UpdateHelper
@@ -360,8 +365,26 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     override fun onRemoveItem(item: Item) {
         itemsAdapter.notifyItemRemoved(selectedList.items.indexOf(item))
+        item.deleted=System.currentTimeMillis()
+        selectedList.deletedItems.add(item)
         selectedList.items.remove(item)
         persistence.saveListAsync(selectedList)
+
+
+        Snackbar.make(
+                this.requireView(),
+                getString(R.string.delete_undo_description) + item.title,
+                Snackbar.LENGTH_LONG
+        ).setAction(
+                getString(R.string.delete_undo),
+                View.OnClickListener {
+                    item.deleted= ITEM_NOT_DELETED
+                    selectedList.items.add(item)
+                    selectedList.deletedItems.remove(item)
+                    persistence.saveListAsync(selectedList)
+                    itemsAdapter.notifyDataSetChanged()
+                }
+        ).show()
     }
 
     override fun onEditItem(item: Item) {
