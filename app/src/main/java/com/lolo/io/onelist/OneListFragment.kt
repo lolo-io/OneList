@@ -33,6 +33,7 @@ import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchAct
 import com.lolo.io.onelist.dialogs.*
 import com.lolo.io.onelist.model.Item
 import com.lolo.io.onelist.model.ItemList
+import com.lolo.io.onelist.model.switchItemStatus
 import com.lolo.io.onelist.updates.UpdateHelper
 import com.lolo.io.onelist.util.*
 import com.skydoves.powermenu.MenuAnimation
@@ -374,16 +375,9 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     }
 
     override fun onSwitchItemStatus(item: Item) {
-        item.done = !item.done
         val oldPosition = selectedList.items.indexOf(item)
-        val newPosition = when (item.done) {
-            true -> selectedList.items.size - 1
-            else -> 0
-        }
-        selectedList.items.removeAt(oldPosition)
-        selectedList.items.add(newPosition, item)
-        itemsAdapter.notifyItemChanged(oldPosition)
-        itemsAdapter.notifyItemMoved(oldPosition, newPosition)
+        selectedList.switchItemStatus(item)
+        itemsAdapter.notifyItemMoved(oldPosition, selectedList.items.indexOf(item))
         val scrolledToTop = (itemsRecyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0
         if (scrolledToTop || oldPosition == 0) itemsRecyclerView.scrollToPosition(0)
         persistence.saveListAsync(selectedList)

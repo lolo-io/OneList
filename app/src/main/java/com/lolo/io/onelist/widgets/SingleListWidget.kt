@@ -11,6 +11,7 @@ import android.net.Uri
 import android.widget.RemoteViews
 import com.lolo.io.onelist.PersistenceHelper
 import com.lolo.io.onelist.R
+import com.lolo.io.onelist.model.switchItemStatus
 
 /**
  * Implementation of App Widget functionality.
@@ -61,12 +62,12 @@ class SingleListWidget : AppWidgetProvider() {
             if (context != null) {
                 p.setContextInsteadOfActivity(context)
                 val list = p.getListByStableID(loadTitlePref(context,appWidgetId))
-                for(item in list!!.items){
-                    if(item.stableId == stable){
-                        item.done = !item.done
-                    }
+
+                val item = list?.items?.find { it.stableId == stable }
+                item?.let {
+                    list.switchItemStatus(it)
+                    p.saveList(list)
                 }
-                p.saveList(list)
             }
         }
 
