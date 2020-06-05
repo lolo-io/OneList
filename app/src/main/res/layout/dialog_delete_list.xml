@@ -39,7 +39,6 @@
             android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
             android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
             android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             android:textStyle="bold" />
 
     </RelativeLayout>
@@ -57,7 +56,6 @@
         android:paddingRight="?android:attr/listPreferredItemPaddingRight"
         android:paddingBottom="?android:attr/listPreferredItemPaddingRight"
         android:text="@string/delete_list_forever_warning"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:textStyle="bold" />
 
     <CheckBox
@@ -125,12 +123,12 @@
         android:background="?attr/selectableItemBackground"
         android:drawableStart="@drawable/ic_clear_all_24dp"
         android:drawableLeft="@drawable/ic_clear_all_24dp"
+        android:drawableTint="?attr/colorAccent"
         android:gravity="center_vertical"
         android:padding="10dp"
         android:paddingEnd="16dp"
         android:paddingRight="16dp"
         android:text="@string/clear_list"
-        android:textColor="@color/colorAccentLight"
         android:textStyle="italic"
         tools:ignore="RtlSymmetry" />
 

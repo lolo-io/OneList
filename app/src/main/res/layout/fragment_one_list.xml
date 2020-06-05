@@ -5,7 +5,7 @@
     android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="?android:attr/colorBackground"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:orientation="vertical"
@@ -20,7 +20,7 @@
         app:cardElevation="3dp">
 
         <RelativeLayout
-            android:background="@color/colorBackground"
+            android:background="?android:attr/colorBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
@@ -57,8 +57,8 @@
                     android:layout_toEndOf="@id/icon"
                     android:layout_toRightOf="@id/icon"
                     android:text="@string/app_name"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/black" />
+                    android:textColor="?android:attr/colorForeground"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
 
                 <ImageView
                     android:id="@+id/menu_arrow"
@@ -69,6 +69,7 @@
                     android:layout_toRightOf="@id/title"
                     android:contentDescription="@string/show_menu"
                     android:padding="6dp"
+                    android:tint="?android:attr/colorForeground"
                     app:srcCompat="@drawable/ic_expand_more_add" />
 
                 <RelativeLayout
@@ -93,7 +94,6 @@
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/delete_list"
                         android:padding="5dp"
-                        android:tint="@color/colorPrimary"
                         app:srcCompat="@drawable/ic_delete_forever_primary_24dp" />
 
                     <ImageButton
@@ -120,9 +120,8 @@
                         android:padding="5dp"
                         android:scaleX="1.1"
                         android:scaleY="1.1"
-                        android:tint="@color/black"
+                        android:tint="?android:attr/colorForeground"
                         app:srcCompat="@drawable/ic_add_24dp" />
-
 
                     <ImageButton
                         android:id="@+id/buttonShareList"
@@ -133,6 +132,7 @@
                         android:layout_marginEnd="32dp"
                         android:layout_marginRight="32dp"
                         android:background="?attr/selectableItemBackground"
+                        android:tint="?android:attr/colorForeground"
                         android:contentDescription="@string/add_list"
                         android:padding="5dp"
                         android:scaleX="0.8"
@@ -164,7 +164,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="false"
-        android:background="@color/colorBackground"
+        android:background="?android:attr/colorBackground"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical">
@@ -190,7 +190,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
-            android:background="@color/colorBackground"
+            android:background="?android:attr/colorBackground"
             android:paddingLeft="15dp"
             android:paddingTop="10dp"
             android:paddingRight="15dp">
@@ -204,6 +204,7 @@
                 android:background="@drawable/rounded_edit_text"
                 android:drawableStart="@drawable/ic_add_24dp"
                 android:drawableLeft="@drawable/ic_add_24dp"
+                android:drawableTint="?attr/colorAccent"
                 android:drawablePadding="5dp"
                 android:elevation="1dp"
                 android:focusableInTouchMode="true"
@@ -238,7 +239,7 @@
                 android:paddingEnd="5dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
-                android:tint="@color/colorPrimary"
+                android:tint="?attr/colorPrimary"
                 app:srcCompat="@drawable/ic_check_black_24dp"
                 tools:ignore="UnusedAttribute" />
 
@@ -273,7 +274,6 @@
                     android:paddingRight="24dp"
                     android:paddingBottom="5dp"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                    android:textColor="@color/colorAccent"
                     android:textStyle="italic"
                     tools:ignore="LabelFor,UnusedAttribute" />
 
@@ -316,7 +316,7 @@
                 android:paddingEnd="5dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
-                android:tint="@color/colorAccentLight"
+                android:tint="?attr/colorAccent"
                 app:srcCompat="@drawable/ic_expand_more_add"
                 tools:ignore="UnusedAttribute" />
 

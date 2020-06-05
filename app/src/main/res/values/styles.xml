@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorSecondary">@color/colorPrimaryLight</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@mipmap/logo_9</item>
         <item name="preferenceTheme">@style/AppPreferenceTheme</item>
+    </style>
+
+    <style name="AppThemeLauncher" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="android:windowBackground">@mipmap/logo_9</item>
     </style>
 
     <!-- Custom Preference Theme -->
@@ -15,6 +18,7 @@
         <item name="android:layout">
             @layout/fragment_settings
         </item>
+        <item name="android:textColor">@color/textColorPrimary</item>
     </style>
 
 </resources>

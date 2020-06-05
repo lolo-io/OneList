@@ -13,12 +13,12 @@ import io.github.tonnyl.whatsnew.util.PresentationOption
 object ReleaseNote {
 
     val releasesNotes = linkedMapOf(
-            "1.1" to maj1Min1,
-            "1.2" to maj1Min2
+            "1.1" to { maj1Min1() },
+            "1.2" to { maj1Min2() },
+            "1.3" to { maj1Min3() }
     )
 
-    private val maj1Min1
-        get() =
+    private fun maj1Min1() =
             whatsNew {
                 titleText = appContext.getString(R.string.onelist_updated)
                 titleColor = ContextCompat.getColor(appContext, R.color.colorPrimaryDark)
@@ -58,15 +58,16 @@ object ReleaseNote {
                 }
             }
 
-    private val maj1Min2
-        get() =
-            whatsNew {
+    private fun maj1Min2() = whatsNew {
+                backgroundColorResource =  R.color.colorBackgroundPopup
                 titleText = appContext.getString(R.string.onelist_updated)
                 titleColor = ContextCompat.getColor(appContext, R.color.colorPrimaryDark)
                 iconColor = ContextCompat.getColor(appContext, R.color.colorPrimaryDark)
                 buttonBackground = ContextCompat.getColor(appContext, R.color.colorPrimaryDark)
                 buttonText = appContext.getString(R.string.continue_button)
                 buttonTextColor = ContextCompat.getColor(appContext, R.color.white)
+                itemTitleColor = ContextCompat.getColor(appContext, R.color.textColorPrimary)
+                itemContentColor = ContextCompat.getColor(appContext, R.color.textColorSecondary)
                 presentationOption = PresentationOption.ALWAYS
 
                 item {
@@ -79,6 +80,29 @@ object ReleaseNote {
                     content = appContext.getString(R.string.see_again_in_settings)
                 }
             }
+
+    private fun maj1Min3() = whatsNew {
+        backgroundColorResource =  R.color.colorBackgroundPopup
+        titleText = appContext.getString(R.string.onelist_updated)
+        titleColor = ContextCompat.getColor(appContext, R.color.colorPrimaryDark)
+        iconColor = ContextCompat.getColor(appContext, R.color.colorPrimaryDark)
+        buttonBackground = ContextCompat.getColor(appContext, R.color.colorPrimaryDark)
+        buttonText = appContext.getString(R.string.continue_button)
+        buttonTextColor = ContextCompat.getColor(appContext, R.color.white)
+        itemTitleColor = ContextCompat.getColor(appContext, R.color.textColorPrimary)
+        itemContentColor = ContextCompat.getColor(appContext, R.color.textColorSecondary)
+        presentationOption = PresentationOption.ALWAYS
+
+        item {
+            title = appContext.getString(R.string.dark_theme_title_1_4)
+            content = appContext.getString(R.string.dark_theme_content_1_4)
+            imageRes = R.drawable.ic_color_lens_whatsnew_24dp
+        }
+
+        item {
+            content = appContext.getString(R.string.see_again_in_settings)
+        }
+    }
 }
 
 fun WhatsNew.show(activity: AppCompatActivity) {
@@ -87,4 +111,4 @@ fun WhatsNew.show(activity: AppCompatActivity) {
 }
 
 val appContext
-    get() = App.instance.context
+    get() = App.instance.mainContext

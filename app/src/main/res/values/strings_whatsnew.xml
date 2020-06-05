@@ -16,4 +16,7 @@
 
     <string name="external_folder_title_1_2">Save your lists on your SD Card</string>
     <string name="external_folder_content_1_2">You can now save your lists on your SD Card ! (experimental)</string>
+
+    <string name="dark_theme_title_1_4">Dark Theme</string>
+    <string name="dark_theme_content_1_4">You can now choose between dark and light theme in the settings.</string>
 </resources>

@@ -36,6 +36,7 @@
     <string name="also_delete_file">Apagar também arquivo no sistema de arquivos</string>
     <string name="show_menu">Mostrar menu</string>
     <string name="storage">Armazenamento</string>
+    <string name="personalization">Personalização</string>
     <string name="about">Sobre</string>
     <string name="app_version">Versão do app</string>
     <string name="default_storage_folder">Pasta de armazenamento padrão</string>

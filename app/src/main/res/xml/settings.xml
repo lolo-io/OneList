@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:key="cat_personalization"
+        android:title="@string/personalization">
+        <DropDownPreference
+            android:icon="@drawable/ic_color_lens_accent_24dp"
+            android:defaultValue="auto"
+            android:key="theme"
+            android:title="Theme"
+            android:summary="Auto"
+            android:entries="@array/theme_labels"
+            android:entryValues="@array/theme_values"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
     <PreferenceCategory
         android:key="cat_storage"
         android:title="@string/storage">

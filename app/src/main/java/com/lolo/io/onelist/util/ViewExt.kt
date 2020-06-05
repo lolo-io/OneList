@@ -12,7 +12,7 @@ import com.lolo.io.onelist.R
 const val BUTTON_ANIM_DURATION: Long = 150
 
 fun View.shake() {
-    val shake = AnimationUtils.loadAnimation(App.instance.context, R.anim.shake)
+    val shake = AnimationUtils.loadAnimation(App.instance.mainContext, R.anim.shake)
     startAnimation(shake)
 }
 

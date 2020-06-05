@@ -3,10 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?android:attr/colorBackground"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:background="@color/colorBackground"
+        android:background="?attr/colorSurface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -19,7 +21,6 @@
 
     <!-- Required ViewGroup for PreferenceFragmentCompat -->
     <FrameLayout
-        android:background="@color/colorBackground"
         android:id="@android:id/list_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
