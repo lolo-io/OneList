@@ -36,7 +36,7 @@ fun loadJSONFromAsset(context: Context, filename: String): String {
 }
 
 fun dpToPx(dp: Int): Int {
-    val density = App.instance.resources.displayMetrics.density
+    val density = App.instance.mainContext.resources.displayMetrics.density
     return Math.round(dp.toFloat() * density)
 }
 

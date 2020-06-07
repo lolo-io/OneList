@@ -1,10 +1,13 @@
 package com.lolo.io.onelist
 
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.lolo.io.onelist.updates.ReleaseNote
 import com.lolo.io.onelist.updates.show
 import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT
@@ -12,7 +15,6 @@ import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT_TREE
 import io.github.tonnyl.whatsnew.WhatsNew
 
 class MainActivity : AppCompatActivity() {
-
 
     val persistence: PersistenceHelper by lazy { PersistenceHelper(this) }
 
@@ -28,8 +30,12 @@ class MainActivity : AppCompatActivity() {
     var onPathChosenActivityResult: (String) -> Any? = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        App.instance.mainContext = this.baseContext
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
 
         val fragment = OneListFragment().apply {
             if (intent.action == "android.intent.action.VIEW")
@@ -47,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
             supportFragmentManager.findFragmentByTag(WhatsNew.TAG)
                     ?.let { supportFragmentManager.beginTransaction().remove(it).commit() }
-                    ?.let { ReleaseNote.releasesNotes.entries.last().value.show(this) }
+                    ?.let { ReleaseNote.releasesNotes.entries.last().value().show(this) }
         }
     }
 
@@ -90,5 +96,35 @@ class MainActivity : AppCompatActivity() {
                     onPathChosenActivityResult = { }
                 }
         }
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val context: Context = updateThemeConfiguration(newBase)
+        super.attachBaseContext(context)
+    }
+
+    private fun updateThemeConfiguration(context: Context): Context {
+        var mode = context.resources.configuration.uiMode
+        when (persistence.getTheme(context)) {
+            "light" -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                mode = Configuration.UI_MODE_NIGHT_NO;
+            }
+            "dark" -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                mode = Configuration.UI_MODE_NIGHT_YES;
+            }
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
+
+        val config = Configuration(context.resources.configuration)
+        config.uiMode = mode
+        var ctx = context
+        if (Build.VERSION.SDK_INT >= 17) {
+            ctx = context.createConfigurationContext(config)
+        } else {
+            context.resources.updateConfiguration(config, context.resources.displayMetrics)
+        }
+        return ctx
     }
 }

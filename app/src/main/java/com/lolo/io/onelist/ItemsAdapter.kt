@@ -34,7 +34,7 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(App.instance.context.resources.getLayout(R.layout.list_item), parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(App.instance.mainContext.resources.getLayout(R.layout.list_item), parent, false)
         return ItemViewHolder(v)
     }
 
@@ -59,22 +59,22 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
     }
 
     private fun strike(viewHolder: ItemViewHolder) {
-        viewHolder.view.badge.setImageDrawable(ContextCompat.getDrawable(App.instance.context, R.drawable.ic_bullet_outline_checked))
-        viewHolder.view.text.setTextColor(ContextCompat.getColor(App.instance.context, R.color.colorAccentLight))
+        viewHolder.view.badge.setImageDrawable(ContextCompat.getDrawable(App.instance.mainContext, R.drawable.ic_bullet_outline_checked))
+        viewHolder.view.text.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
         viewHolder.view.text.paintFlags = viewHolder.view.text.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        viewHolder.view.comment.setTextColor(ContextCompat.getColor(App.instance.context, R.color.colorAccentLight))
+        viewHolder.view.comment.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
         viewHolder.view.comment.paintFlags = viewHolder.view.text.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        viewHolder.view.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.context, R.color.colorAccentLight), PorterDuff.Mode.SRC_ATOP)
+        viewHolder.view.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight), PorterDuff.Mode.SRC_ATOP)
     }
 
 
     private fun unStrike(viewHolder: ItemViewHolder) {
-        viewHolder.view.badge.setImageDrawable(ContextCompat.getDrawable(App.instance.context, R.drawable.ic_bullet_outline))
-        viewHolder.view.text.setTextColor(ContextCompat.getColor(App.instance.context, R.color.black))
+        viewHolder.view.badge.setImageDrawable(ContextCompat.getDrawable(App.instance.mainContext, R.drawable.ic_bullet_outline))
+        viewHolder.view.text.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.textColorPrimary))
         viewHolder.view.text.paintFlags = 0
-        viewHolder.view.comment.setTextColor(ContextCompat.getColor(App.instance.context, R.color.colorAccent))
+        viewHolder.view.comment.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccent))
         viewHolder.view.comment.paintFlags = 0
-        viewHolder.view.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.context, R.color.colorAccentDark), PorterDuff.Mode.SRC_ATOP)
+        viewHolder.view.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentDark), PorterDuff.Mode.SRC_ATOP)
     }
 
     override fun getItemId(position: Int): Long {

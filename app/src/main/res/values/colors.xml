@@ -2,15 +2,18 @@
 <resources>
     <color name="app_color">#b71c1c</color>
 
-    <color name="black">@android:color/black</color>
-    <color name="white">@android:color/white</color>
-    <color name="transparent">@android:color/transparent</color>
+    <color name="textColorPrimary">@android:color/primary_text_light</color>
+    <color name="textColorPrimaryInverse">@android:color/primary_text_dark</color>
+    <color name="textColorSecondary">@android:color/secondary_text_light</color>
 
-    <color name="material_gray_100">#CFD8DC</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="colorBackground">@android:color/background_light</color>
+    <color name="colorBackgroundPopup">@android:color/background_light</color>
+
+    <color name="list_seperator">#CFD8DC</color>
 
     <color name="colorPrimary">@color/app_color</color>
     <color name="colorPrimaryDark">#7f0000</color>
-    <color name="colorPrimaryLight">#f05545</color>
     <color name="colorAccent">#757575</color>
     <color name="colorAccentDark">#494949</color>
     <color name="colorAccentLight">#a4a4a4</color>

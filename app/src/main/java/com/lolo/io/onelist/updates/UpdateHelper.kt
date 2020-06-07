@@ -21,9 +21,9 @@ object UpdateHelper {
             migrateToMaj1Min1(activity, lists)
             persistence.updateListIdsTable(lists)
             lists.forEach { persistence.saveList(it) }
-            ReleaseNote.releasesNotes["1.1"]?.show(activity)
-        } else if (persistence.version.startsWith("1.1")) { //1.1 to 1.2
-            ReleaseNote.releasesNotes["1.2"]?.show(activity)
+            ReleaseNote.releasesNotes["1.1"]?.invoke()?.show(activity)
+        } else if (!persistence.version.startsWith(ReleaseNote.releasesNotes.keys.last().toString())) {
+            ReleaseNote.releasesNotes.values.last().invoke().show(activity)
         }
     }
 

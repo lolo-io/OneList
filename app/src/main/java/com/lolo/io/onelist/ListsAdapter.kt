@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lolo.io.onelist.model.ItemList
 import kotlinx.android.synthetic.main.button_list.view.*
 
-
 class ListsAdapter(val lists: MutableList<ItemList>, val callback: ListsCallbacks) :
         RecyclerView.Adapter<ListsAdapter.ListViewHolder>(),
         ItemTouchHelperAdapter {
@@ -45,12 +44,12 @@ class ListsAdapter(val lists: MutableList<ItemList>, val callback: ListsCallback
         when (itemList) {
             selectedItemList -> {
                 currentView.setBackgroundResource(R.drawable.button_list_selected_bg)
-                currentView.setTextColor(ContextCompat.getColor(App.instance, R.color.colorPrimary))
+                currentView.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorPrimary))
                 currentView.alpha = 1f
             }
             else -> {
                 currentView.setBackgroundResource(R.drawable.button_list_bg)
-                currentView.setTextColor(ContextCompat.getColor(App.instance, R.color.colorAccentLight))
+                currentView.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
             }
         }
         currentView.text = itemList.title

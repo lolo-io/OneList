@@ -16,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:background="@color/colorPrimary"
         android:gravity="center"
         android:paddingStart="?android:attr/listPreferredItemPaddingStart"
         android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
@@ -26,8 +25,7 @@
         android:paddingBottom="?android:attr/listPreferredItemPaddingRight"
         android:text="@string/change_list_location"
         android:textAlignment="center"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-        android:textColor="@color/white"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,17 +34,16 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/material_gray_100"
+        android:background="@color/list_seperator"
         app:layout_constraintTop_toBottomOf="@+id/listPathTitle"
         tools:layout_editor_absoluteX="10dp" />
 
-
-    <Button
+    <TextView
         android:id="@+id/appPrivateStorageButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:background="?attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         app:drawableStartCompat="@drawable/ic_storage_black_24dp"
         app:drawableLeftCompat="@drawable/ic_storage_black_24dp"
         android:drawablePadding="8dp"
@@ -59,11 +56,12 @@
         android:paddingBottom="?android:attr/listPreferredItemPaddingRight"
         android:text="@string/app_private_storage"
         android:textAlignment="textStart"
+        android:textColor="?android:attr/textColorPrimary"
         android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/separator" />
 
-    <Button
+    <TextView
         android:id="@+id/chooseFolderButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,6 +80,7 @@
         android:text="@string/choose_folder"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textColor="?android:attr/textColorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appPrivateStorageButton" />
 
@@ -90,7 +89,7 @@
         android:id="@+id/separator2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/material_gray_100"
+        android:background="@color/list_seperator"
         app:layout_constraintTop_toBottomOf="@+id/chooseFolderButton"
         tools:layout_editor_absoluteX="2dp" />
 
@@ -102,7 +101,7 @@
         android:background="?attr/selectableItemBackground"
         android:contentDescription="@string/help"
         android:padding="10dp"
-        android:tint="@color/colorPrimary"
+        android:tint="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/separator2"
@@ -116,7 +115,7 @@
         android:background="?attr/selectableItemBackground"
         android:contentDescription="@string/cancel"
         android:padding="10dp"
-        android:tint="@color/colorAccentLight"
+        android:tint="?attr/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/separator2"

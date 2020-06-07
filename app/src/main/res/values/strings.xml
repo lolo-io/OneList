@@ -36,6 +36,7 @@
     <string name="also_delete_file">Also delete file on the filesystem</string>
     <string name="show_menu">Show menu</string>
     <string name="storage">Storage</string>
+    <string name="personalization">Personalization</string>
     <string name="about">About</string>
     <string name="app_version">App Version</string>
     <string name="default_storage_folder">Default storage folder</string>

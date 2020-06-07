@@ -4,7 +4,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/textColorPrimaryInverse</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:statusBarColor">@color/textColorPrimaryInverse</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="preferenceTheme">@style/AppPreferenceTheme</item>
     </style>
 
@@ -12,6 +15,9 @@
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="android:windowBackground">@mipmap/logo_9</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <!-- Custom Preference Theme -->

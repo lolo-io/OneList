@@ -34,6 +34,7 @@
     <string name="also_delete_file">Aussi supprimer le fichier associé</string>
     <string name="show_menu">Voir menu</string>
     <string name="storage">Stockage</string>
+    <string name="personalization">Personalisation</string>
     <string name="default_storage_folder">Dossier de stockage par défault</string>
     <string name="about">À propos</string>
     <string name="app_version">Version de l\'application</string>

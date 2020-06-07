@@ -47,7 +47,7 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) : Ite
         if (isCurrentlyActive) {
 
             val p = Paint()
-            p.color = ContextCompat.getColor(App.instance, R.color.colorAccentLight)
+            p.color = ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight)
             p.style = Paint.Style.STROKE
             p.alpha = 127
 

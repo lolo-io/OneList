@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.preference.PreferenceManager
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -17,10 +18,11 @@ import java.util.*
 
 class PersistenceHelper(private val app: Activity) {
 
-    var versionPref: String = "version"
+    val versionPref: String = "version"
     private val selectedListPref = "selectedList"
     private val listIdsPref = "listsIds"
     private val defaultPathPref = "defaultPath"
+    val themePref: String = "theme"
 
     private var listsIds: Map<Long, String> = linkedMapOf()
 
@@ -46,6 +48,11 @@ class PersistenceHelper(private val app: Activity) {
             val editor = sp.edit()
             editor.putString(versionPref, value)
             editor.apply()
+        }
+
+    fun getTheme(context: Context): String {
+            val sp = PreferenceManager.getDefaultSharedPreferences(context)
+            return sp.getString(themePref, "auto") ?: "auto"
         }
 
     fun getAllLists(): List<ItemList> {

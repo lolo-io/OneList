@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.NinePatchDrawable
@@ -72,7 +71,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
                 setMenuShadow(10f)
                 setTextGravity(Gravity.START)
                 setTextTypeface(Typeface.DEFAULT)
-                setMenuColor(Color.WHITE)
+                setTextColor(ContextCompat.getColor(it, R.color.textColorPrimary))
+                setMenuColor(ContextCompat.getColor(it, R.color.colorBackgroundPopup))
                 setShowBackground(false)
                 setAutoDismiss(true)
                 setOnMenuItemClickListener { _, _ ->
@@ -222,8 +222,6 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         val animator = DraggableItemAnimator()
         animator.supportsChangeAnimations = false
         itemsRecyclerView.itemAnimator = animator
-
-        itemsRecyclerView.addItemDecoration(SimpleListDividerDecorator(ContextCompat.getDrawable(mainActivity, R.drawable.list_divider_h), true))
     }
 
 

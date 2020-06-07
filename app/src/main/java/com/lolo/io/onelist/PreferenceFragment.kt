@@ -1,6 +1,6 @@
 package com.lolo.io.onelist
 
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +16,7 @@ import com.lolo.io.onelist.util.beautify
 import com.lolo.io.onelist.util.toUri
 import kotlinx.android.synthetic.main.fragment_settings.*
 
+
 class PreferenceFragment : PreferenceFragmentCompat() {
 
 
@@ -25,14 +26,12 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             else throw IllegalStateException("Activity must be MainActivity")
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)?.apply {
-            setBackgroundColor(Color.WHITE)
-        }
-    }
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,18 +43,33 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             setDisplayShowHomeEnabled(true)
             setDisplayHomeAsUpEnabled(true)
         }
+
+       // this.preferenceScreen.get<Preference>("theme")?.summary = mainActivity.persistence.theme
         displayDefaultPath()
         this.preferenceScreen.get<Preference>("version")?.summary = mainActivity.persistence.version
+
+
+        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener { _, key ->
+            when(key) {
+                "theme" -> activity.recreate()/*{
+                    activity.finish()
+                    activity.baseContext.packageManager.getLaunchIntentForPackage(activity.baseContext.packageName)?.let {
+                        it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(it)
+                    }
+                }*/
+            }
+        }
     }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-        if(preference?.key == "storage") {
-            defaultPathDialog(mainActivity) { path ->
+        when (preference?.key) {
+            "storage" -> defaultPathDialog(mainActivity) { path ->
                 mainActivity.persistence.defaultPath = path
                 displayDefaultPath()
             }
-        } else if (preference?.key == "releaseNote") {
-            ReleaseNote.releasesNotes.entries.last().value.show(mainActivity)
+            "releaseNote" -> ReleaseNote.releasesNotes.entries.last().value().show(mainActivity)
         }
         return true
     }

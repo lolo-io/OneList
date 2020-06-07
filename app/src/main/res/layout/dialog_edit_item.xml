@@ -12,7 +12,7 @@
         android:id="@+id/item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
+        android:background="@null"
         android:drawableStart="@drawable/ic_bullet_outline"
         android:drawableLeft="@drawable/ic_bullet_outline"
         android:drawablePadding="5dp"
@@ -35,14 +35,14 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/item_title"
-        android:background="@color/material_gray_100" />
+        android:background="@color/list_seperator" />
 
     <EditText
         android:id="@+id/item_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/separator1"
-        android:background="@color/transparent"
+        android:background="@null"
         android:drawableStart="@drawable/ic_more_horizontal_accent_light_18dp"
         android:drawableLeft="@drawable/ic_more_horizontal_accent_light_18dp"
         android:drawablePadding="5dp"
@@ -53,7 +53,6 @@
         android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
         android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
         android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-        android:textColor="@color/colorAccent"
         android:textStyle="italic"
         tools:ignore="LabelFor,UnusedAttribute" />
 
@@ -63,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/item_comment"
-        android:background="@color/material_gray_100" />
+        android:background="@color/list_seperator" />
 
     <ImageButton
         android:id="@+id/validateEdit"
@@ -72,7 +71,7 @@
         android:layout_below="@id/separator2"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:background="?attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/validate"
         android:padding="10dp"
         android:tint="@color/colorPrimary"
@@ -85,7 +84,7 @@
         android:layout_below="@id/separator2"
         android:layout_toStartOf="@id/validateEdit"
         android:layout_toLeftOf="@id/validateEdit"
-        android:background="?attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/cancel"
         android:padding="10dp"
         android:tint="@color/colorAccentLight"
