@@ -14,7 +14,6 @@
 
     <color name="colorPrimary">#e53935</color>
     <color name="colorPrimaryDark">#b71c1c</color>
-    <color name="colorPrimaryLight">#f3513f</color>
     <color name="colorAccent">#eeeeee</color>
     <color name="colorAccentDark">#f1f1f1</color>
     <color name="colorAccentLight">#f1f1f1</color>
