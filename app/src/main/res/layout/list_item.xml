@@ -102,7 +102,7 @@
                 android:focusable="true"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:tint="?attr/colorAccent"
+                app:tint="?attr/colorAccent"
                 app:srcCompat="@drawable/ic_expand_more_add"
                 android:contentDescription="@string/expand_item" />
 

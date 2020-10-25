@@ -1,40 +1,69 @@
-/***
-
-  THIS IS A DUMMY FILE
-
-***/
-
 {
   "project_info": {
-    "project_number": "0",
-    "project_id": "api-project-0"
+    "project_number": "684266647785",
+    "firebase_url": "https://onelist-55a56.firebaseio.com",
+    "project_id": "onelist-55a56",
+    "storage_bucket": "onelist-55a56.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:0:android:0",
+        "mobilesdk_app_id": "1:684266647785:android:09537f212daaaee4",
         "android_client_info": {
-          "package_name": "com.lolo.io.onelist.debug"
+          "package_name": "com.lolo.io.onelist"
         }
       },
+      "oauth_client": [
+        {
+          "client_id": "684266647785-tgpsiu0toobcgmj264jraudguapv3cco.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "none"
+          "current_key": "AIzaSyB0vAGFrEJtafoWi8VycnMukMoyzs4wOoQ"
         }
-      ]
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "684266647785-tgpsiu0toobcgmj264jraudguapv3cco.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:0:android:0",
+        "mobilesdk_app_id": "1:684266647785:android:b3b6c9517fa88f4b",
         "android_client_info": {
           "package_name": "com.lolo.io.onelist.debug"
         }
       },
+      "oauth_client": [
+        {
+          "client_id": "684266647785-tgpsiu0toobcgmj264jraudguapv3cco.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "none"
+          "current_key": "AIzaSyB0vAGFrEJtafoWi8VycnMukMoyzs4wOoQ"
         }
-      ]
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "684266647785-tgpsiu0toobcgmj264jraudguapv3cco.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
-  ]
+  ],
+  "configuration_version": "1"
 }

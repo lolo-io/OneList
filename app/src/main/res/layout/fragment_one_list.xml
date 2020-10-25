@@ -69,7 +69,7 @@
                     android:layout_toRightOf="@id/title"
                     android:contentDescription="@string/show_menu"
                     android:padding="6dp"
-                    android:tint="?android:attr/colorForeground"
+                    app:tint="?android:attr/colorForeground"
                     app:srcCompat="@drawable/ic_expand_more_add" />
 
                 <RelativeLayout

@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/warning"
             android:src="@android:drawable/stat_sys_warning"
-            android:tint="@color/colorPrimary" />
+            app:tint="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/deleteListTitle"

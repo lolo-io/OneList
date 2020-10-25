@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
 
@@ -11,12 +12,18 @@ android {
         applicationId "com.lolo.io.onelist"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 13
+        versionCode 14
         versionName "1.3.1"
         vectorDrawables.useSupportLibrary = true
     }
 
     signingConfigs {
+        release {
+            storeFile file('C:\\Users\\Loic\\Dropbox (Personal)\\.keys\\keystores\\android.jks')
+            storePassword '7c3c1779c148a6ff3d5ee87e7ef70f81'
+            keyAlias 'OneListKey'
+            keyPassword '97220be66f2b279723c09f770ab45089'
+        }
         release
     }
 
@@ -37,14 +44,6 @@ android {
         }
     }
     flavorDimensions "store"
-    productFlavors {
-        fDroid {
-            dimension "store"
-        }
-        googlePlay {
-            dimension "store"
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -77,7 +76,7 @@ dependencies {
     implementation 'com.github.skydoves:powermenu:2.1.2'
     implementation 'com.karumi:dexter:6.0.0'
     implementation 'io.github.tonnyl:whatsnew:0.1.2'
-    googlePlayImplementation 'com.google.firebase:firebase-crashlytics:17.2.2'
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
 }
 
 def props = new Properties()
