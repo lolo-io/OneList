@@ -56,13 +56,39 @@
         android:textStyle="italic"
         tools:ignore="LabelFor,UnusedAttribute" />
 
-
     <View
         android:id="@+id/separator2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/item_comment"
         android:background="@color/list_seperator" />
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/date_hint"
+        android:layout_below="@id/separator2"
+        android:textColor="@color/black"
+        android:lines="1"
+        android:maxLines="1"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/time_hint"
+        android:layout_below="@id/separator2"
+        android:textColor="@color/black"
+        android:lines="1"
+        android:maxLines="1"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_toRightOf="@id/tv_date" />
 
     <ImageButton
         android:id="@+id/validateEdit"
@@ -89,5 +115,20 @@
         android:padding="10dp"
         android:tint="@color/colorAccentLight"
         app:srcCompat="@drawable/ic_cancel_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/btn_addReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_date"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="10dp"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/add_list"
+        android:padding="5dp"
+        android:scaleX="1.1"
+        android:scaleY="1.1"
+        android:tint="?android:attr/colorForeground"
+        app:srcCompat="@drawable/ic_reminder" />
 
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.content.Context
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.NinePatchDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -14,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -25,7 +27,6 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator
-import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager
@@ -362,10 +363,13 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         persistence.saveListAsync(selectedList)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onEditItem(item: Item) {
         editItemDialog(mainActivity, item) { updatedItem ->
             item.title = updatedItem.title
             item.comment = updatedItem.comment
+            item.date = updatedItem.date
+            item.time = updatedItem.time
             persistence.saveListAsync(selectedList)
             itemsAdapter.notifyItemChanged(selectedList.items.indexOf(item))
         }.show()

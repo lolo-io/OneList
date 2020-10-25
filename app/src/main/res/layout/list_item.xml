@@ -91,6 +91,40 @@
                 android:textStyle="italic" />
 
             <ImageView
+                android:id="@+id/ic_calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/comment"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_date"/>
+
+            <TextView
+                android:id="@+id/tv_date_li"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/ic_calendar"
+                android:layout_marginTop    ="12dp"
+                android:hint="@string/date_hint"
+                android:layout_below="@id/comment"/>
+            <ImageView
+                android:id="@+id/ic_time_li"
+                android:layout_toRightOf="@id/tv_date_li"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/comment"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_time"/>
+
+            <TextView
+                android:id="@+id/tv_time_li"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/ic_time_li"
+                android:layout_marginTop="12dp"
+                android:hint="@string/time_hint"
+                android:layout_below="@id/comment"/>
+
+            <ImageView
                 android:id="@+id/expandImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -4,6 +4,8 @@
     package="com.lolo.io.onelist">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
     <application
         android:name="com.lolo.io.onelist.App"
@@ -15,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppThemeLauncher"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name="com.lolo.io.onelist.MainActivity">
+        <activity android:name="com.lolo.io.onelist.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -37,6 +40,8 @@
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.1list" />
             </intent-filter>
         </activity>
+        <receiver android:name=".Notification"
+            android:enabled="true"/>
     </application>
 
 </manifest>

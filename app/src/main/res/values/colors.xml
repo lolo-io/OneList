@@ -18,4 +18,7 @@
     <color name="colorAccentDark">#494949</color>
     <color name="colorAccentLight">#a4a4a4</color>
 
+    <color name="datePicker">#DF4D4D</color>
+    <color name="timePicker">#4372E8</color>
+
 </resources>

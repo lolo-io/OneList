@@ -16,6 +16,7 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionMoveToSwipedDirection
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder
 import com.lolo.io.onelist.model.Item
+import kotlinx.android.synthetic.main.dialog_edit_item.view.*
 import kotlinx.android.synthetic.main.list_item.view.*
 
 class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAdapter.ItemViewHolder>(),
@@ -43,6 +44,8 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
         holder.view.text.text = item.title
         holder.itemView.tag = holder
         holder.view.expandImg.visibility = View.GONE
+        holder.view.tv_date_li.text=item.date
+        holder.view.tv_time_li.text=item.time
 
         holder.view.expandImg.visibility = View.GONE
         holder.view.comment.visibility = View.GONE
@@ -62,6 +65,10 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
         viewHolder.view.badge.setImageDrawable(ContextCompat.getDrawable(App.instance.mainContext, R.drawable.ic_bullet_outline_checked))
         viewHolder.view.text.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
         viewHolder.view.text.paintFlags = viewHolder.view.text.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        viewHolder.view.tv_date_li.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
+        viewHolder.view.tv_date_li.paintFlags = viewHolder.view.text.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        viewHolder.view.tv_time_li.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
+        viewHolder.view.tv_time_li.paintFlags = viewHolder.view.text.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         viewHolder.view.comment.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
         viewHolder.view.comment.paintFlags = viewHolder.view.text.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         viewHolder.view.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight), PorterDuff.Mode.SRC_ATOP)
@@ -72,6 +79,10 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
         viewHolder.view.badge.setImageDrawable(ContextCompat.getDrawable(App.instance.mainContext, R.drawable.ic_bullet_outline))
         viewHolder.view.text.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.textColorPrimary))
         viewHolder.view.text.paintFlags = 0
+        viewHolder.view.tv_date_li.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.textColorPrimary))
+        viewHolder.view.tv_date_li.paintFlags = 0
+        viewHolder.view.tv_time_li.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.textColorPrimary))
+        viewHolder.view.tv_time_li.paintFlags = 0
         viewHolder.view.comment.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccent))
         viewHolder.view.comment.paintFlags = 0
         viewHolder.view.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentDark), PorterDuff.Mode.SRC_ATOP)
