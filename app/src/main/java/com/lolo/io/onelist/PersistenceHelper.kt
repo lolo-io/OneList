@@ -3,6 +3,7 @@ package com.lolo.io.onelist
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.preference.PreferenceManager
 import android.widget.Toast
@@ -26,13 +27,37 @@ class PersistenceHelper(private val app: Activity) {
 
     private var listsIds: Map<Long, String> = linkedMapOf()
 
+    lateinit var context: Context
+
+    fun setContextInsteadOfActivity(c: Context){
+        context=c
+    }
+
+    private fun getPref(): SharedPreferences {
+        if(::context.isInitialized){
+            return context.getSharedPreferences("com.lolo.io.onelist.MainActivity", Context.MODE_PRIVATE)
+        }
+        return app.getPreferences(Context.MODE_PRIVATE)
+    }
+
+    fun getListByStableID(stableid: Long): ItemList? {
+        for(list in getAllLists()){
+            if (list.stableId==stableid){
+                return list;
+            }
+        }
+        return getAllLists()[0]
+    }
+
+
+
     var defaultPath: String
         get() {
-            val sp = app.getPreferences(Context.MODE_PRIVATE)
+            val sp = getPref()
             return sp.getString(defaultPathPref, "") ?: ""
         }
         set(value) {
-            val sp = app.getPreferences(Context.MODE_PRIVATE)
+            val sp = getPref()
             val editor = sp.edit()
             editor.putString(defaultPathPref, value)
             editor.apply()
@@ -40,11 +65,11 @@ class PersistenceHelper(private val app: Activity) {
 
     var version: String
         get() {
-            val sp = app.getPreferences(Context.MODE_PRIVATE)
+            val sp = getPref()
             return sp.getString(versionPref, "0.0.0") ?: "0.0.0"
         }
         set(value) {
-            val sp = app.getPreferences(Context.MODE_PRIVATE)
+            val sp = getPref()
             val editor = sp.edit()
             editor.putString(versionPref, value)
             editor.apply()
@@ -98,7 +123,7 @@ class PersistenceHelper(private val app: Activity) {
 
     fun updateListIdsTable(lists: List<ItemList>) {
         listsIds = lists.map { it.stableId to it.path }.toMap()
-        val sp = app.getPreferences(Context.MODE_PRIVATE)
+        val sp = getPref()
         val editor = sp.edit()
         val gson = Gson()
         val json = gson.toJson(listsIds)
@@ -107,7 +132,7 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     private fun getListIdsTable(): Map<Long, String> {
-        val sp = app.getPreferences(Context.MODE_PRIVATE)
+        val sp = getPref()
         val gson = Gson()
         val json = sp.getString(listIdsPref, null)?.replace("\\", "")?.removeSurrounding("\"")
         return if (json != null) {
@@ -161,7 +186,7 @@ class PersistenceHelper(private val app: Activity) {
         return GlobalScope.async {
             val path = listsIds[listId]
             val gson = Gson()
-            val sp = app.getPreferences(Context.MODE_PRIVATE)
+            val sp = getPref()
             val fileUri = path.toUri
             val list = fileUri?.let { uri ->
                 var ins: InputStream? = null
@@ -197,7 +222,7 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun saveList(list: ItemList) {
-        val sp = app.getPreferences(Context.MODE_PRIVATE)
+        val sp = getPref()
         val editor = sp.edit()
         val gson = Gson()
         val json = gson.toJson(list)
@@ -249,12 +274,12 @@ class PersistenceHelper(private val app: Activity) {
 
     var selectedListIndex: Int
         get() {
-            val sp = app.getPreferences(Context.MODE_PRIVATE)
+            val sp = getPref()
             return sp.getInt(selectedListPref, 0)
         }
         set(value) {
             GlobalScope.launch {
-                val sp = app.getPreferences(Context.MODE_PRIVATE)
+                val sp = getPref()
                 val editor = sp.edit()
                 editor.putInt(selectedListPref, value)
                 editor.apply()
@@ -271,7 +296,7 @@ class PersistenceHelper(private val app: Activity) {
 
         val allListsCompat: List<ItemList>
             get() {
-                val sp = app.getPreferences(Context.MODE_PRIVATE)
+                val sp = getPref()
                 val gson = Gson()
                 val json = sp.getString(listsPrefsCompat, null)
                 var lists: List<ItemList> = ArrayList()
@@ -284,11 +309,11 @@ class PersistenceHelper(private val app: Activity) {
 
         var firstLaunchCompat: Boolean
             get() {
-                val sp = app.getPreferences(Context.MODE_PRIVATE)
+                val sp = getPref()
                 return sp.getBoolean(firstLaunchPrefCompat, true)
             }
             set(value) {
-                val sp = app.getPreferences(Context.MODE_PRIVATE)
+                val sp = getPref()
                 val editor = sp.edit()
                 editor.putBoolean(firstLaunchPrefCompat, value)
                 editor.apply()
