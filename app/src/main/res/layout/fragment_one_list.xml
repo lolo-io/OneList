@@ -139,6 +139,19 @@
                         android:scaleY="0.8"
                         app:srcCompat="@drawable/ic_share_black_24dp" />
 
+                    <ImageButton
+                        android:id="@+id/buttonRestartList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="64dp"
+                        android:layout_marginRight="64dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/add_list"
+                        android:padding="5dp"
+                        app:srcCompat="@drawable/ic_baseline_restore_page_24" />
+
                 </RelativeLayout>
 
             </RelativeLayout>
