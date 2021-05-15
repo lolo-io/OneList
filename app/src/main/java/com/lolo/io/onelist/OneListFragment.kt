@@ -112,6 +112,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         buttonAddComment.setOnClickListener { switchCommentSection() }
         buttonClearComment.setOnClickListener { addCommentEditText.text.clear() }
         buttonShareList.setOnClickListener { persistence.shareList(selectedList) }
+        buttonRestartList.setOnClickListener { restartList() }
 
         menu_arrow.setOnTouchListener { v, e ->
             if (e.action == MotionEvent.ACTION_DOWN) {
@@ -387,6 +388,20 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         persistence.saveListAsync(selectedList)
     }
 
+    private fun restartList() {
+        var updatedAnyItems = false
+        for ((index, item) in selectedList.items.withIndex()) {
+            if (item.done) {
+                item.done = false
+                itemsAdapter.notifyItemChanged(index)
+                updatedAnyItems = true
+            }
+        }
+        if (updatedAnyItems) {
+            persistence.saveListAsync(selectedList)
+        }
+    }
+
     override fun onShowOrHideComment(item: Item) {
         item.commentDisplayed = !item.commentDisplayed
         itemsAdapter.notifyItemChanged(selectedList.items.indexOf(item))
@@ -432,6 +447,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     private fun showEditionButtons() {
         buttonShareList.visibility = View.GONE
+        buttonRestartList.visibility = View.GONE
         buttonRemoveList.animShowFlip()
         buttonAddList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
         buttonEditList.animShowFlip()
@@ -440,6 +456,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     private fun hideEditionButtons() {
         buttonShareList.visibility = View.VISIBLE
+        buttonRestartList.visibility = View.VISIBLE
         buttonAddList.animShowFlip()
         buttonRemoveList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
         buttonEditList.animHideFlip()
