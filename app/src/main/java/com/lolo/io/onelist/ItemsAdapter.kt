@@ -71,9 +71,11 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
     private fun unStrike(viewHolder: ItemViewHolder) {
         viewHolder.view.badge.setImageDrawable(ContextCompat.getDrawable(App.instance.mainContext, R.drawable.ic_bullet_outline))
         viewHolder.view.text.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.textColorPrimary))
-        viewHolder.view.text.paintFlags = 0
+        Paint().let {
+            viewHolder.view.text.paintFlags = it.flags
+            viewHolder.view.comment.paintFlags = it.flags
+        }
         viewHolder.view.comment.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccent))
-        viewHolder.view.comment.paintFlags = 0
         viewHolder.view.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentDark), PorterDuff.Mode.SRC_ATOP)
     }
 
