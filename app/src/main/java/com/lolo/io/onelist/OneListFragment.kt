@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.NinePatchDrawable
@@ -40,6 +41,10 @@ import com.skydoves.powermenu.PowerMenuItem
 import com.skydoves.powermenu.kotlin.createPowerMenu
 import kotlinx.android.synthetic.main.fragment_one_list.*
 import java.util.*
+import androidx.recyclerview.widget.DividerItemDecoration
+
+
+
 
 class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity.OnDispatchTouchEvent {
 
@@ -222,6 +227,14 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         val animator = DraggableItemAnimator()
         animator.supportsChangeAnimations = false
         itemsRecyclerView.itemAnimator = animator
+
+        if(Config.smallScreen) {
+            val dividerItemDecoration = DividerItemDecoration(
+                itemsRecyclerView.context,
+                (itemsRecyclerView.layoutManager as LinearLayoutManager).orientation
+            )
+            itemsRecyclerView.addItemDecoration(dividerItemDecoration)
+        }
     }
 
 

@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.EditText
+import androidx.collection.arraySetOf
 import com.lolo.io.onelist.App
 import com.lolo.io.onelist.R
 
@@ -16,7 +17,7 @@ fun View.shake() {
     startAnimation(shake)
 }
 
-fun View.animHideFlip(duration: Long = BUTTON_ANIM_DURATION, startDelay : Long = 0) {
+fun View.animHideFlip(duration: Long = BUTTON_ANIM_DURATION, startDelay: Long = 0) {
     val hide = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f)
     hide.startDelay = startDelay
     val hideFlip = ObjectAnimator.ofFloat(this, "rotationY", 0f, 90f)
@@ -25,7 +26,7 @@ fun View.animHideFlip(duration: Long = BUTTON_ANIM_DURATION, startDelay : Long =
     hide.start()
 }
 
-fun View.animShowFlip(duration: Long = BUTTON_ANIM_DURATION, startDelay : Long = 0) {
+fun View.animShowFlip(duration: Long = BUTTON_ANIM_DURATION, startDelay: Long = 0) {
     val show = ObjectAnimator.ofFloat(this, "alpha", 0f, 1f)
     show.startDelay = startDelay
     show.startDelay = duration
@@ -36,7 +37,12 @@ fun View.animShowFlip(duration: Long = BUTTON_ANIM_DURATION, startDelay : Long =
     show.start()
 }
 
-fun View.animTranslation(startX : Float = 0f, stopX : Float = 0f, duration: Long = BUTTON_ANIM_DURATION, startDelay : Long = 0) {
+fun View.animTranslation(
+    startX: Float = 0f,
+    stopX: Float = 0f,
+    duration: Long = BUTTON_ANIM_DURATION,
+    startDelay: Long = 0
+) {
     val translate = ObjectAnimator.ofFloat(this, "translationX", startX, stopX)
     translate.duration = duration
     translate.startDelay = startDelay
@@ -62,3 +68,5 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
         }
     })
 }
+
+fun <T:View>T.ifVisible(): T? = if (visibility == View.VISIBLE) this else null

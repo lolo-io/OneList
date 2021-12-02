@@ -47,8 +47,8 @@
                 android:id="@+id/badge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/text"
-                android:layout_alignParentTop="true"
+                android:baselineAlignBottom="true"
+                android:layout_alignBaseline="@id/text"
                 android:paddingStart="10dp"
                 android:paddingLeft="10dp"
                 android:paddingEnd="5dp"
@@ -71,7 +71,8 @@
                 android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-                android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                tools:text="Text" />
 
             <TextView
                 android:id="@+id/comment"

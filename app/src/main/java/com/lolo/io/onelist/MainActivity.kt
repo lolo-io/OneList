@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
+        Config.init(applicationContext)
 
         val fragment = OneListFragment().apply {
             if (intent.action == "android.intent.action.VIEW")
