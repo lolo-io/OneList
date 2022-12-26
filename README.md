@@ -12,7 +12,7 @@
 
 ## Target platforms :
 
-API 16 or later
+API 19 or later
 
 ## Features :
 
