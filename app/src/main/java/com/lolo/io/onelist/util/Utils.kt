@@ -3,7 +3,16 @@ package com.lolo.io.onelist.util
 import android.Manifest
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.util.Log
 import android.widget.Toast
+import com.anggrayudi.storage.FileWrapper
+import com.anggrayudi.storage.file.CreateMode
+import com.anggrayudi.storage.file.DocumentFileCompat
+import com.anggrayudi.storage.file.PublicDirectory
+import com.anggrayudi.storage.file.makeFile
+import com.anggrayudi.storage.media.FileDescription
+import com.anggrayudi.storage.media.MediaStoreCompat
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -15,6 +24,7 @@ import java.util.*
 import com.lolo.io.onelist.App
 import com.lolo.io.onelist.model.ItemList
 import com.lolo.io.onelist.MainActivity
+import com.lolo.io.onelist.updates.appContext
 
 const val REQUEST_CODE_OPEN_DOCUMENT_TREE = 1
 const val REQUEST_CODE_OPEN_DOCUMENT = 2
@@ -51,7 +61,7 @@ fun String.beautify(): String {
                 .replaceFirst("""\w*-\w*:""".toRegex(), "sdcard: " )
                 .replace("""/document/\w*-?\w*:.*""".toRegex(), "")
         startsWith("/document/") -> {
-            val ret = if (endsWith(".1list")) replaceAfterLast("/", "").removeSuffix("/") else this
+            val ret = if (endsWith(".1list.json")) replaceAfterLast("/", "").removeSuffix("/") else this
             ret.removePrefix("/document/")
                     .replace("primary:", "storage: ")
                     .replaceFirst("""\w*-\w*:""".toRegex(), "sdcard: " )
@@ -61,18 +71,21 @@ fun String.beautify(): String {
 }
 
 val ItemList.notCustomPath
-    get() = path.endsWith("${stableId}.1list")
+    get() = path.endsWith("${stableId}.1list.json")
 
-fun ItemList.getNewPath(newTitle: String) = "${path.substringBeforeLast("/")}/${newTitle.removeForbidenChars()}-${stableId}.1list"
+fun ItemList.getNewPath(newTitle: String) = "${path.substringBeforeLast("/")}/${newTitle.removeForbidenChars()}-${stableId}.1list.json"
+
+fun ItemList.getNewFileName(newTitle: String) = "${newTitle.removeForbidenChars()}-${stableId}.1list.json"
 
 val ItemList.fileName
-    get() = "${title.removeForbidenChars()}-${stableId}.1list"
+    get() = "${title.removeForbidenChars()}-${stableId}.1list.json"
 
 val String?.toUri: Uri?
     get() = try {
-        if (this.isNullOrBlank() || !startsWith("content://")) throw Exception()
+        if (this.isNullOrBlank() /* || !startsWith("content://") */) throw Exception()
         Uri.parse(this)
     } catch (e: Exception) {
+        Log.d("OneList", "Unable to convert a String to an Uri: " + e.stackTraceToString())
         null
     }
 

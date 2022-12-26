@@ -43,7 +43,7 @@
     <string name="show_last_release_note">Show last release note</string>
     <string name="help">Help</string>
     <string name="changeFolderHelp">Concurrent modifications of files are not properly handled in 1List. New content will overwrite the file. Be sure you refresh your list before editing it if you are using a shared file. (Pull the list down to refresh it)</string>
-    <string name="not_a_1list_file">The selected file is not a .1list file.</string>
+    <string name="not_a_1list_file">The selected file is not a .1list.json file.</string>
     <string name="ok_with_tick">✓ OK</string>
     <string name="storage_chooser_select_label">Select</string>
     <string name="storage_chooser_create_label">Create</string>
@@ -56,4 +56,6 @@
     <string name="storage_chooser_folder_error_toast_text">Error occurred while creating folder. Try again.</string>
     <string name="storage_chooser_text_field_hint_text">Folder Name</string>
     <string name="storage_chooser_text_field_error_text">Empty Folder Name</string>
+    <string name="force_update_storage">Copy all lists to default storage</string>
+    <string name="force_update_storage_summary">Each list has its own path, e.g., imported lists stay where they are. Clicking this button will create a copy of all currently existing lists into the selected default storage folder</string>
 </resources>

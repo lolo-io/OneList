@@ -293,6 +293,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             itemList.items.clear()
             itemsAdapter.notifyDataSetChanged()
             if (action and ACTION_DELETE != 0) {
+                // Remove list from app
                 val position = allLists.indexOf(itemList)
                 allLists.remove(itemList)
                 listsAdapter.notifyItemRemoved(position)
@@ -303,6 +304,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
                 }
 
                 if (action and ACTION_RM_FILE != 0) {
+                    // Delete list file on disk, in addition to removing from the app display
                     persistence.removeListFile(itemList)
                 }
             }

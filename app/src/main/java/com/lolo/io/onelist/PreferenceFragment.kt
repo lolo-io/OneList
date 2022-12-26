@@ -69,6 +69,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 mainActivity.persistence.defaultPath = path
                 displayDefaultPath()
             }
+            "storage_force" -> mainActivity.persistence.updateAllPathsToDefault()
             "releaseNote" -> ReleaseNote.releasesNotes.entries.last().value().show(mainActivity)
         }
         return true

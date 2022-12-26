@@ -4,16 +4,22 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.preference.PreferenceManager
+import android.util.JsonReader
+import android.util.Log
 import android.widget.Toast
+import com.anggrayudi.storage.file.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lolo.io.onelist.model.ItemList
-import com.lolo.io.onelist.util.toUri
+import com.lolo.io.onelist.updates.appContext
+import com.lolo.io.onelist.util.*
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.io.StringReader
 import java.util.*
 
 class PersistenceHelper(private val app: Activity) {
@@ -119,7 +125,13 @@ class PersistenceHelper(private val app: Activity) {
     fun createListFromUri(uri: Uri): ItemList {
         try {
             val gson = Gson()
-            val content = app.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
+            val content =
+                    if (Build.VERSION.SDK_INT >= 29) {
+                        val file = DocumentFileCompat.fromFullPath(appContext, uri.toString()!!, requiresWriteAccess = false)
+                        file!!.openInputStream(appContext)?.bufferedReader()?.use { it.readText() }
+                    } else {
+                        app.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
+                    }
             val list = gson.fromJson(content, ItemList::class.java)
             list.path = ""
             require(!listsIds.containsKey(list.stableId)) { app.getString(R.string.list_already_in_your_lists) }
@@ -135,11 +147,24 @@ class PersistenceHelper(private val app: Activity) {
         try {
             val gson = Gson()
             val fileUri = filePath.toUri
+            Log.d("OneList", "Debugv importList: path: $filePath")
             val list = fileUri?.let { uri ->
                 var ins: InputStream? = null
                 try {
-                    ins = App.instance.contentResolver.openInputStream(uri)
-                    gson.fromJson(ins!!.reader(), ItemList::class.java)
+                    Log.d("OneList", "Debugv importList: uri: " + uri.toString())
+                    ins =
+                        if (Build.VERSION.SDK_INT >= 29) {
+                            val file = DocumentFileCompat.fromFullPath(appContext, uri.toString()!!, requiresWriteAccess=false)
+                            Log.d("OneList", "Debugv Try to open inputstream")
+                            file!!.openInputStream(appContext)
+                        } else {
+                            App.instance.contentResolver.openInputStream(uri)
+                        }
+                    Log.d("OneList", "Debugv importList: openInputStream successful!")
+                    Log.d("OneList", "Debugv importList: openInputStream file handle: " + ins.toString())
+                    val ret = gson.fromJson(ins!!.reader(), ItemList::class.java)
+                    Log.d("OneList", "Debugv importList: reader successful! Returning.")
+                    return ret
                 } catch (e: Exception) {
                     throw Exception()
                 } finally {
@@ -159,27 +184,59 @@ class PersistenceHelper(private val app: Activity) {
 
     private fun getListAsync(listId: Long): Deferred<ItemList> {
         return GlobalScope.async {
-            val path = listsIds[listId]
             val gson = Gson()
             val sp = app.getPreferences(Context.MODE_PRIVATE)
-            val fileUri = path.toUri
-            val list = fileUri?.let { uri ->
-                var ins: InputStream? = null
+            val path = listsIds[listId]
+            val ins =
+                    if ((path == null) || path!!.isEmpty()) {
+                        null
+                    } else {
+                        if (Build.VERSION.SDK_INT >= 29) {
+                            val file = DocumentFileCompat.fromFullPath(appContext, path!!, requiresWriteAccess = false)
+                            Log.d("OneList", "Debugv Try to open inputstream")
+                            file?.openInputStream(appContext)
+                        } else {
+                            val fileUri = path?.toUri
+                            if (fileUri != null) {
+                                App.instance.contentResolver.openInputStream(fileUri)
+                            } else {
+                                null
+                            }
+                        }
+                    }
+            val list = ins?.let { ins ->
                 try {
-                    ins = App.instance.contentResolver.openInputStream(uri)
+                    Log.d("OneList", "Debugv getList try to read file")
                     gson.fromJson(ins!!.reader(), ItemList::class.java)
                 } catch (e: Exception) {
-                    app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_opening_filepath, uri), Toast.LENGTH_LONG).show() }
+                    Log.d("OneList", "Debugv getList error: " + e.stackTraceToString())
+                    app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_opening_filepath), Toast.LENGTH_LONG).show() }
+                    val grantedPaths: Map<String, Set<String>> = DocumentFileCompat.getAccessibleAbsolutePaths(appContext)
+                    Log.d("OneList", "Debugv getList grantedPaths: " + grantedPaths.toString())
                     null
+                    /*
+                    val lenientReader = JsonReader(ins!!.reader())
+                    lenientReader.isLenient = true
+                    try {
+                        gson.fromJson(lenientReader, ItemList::class.java)
+                    } catch (e2: Exception) {
+                        null
+                    }
+                    */
                 } finally {
                     ins?.close()
                 }
             } ?: path.takeIf { it?.isNotBlank() == true }?.let {
-                try {
-                    val json = File(path).readText()
-                    gson.fromJson(json, ItemList::class.java)
-                } catch (e: Exception) {
-                    app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_opening_filepath, path), Toast.LENGTH_LONG).show() }
+                if (Build.VERSION.SDK_INT < 29) {
+                    try {
+                        val json = File(path).readText()
+                        gson.fromJson(json, ItemList::class.java)
+                    } catch (e: Exception) {
+                        Log.d("OneList", "Debugv getList error in path.takeIf: " + e.stackTraceToString())
+                        app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_opening_filepath, path), Toast.LENGTH_LONG).show() }
+                        null
+                    }
+                } else {
                     null
                 }
             } ?: gson.fromJson(sp.getString(listId.toString(), ""), ItemList::class.java)
@@ -191,24 +248,48 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun saveListAsync(list: ItemList) {
+        Log.d("OneList", "Debugv saveListAsync")
         GlobalScope.launch {
             saveList(list)
         }
     }
 
     fun saveList(list: ItemList) {
-        val sp = app.getPreferences(Context.MODE_PRIVATE)
-        val editor = sp.edit()
         val gson = Gson()
         val json = gson.toJson(list)
         try {
-            val fileUri = list.path.toUri
-            fileUri?.let { uri ->
-                val out = App.instance.contentResolver.openOutputStream(uri)
+            val path = list.path
+            Log.d("OneList", "Debugv saveList to list path: " + list.path)
+            val out =
+                if (Build.VERSION.SDK_INT >= 29) {
+                    // If Android >= 10, need to use scoped storage permissions via SimpleStorage
+                    Log.d("OneList", "Debugv saveList SDK_INT >= 29")
+                    var file = DocumentFileCompat.fromFullPath(appContext, path!!, requiresWriteAccess=true, considerRawFile=true)
+                    if ((file == null) || (!file!!.exists())) {  // if file does not exist, we create it
+                        Log.d("OneList", "Debugv saveList file does not exists, create it")
+                        val parentFolderPath = path.substringBeforeLast("/")
+                        val folder = DocumentFileCompat.fromFullPath(appContext, parentFolderPath!!, requiresWriteAccess=true)
+                        file = folder?.makeFile(appContext,path.substringAfterLast("/"), "text/json", mode=CreateMode.REPLACE) // important: the type "text/json" is what defines the file's extension as .json. If it was "text/plain", it would be a .txt. We cannot force an extension, it's Android's doing.
+                    }
+                    Log.d("OneList", "Debugv Try to open outputstream")
+                    file = file?.recreateFile(appContext)  // erase content first by recreating file. For some reason, DocumentFileCompat.fromFullPath(requiresWriteAccess=true) and openOutputStream(append=false) only open the file in append mode, so we need to recreate the file to truncate its content first
+                    file?.openOutputStream(appContext, append=false)
+                } else {
+                    App.instance.contentResolver.openOutputStream(path.toUri!!)
+                }
+            Log.d("OneList", "Debugv saveList just before let block")
+            out?.let { out ->
                 try {
-                    out!!.write(json.toByteArray(Charsets.UTF_8)) // NPE is catched below
+                    Log.d("OneList", "Debugv saveList try to write")
+                    out!!.write(json.toByteArray(Charsets.UTF_8))
+                    Log.d("OneList", "Debugv saveList json: " + json)
+                    Log.d("OneList", "Debugv savelist json.toBytoArray: " + json.toByteArray(Charsets.UTF_8).decodeToString())
+                    Log.d("OneList", "Debugv saveList write successful!")
                 } catch (e: Exception) {
-                    app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_saving_to_path, list.path), Toast.LENGTH_LONG).show() }
+                    app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_saving_to_path), Toast.LENGTH_LONG).show() }
+                    Log.d("OneList", "Debugv saveList unable to write: " + e.stackTraceToString())
+                    val grantedPaths: Map<String, Set<String>> = DocumentFileCompat.getAccessibleAbsolutePaths(appContext)
+                    Log.d("OneList", "Debugv saveList grantedPaths: " + grantedPaths.toString())
                 } finally {
                     out?.close()
                 }
@@ -217,18 +298,27 @@ class PersistenceHelper(private val app: Activity) {
             }
         } catch (e: Exception) {
             app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_saving_to_path, list.path), Toast.LENGTH_LONG).show() }
+            Log.d("OneList", "Debugv saveList 2nd try block unable to write: " + e.stackTraceToString())
         }
 
-        // save in prefs anyway
+        // save in prefs anyway, so we fallback on app private storage copy of the list if the other storage fails or if none is selected
+        val sp = app.getPreferences(Context.MODE_PRIVATE)
+        val editor = sp.edit()
         editor.putString(list.stableId.toString(), json)
         editor.apply()
     }
 
     fun removeListFile(list: ItemList) {
+        // Delete list file from disk
         GlobalScope.launch {
             if (list.path.isNotBlank()) {
                 try {
-                    File(list.path).delete()
+                    if (Build.VERSION.SDK_INT >= 29) {
+                        val file = DocumentFileCompat.fromFullPath(appContext, list.path!!, requiresWriteAccess=true)
+                        file!!.delete()
+                    } else {
+                        File(list.path).delete()
+                    }
                     app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.file_deleted), Toast.LENGTH_LONG).show() }
                 } catch (e: Exception) {
                     app.runOnUiThread { Toast.makeText(App.instance, app.getString(R.string.error_deleting_list_file), Toast.LENGTH_LONG).show() }

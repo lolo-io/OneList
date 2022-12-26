@@ -5,9 +5,11 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.anggrayudi.storage.SimpleStorageHelper
 import com.lolo.io.onelist.updates.ReleaseNote
 import com.lolo.io.onelist.updates.show
 import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT
@@ -17,6 +19,7 @@ import io.github.tonnyl.whatsnew.WhatsNew
 class MainActivity : AppCompatActivity() {
 
     val persistence: PersistenceHelper by lazy { PersistenceHelper(this) }
+    val storageHelper = SimpleStorageHelper(this)
 
     // On some devices, displaying storage chooser fragment before activity is resumed leads to a crash.
     // This is a workaround.
@@ -87,10 +90,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-
+        if (Build.VERSION.SDK_INT >= 29) {
+            // Mandatory for Activity, but not for Fragment & ComponentActivity
+            storageHelper.storage.onActivityResult(requestCode, resultCode, data)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (requestCode == REQUEST_CODE_OPEN_DOCUMENT_TREE || requestCode == REQUEST_CODE_OPEN_DOCUMENT)
                 data?.data?.let { uri ->
+                    Log.d("OneList", "Debugv requestCode!")
                     contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                     onPathChosenActivityResult(uri.toString())
                     onPathChosenActivityResult = { }
@@ -126,5 +132,21 @@ class MainActivity : AppCompatActivity() {
             context.resources.updateConfiguration(config, context.resources.displayMetrics)
         }
         return ctx
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        storageHelper.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        storageHelper.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // Mandatory for Activity, but not for Fragment & ComponentActivity
+        storageHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }

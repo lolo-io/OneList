@@ -2,22 +2,24 @@ package com.lolo.io.onelist.dialogs
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.documentfile.provider.DocumentFile
+import androidx.preference.PreferenceManager
 import com.codekidlabs.storagechooser.Content
 import com.codekidlabs.storagechooser.StorageChooser
 import com.lolo.io.onelist.App
 import com.lolo.io.onelist.MainActivity
 import com.lolo.io.onelist.R
-import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT
-import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT_TREE
-import com.lolo.io.onelist.util.withStoragePermission
 import kotlinx.android.synthetic.main.dialog_list_path.view.*
-import java.io.File
-import java.net.URI
+import com.anggrayudi.storage.file.*
+import com.lolo.io.onelist.updates.appContext
+import com.lolo.io.onelist.util.*
 
 
 @SuppressLint("InflateParams")
@@ -67,8 +69,39 @@ fun displayDialog(view: View, activity: MainActivity, onPathChosen: (String) -> 
 }
 
 fun selectDirectory(activity: MainActivity, onPathChosen: (String) -> Any?) {
+    // Folder picker, allows to store listst in an external folder, different than the app's folder
+    // so that a file syncing app such as SyncThing can be used such
     withStoragePermission(activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        // For Android >= 10, use scoped storage via SimpleStorage library
+        if (Build.VERSION.SDK_INT >= 29) {
+            // Register callback when a folder is picked (this is mostly unnecessary since we register a different callback with SimpleStorage)
+            activity.onPathChosenActivityResult = onPathChosen
+            Log.d("OneList", "Debugv Before SimpleStorageHelper callback func def")
+            // Register a callback with SimpleStorage when a folder is picked
+            activity.storageHelper.onFolderSelected = { _, root -> // could also use simpleStorageHelper.onStorageAccessGranted()
+                Log.d("OneList", "Debugv Success Folder Pick! Now saving...")
+                // Get absolute path to folder
+                val fpath = root.getAbsolutePath(appContext)
+                /*
+                // Open preferences to save folder to path. Works but commented because unnecessary for working app, was used for debugging
+                // Alternatively, since SimpleStorage v1.5.4, we do not even need to store folder path, we can get the list of granted paths.
+                val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
+                preferences.edit().putString("defaultPathPref", uri).apply()
+                 */
+                // Update persistent.defaultPath with the folder path
+                Log.d("OneList", "Debugv Folder Pick New File Creation")
+                activity.onPathChosenActivityResult(fpath)
+                activity.onPathChosenActivityResult = { }
+            }
+            // Open folder picker via SimpleStorage, this will request the necessary scoped storage permission
+            // Note that even though we get permissions, we need to only write DocumentFile files, not MediaStore files, because the latter are not meant to be reopened in the future so we can lose permission at anytime once they are written once, see: https://github.com/anggrayudi/SimpleStorage/issues/103
+            Log.d("OneList", "Debugv Get Storage Access permission")
+            activity.storageHelper.openFolderPicker(  // We could also use simpleStorageHelper.requestStorageAccess()
+                    initialPath = FileFullPath(activity, StorageId.PRIMARY, "OneList"), // SimpleStorage.externalStoragePath
+                    //expectedStorageType = StorageType.EXTERNAL,
+                    //expectedBasePath = "OneList"
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.onPathChosenActivityResult = onPathChosen
             activity.startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
                 addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
@@ -95,8 +128,25 @@ fun selectDirectory(activity: MainActivity, onPathChosen: (String) -> Any?) {
 }
 
 fun selectFile(activity: MainActivity, onPathChosen: (String) -> Any?) {
+    // File picker
     withStoragePermission(activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        // If Android >= 10, use SimpleStorage to handle scoped storage permissions
+        if (Build.VERSION.SDK_INT >= 29) {
+            // Register a callback when a file is selected
+            activity.storageHelper.onFileSelected = { _, files ->
+                // pick the first file in the returned array, because the file picker allows to select multiple files (although we here limit to one)
+                val file = files.first()
+                Log.d("OneList", "Debugv file selected: ${file.fullName}")
+                // get absolute path to file and save it
+                onPathChosen(file.getAbsolutePath(activity))
+            }
+            // Open file picker via SimpleStorage to get permission to read/write it
+            activity.storageHelper.openFilePicker(
+                    allowMultiple = false,
+                    initialPath = FileFullPath(activity, StorageId.PRIMARY, "Download"), // SimpleStorage.externalStoragePath
+            )
+        // File picker for older Android versions
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.onPathChosenActivityResult = onPathChosen
             activity.startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT).apply { type = "*/*" }, REQUEST_CODE_OPEN_DOCUMENT)
         } else {
@@ -111,7 +161,7 @@ fun selectFile(activity: MainActivity, onPathChosen: (String) -> Any?) {
                     .apply {
                         show()
                         setOnSelectListener {
-                            if (it.endsWith(".1list")) {
+                            if (it.endsWith(".1list.json")) {
                                 onPathChosen(it)
                             } else {
                                 Toast.makeText(activity, activity.getString(R.string.not_a_1list_file), Toast.LENGTH_LONG).show()

@@ -84,7 +84,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appPrivateStorageButton" />
 
-
     <View
         android:id="@+id/separator2"
         android:layout_width="match_parent"

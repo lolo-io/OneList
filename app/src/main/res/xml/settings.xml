@@ -22,6 +22,10 @@
             android:key="storage"
             android:title="@string/default_storage_folder"
             android:summary="App private storage"/>
+        <Preference
+            android:key="storage_force"
+            android:title="@string/force_update_storage"
+            android:summary="@string/force_update_storage_summary"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="cat_about"

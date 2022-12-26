@@ -43,7 +43,7 @@
     <string name="show_last_release_note">Mostrar última nota de lançamento</string>
     <string name="help">Ajuda</string>
     <string name="changeFolderHelp">Modificações simultâneas de arquivos não são tratadas adequadamente no 1List. O novo conteúdo substituirá o arquivo. Atualize sua lista antes de editá-la se estiver usando um arquivo compartilhado. (Puxe a lista para baixo para atualizá-la)</string>
-    <string name="not_a_1list_file">O arquivo selecionado não é do tipo .1list</string>
+    <string name="not_a_1list_file">O arquivo selecionado não é do tipo .1list.json</string>
     <string name="ok_with_tick">✓ OK</string>
     <string name="storage_chooser_select_label">Selecionar</string>
     <string name="storage_chooser_create_label">Criar</string>
@@ -56,4 +56,8 @@
     <string name="storage_chooser_folder_error_toast_text">Erro ao criar pasta. Tente novamente.</string>
     <string name="storage_chooser_text_field_hint_text">Nome Da Pasta</string>
     <string name="storage_chooser_text_field_error_text">Nome Da Pasta Vazio</string>
+    <string name="share_list">Share this list</string>
+    <string name="share_all_lists">Share all lists</string>
+    <string name="force_update_storage">Copy all lists to default storage</string>
+    <string name="force_update_storage_summary">Each list has its own path, e.g., imported lists stay where they are. Clicking this button will create a copy of all currently existing lists into the selected default storage folder</string>
 </resources>

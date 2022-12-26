@@ -35,13 +35,13 @@
     <string name="show_menu">Voir menu</string>
     <string name="storage">Stockage</string>
     <string name="personalization">Personalisation</string>
-    <string name="default_storage_folder">Dossier de stockage par défault</string>
+    <string name="default_storage_folder">Dossier de stockage par défaut</string>
     <string name="about">À propos</string>
     <string name="app_version">Version de l\'application</string>
     <string name="show_last_release_note">Revoir la dernière note de version</string>
     <string name="help">Aide</string>
     <string name="changeFolderHelp">Les modifications de fichier simultanées ne sont pas bien prises en charge par 1List. Le nouveau contenu écrasera l\'ancien contenu du fichier. Veillez à rafraîchir votre liste avant de l\'éditer si vous utilisez un fichier partagé. (Tirez la liste vers le bas pour la rafraîchir)</string>
-    <string name="not_a_1list_file">Ce fichier n\'est pas un fichier .1list</string>
+    <string name="not_a_1list_file">Ce fichier n\'est pas un fichier .1list.json</string>
     <string name="ok_with_tick">✓ OK</string>
     <string name="storage_chooser_select_label">Sélectionner</string>
     <string name="storage_chooser_create_label">Créer</string>
@@ -54,4 +54,8 @@
     <string name="storage_chooser_folder_error_toast_text">Erreur lors de la création du dossier. Veuillez rééssayer.</string>
     <string name="storage_chooser_text_field_hint_text">Nom du nouveau dossier</string>
     <string name="storage_chooser_text_field_error_text">Ce dossier doit être nommé</string>
+    <string name="share_list">Partager cette liste</string>
+    <string name="share_all_lists">Partager toutes les listes</string>
+    <string name="force_update_storage">Copier les listes vers le stockage par défaut</string>
+    <string name="force_update_storage_summary">Chaque liste a son propre chemin, ex: les listes importées restent là où elles sont. En cliquant ici, une copie de chaque liste sera faite dans le dossier de stockage par défaut</string>
 </resources>
