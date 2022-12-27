@@ -330,7 +330,28 @@ class PersistenceHelper(private val app: Activity) {
     fun shareList(list: ItemList) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, list.toString())
+            putExtra(Intent.EXTRA_TEXT, list.toString()) // toString() is overloaded to output the list's title, content and an ad for the software, except if toStringNoAd() is used
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        app.startActivity(shareIntent)
+    }
+
+    fun shareAllLists() {
+        // Fetch list of all lists
+        var lists = getAllLists()
+        // Concat content of every lists
+        var lists_concat = ""
+        for (l in lists) {
+            // toString() is overloaded to output the list's title, content and an ad for the software, except if toStringNoAd() is used
+            lists_concat += l.toStringNoAd() + "\n\n----\n\n"
+        }
+        // Append the ad once at the very end
+        lists_concat += lists[0].toStringOnlyAd()
+        // Share dialog
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, lists_concat)
             type = "text/plain"
         }
         val shareIntent = Intent.createChooser(sendIntent, null)

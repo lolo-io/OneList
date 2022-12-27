@@ -17,4 +17,17 @@ ${App.instance.getString(R.string.list_created_with_one1ist)}
 ${App.instance.getString(R.string.app_link)}
         """.trimIndent()
     }
+    fun toStringNoAd(): String {
+        return """
+$title:
+
+${items.joinToString("\n") { "$it" }}
+        """.trimIndent()
+    }
+    fun toStringOnlyAd(): String {
+        return """
+${App.instance.getString(R.string.list_created_with_one1ist)}
+${App.instance.getString(R.string.app_link)}
+        """.trimIndent()
+    }
 }
