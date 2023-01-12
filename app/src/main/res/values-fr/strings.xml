@@ -60,4 +60,5 @@
     <string name="share_all_lists">Partager toutes les listes</string>
     <string name="share_markdown">Partager au format markdown</string>
     <string name="other">Autre</string>
+    <string name="item_comment">Commentaire de tâche</string>
 </resources>

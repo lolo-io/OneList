@@ -46,6 +46,7 @@
         android:drawableStart="@drawable/ic_more_horizontal_accent_light_18dp"
         android:drawableLeft="@drawable/ic_more_horizontal_accent_light_18dp"
         android:drawablePadding="5dp"
+        android:hint="@string/item_comment"
         android:importantForAutofill="no"
         android:inputType="textMultiLine|textCapSentences"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
@@ -73,9 +74,11 @@
         android:layout_alignParentRight="true"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/validate"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
         android:padding="10dp"
-        android:tint="@color/colorPrimary"
-        app:srcCompat="@drawable/ic_check_black_24dp" />
+        app:srcCompat="@drawable/ic_check_black_24dp"
+        app:tint="@color/colorPrimary" />
 
     <ImageButton
         android:id="@+id/cancelEdit"
@@ -86,6 +89,8 @@
         android:layout_toLeftOf="@id/validateEdit"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/cancel"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:tint="@color/colorAccentLight"
         app:srcCompat="@drawable/ic_cancel_black_24dp" />
