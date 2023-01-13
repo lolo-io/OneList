@@ -57,7 +57,6 @@
         android:textStyle="italic"
         tools:ignore="LabelFor,UnusedAttribute" />
 
-
     <View
         android:id="@+id/separator2"
         android:layout_width="match_parent"
@@ -65,11 +64,50 @@
         android:layout_below="@id/item_comment"
         android:background="@color/list_seperator" />
 
+    <TextView
+        android:id="@+id/item_list_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator2"
+        android:layout_marginTop="6dp"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:text="@string/move_to_list"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+
+    <Spinner
+        android:id="@+id/item_list_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator2"
+        android:layout_toRightOf="@id/item_list_text"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:text="Spinner"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+
+    <View
+        android:id="@+id/separator3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/item_list_text"
+        android:background="@color/list_seperator" />
+
     <ImageButton
         android:id="@+id/validateEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator2"
+        android:layout_below="@id/separator3"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:background="?android:attr/selectableItemBackground"
@@ -84,7 +122,7 @@
         android:id="@+id/cancelEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator2"
+        android:layout_below="@id/separator3"
         android:layout_toStartOf="@id/validateEdit"
         android:layout_toLeftOf="@id/validateEdit"
         android:background="?android:attr/selectableItemBackground"

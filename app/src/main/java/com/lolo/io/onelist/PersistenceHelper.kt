@@ -77,6 +77,7 @@ class PersistenceHelper(private val app: Activity) {
         }
 
     fun getAllLists(): List<ItemList> {
+        // Get all lists and items content from disk, returns a map of (stableId, ItemList) where stableId is a Long unique identifying number
         return runBlocking {
             listsIds = getListIdsTable()
             try {
@@ -88,8 +89,10 @@ class PersistenceHelper(private val app: Activity) {
         }
     }
 
-
     fun refreshAndFetchNewLists(lists: MutableList<ItemList>) {
+        // Force reload all ItemLists and their Items contents from disk
+        // This detects new lists, and also refresh their Items content
+        // To only refresh ItemLists content but not scan for new ItemLists, use refreshAllLists() or refreshList()
         runBlocking {
             val newIds = getListIdsTable()
             newIds.forEach { fetchedId ->
@@ -103,10 +106,23 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun refreshAllLists(lists: List<ItemList>) {
+        // Force reload all lists contents from disk
+        // Note this does not detect new lists, it only reloads items, the content of ItemLists
         runBlocking {
             lists.forEach {
                 it.items.clear()
                 it.items.addAll(getListAsync(it.stableId).await().items)
+            }
+        }
+    }
+
+    fun refreshList(lists: List<ItemList>, listId: Long) {
+        // Force reload one list content given a stableId
+        // This is like refreshAllLists() but for a single list.
+        lists.forEach { // TODO: maybe use lists.parallelStream().forEach to parallelize operation? Tested but did not seem to improve speed
+            if (it.stableId == listId) {
+                it.items.clear()
+                it.items.addAll(getList(it.stableId).items)
             }
         }
     }
@@ -118,6 +134,10 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun updateListIdsTable(lists: List<ItemList>) {
+        // Given a List of ItemList, update the persistent Map of (ItemList.stableId, ItemList.path)
+        // Hence from this Map, given a Long stableId, we can find where the ItemList is stored on disk
+        // Path will be empty if stored in app's Preferences
+        // We store this Map in Preferences so that we can easily find the path to all ItemLists
         listsIds = lists.map { it.stableId to it.path }.toMap()
         val sp = app.getPreferences(Context.MODE_PRIVATE)
         val editor = sp.edit()
@@ -128,6 +148,7 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     private fun getListIdsTable(): Map<Long, String> {
+        // Retrieve the Map of ItemLists paths from the Preferences
         val sp = app.getPreferences(Context.MODE_PRIVATE)
         val gson = Gson()
         val json = sp.getString(listIdsPref, null)?.replace("\\", "")?.removeSurrounding("\"")
@@ -138,6 +159,7 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun createListFromUri(uri: Uri): ItemList {
+        // Import an ItemList from a file, when the file is opened directly from a file manager
         try {
             val gson = Gson()
             val content =
@@ -159,6 +181,7 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun importList(filePath: String): ItemList {
+        // Import an ItemList from inside the app, via a dedicated button
         try {
             val gson = Gson()
             val fileUri = filePath.toUri
@@ -197,7 +220,14 @@ class PersistenceHelper(private val app: Activity) {
         }
     }
 
+    private fun getList(listId: Long): ItemList {
+        return runBlocking {
+            getListAsync(listId).await()
+        }
+    }
+
     private fun getListAsync(listId: Long): Deferred<ItemList> {
+        // Retrieve an ItemList content from disk
         return GlobalScope.async {
             val gson = Gson()
             val sp = app.getPreferences(Context.MODE_PRIVATE)
@@ -270,6 +300,7 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun saveList(list: ItemList) {
+        // Save an ItemList content on-disk
         val gson = Gson()
         val json = gson.toJson(list)
         try {
@@ -324,7 +355,7 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun removeListFile(list: ItemList) {
-        // Delete list file from disk
+        // Delete ItemList file from disk
         GlobalScope.launch {
             if (list.path.isNotBlank()) {
                 try {
@@ -343,6 +374,7 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun shareList(list: ItemList) {
+        // Share ItemList as plaintext, e.g. by e-mail
         Log.d("OneList", "Debugv shareMardown: " + shareMarkdown.toString())
         list.markdown = shareMarkdown // set markdown template if markdown is selected in preferences
         val sendIntent: Intent = Intent().apply {
@@ -355,6 +387,8 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun shareAllLists() {
+        // Share all ItemLists as plaintext
+
         // Fetch list of all lists
         var lists = getAllLists()
         // Concat content of every lists
@@ -378,6 +412,10 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun updateAllPathsToDefault() {
+        // Copy all ItemLists to the urrently selected Default Storage
+        // Otherwise, each ItemList stays stored where the default storage was defined at the time of the ItemList creation, or where they are if imported
+        // By using this function, we copy all currently opened ItemLists in one same storage location
+
         // Fetch list of all lists
         val lists = getAllLists()
         // Loop through all lists

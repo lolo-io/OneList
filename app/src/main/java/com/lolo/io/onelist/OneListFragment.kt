@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.NinePatchDrawable
@@ -26,7 +25,6 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator
-import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager
@@ -42,8 +40,8 @@ import com.skydoves.powermenu.kotlin.createPowerMenu
 import kotlinx.android.synthetic.main.fragment_one_list.*
 import java.util.*
 import androidx.recyclerview.widget.DividerItemDecoration
-
-
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 
 class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity.OnDispatchTouchEvent {
@@ -187,7 +185,6 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     }
 
     private fun setupListsRecyclerView() {
-
         listsRecyclerView.adapter = listsAdapter
 
         val layoutManager = FlexboxLayoutManager(mainActivity)
@@ -205,7 +202,6 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     }
 
     private fun setupItemsRecyclerView() {
-
         val itemsDragDropManager = RecyclerViewDragDropManager()
         val itemsSwipeManager = RecyclerViewSwipeManager()
         var wrappedAdapter = itemsDragDropManager.createWrappedAdapter(itemsAdapter)
@@ -379,15 +375,49 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     }
 
     override fun onEditItem(item: Item) {
-        editItemDialog(mainActivity, item) { updatedItem ->
-            item.title = updatedItem.title
-            item.comment = updatedItem.comment
-            persistence.saveListAsync(selectedList)
-            itemsAdapter.notifyItemChanged(selectedList.items.indexOf(item))
+        editItemDialog(mainActivity, item) { updatedItem, targetList ->
+            // Callback OnDoneEditing() when Item edit dialog is validated or cancelled
+            // If user does not want to move Item to another list
+            if (targetList == null) {
+                // Update item in current list
+                item.title = updatedItem.title
+                item.comment = updatedItem.comment
+                // Save current list state on file
+                persistence.saveListAsync(selectedList)
+                // Refresh current list view
+                itemsAdapter.notifyItemChanged(selectedList.items.indexOf(item))
+            } else { // If user wants to move Item to another list (targetList is not null)
+                // Move updated item to another list
+                val newPosition = when (updatedItem.done) {  // move to a different position whether item is done or not
+                    true -> targetList.items.size // if done, move to list end (remember we add one task simultaneously, so no -1)
+                    else -> 0
+                }
+                // Refresh current list view, we need to do that BEFORE removing the item from the data structures
+                itemsAdapter.notifyItemRemoved(selectedList.items.indexOf(item))
+                // Add new item to the target list, remove from current list
+                targetList.items.add(newPosition, updatedItem)
+                selectedList.items.remove(item)
+                GlobalScope.async { // Process saving on disk and refreshing on UI in an Async coroutine, to get a more responsive UI. There is a slight risk the user is clicking so fast that the moved Item will not appear, but it's better than having this function blocking while saving on disk
+                    persistence.apply {
+                        // Save current lists states on disk in files
+                        // This needs to be done atomically, ie, no Async between commands, otherwise we may end up with running concurrency issues, eg, deleting the item but not saved in the other list, or refreshing before the item was moved or partially moved
+                        saveList(targetList) // this needs to be blocking, otherwise we cannot refreshList(), so this slows down UI and feels less responsive. This is circumvented by doing this in an Async coroutine.
+                        saveList(selectedList) // update current list, from which we remove the Item, after having saved in the other list, to ensure we have a copy of the Item somewhere in case of a crash. The risk is that if user refresh current list fast enough, they may see a ghost of the Item.
+                        // Refresh/reload all lists content (otherwise the moved updatedItem will not show up in the other list)
+                        //refreshAllLists(allLists)  // refresh all lists content of items, but this is slow
+                        refreshList(allLists, targetList.stableId) // refresh only target list, not current list because we already refreshed the view
+                    }
+                }
+                // Force refresh adapters
+                // Same as swipe refresh and onStart() resuming
+                listsAdapter.notifyDataSetChanged()
+                itemsAdapter.notifyDataSetChanged()
+            }
         }.show()
     }
 
     override fun onSwitchItemStatus(item: Item) {
+        // When an item is clicked and we need to mark it done or undone
         item.done = !item.done
         val oldPosition = selectedList.items.indexOf(item)
         val newPosition = when (item.done) {

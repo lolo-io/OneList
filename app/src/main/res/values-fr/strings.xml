@@ -61,4 +61,5 @@
     <string name="share_markdown">Partager au format markdown</string>
     <string name="other">Autre</string>
     <string name="item_comment">Commentaire de tâche</string>
+    <string name="move_to_list">Déplacer vers la liste</string>
 </resources>
