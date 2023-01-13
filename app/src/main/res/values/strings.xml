@@ -64,4 +64,6 @@
     <string name="other">Other</string>
     <string name="item_comment">Task Comment</string>
     <string name="move_to_list">Move to list</string>
+    <string name="add_items_to_bottom">Add items to the bottom</string>
+    <string name="add_items_to_bottom_summary">... instead of the top of the list, as is the default.</string>
 </resources>

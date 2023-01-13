@@ -35,6 +35,12 @@
             android:title="@string/share_markdown"
             android:defaultValue="false"
             />
+        <CheckBoxPreference
+            android:key="addItemsToBottom"
+            android:title="@string/add_items_to_bottom"
+            android:summary="@string/add_items_to_bottom_summary"
+            android:defaultValue="false"
+            />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="cat_about"

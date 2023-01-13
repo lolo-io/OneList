@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,6 +41,7 @@ import com.skydoves.powermenu.kotlin.createPowerMenu
 import kotlinx.android.synthetic.main.fragment_one_list.*
 import java.util.*
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.lolo.io.onelist.updates.appContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
@@ -64,6 +66,18 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     private val isAddCommentShown
         get() = addCommentEditText.height > 0
+
+    var addItemsToBottom: Boolean
+        get() {
+            val sp = PreferenceManager.getDefaultSharedPreferences(appContext)  // for some reason, app.getPreferences(Context.MODE_PRIVATE) does not work here
+            return sp.getBoolean("addItemsToBottom", false) ?: false
+        }
+        set(value) {
+            val sp = PreferenceManager.getDefaultSharedPreferences(appContext)
+            val editor = sp.edit()
+            editor.putBoolean("addItemsToBottom", value)
+            editor.apply()
+        }
 
     private val popupMenu: PowerMenu? by lazy {
         context?.let {
@@ -348,24 +362,34 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     // Items handlers :
     private fun addItem() {
+        // Add a new Item (task) in the current ItemList
         if (addItemEditText.text.toString().isNotEmpty()) {
             if (allLists.isEmpty()) createList(ItemList(getString(R.string.list_default_name)))
             val item = Item(addItemEditText.text.toString())
             if (isAddCommentShown)
                 item.comment = addCommentEditText.text.toString()
-            selectedList.items.add(0, item)
+            if (!addItemsToBottom) {
+                // Add item to the top of the list
+                selectedList.items.add(0, item)
+            } else {
+                // Add item to the bottom of the list (after done tasks too)
+                selectedList.items.add(item)
+            }
+            // Refresh adapter and view by signalling that a new item was inserted
             val position = selectedList.items.indexOf(item)
             itemsAdapter.notifyItemInserted(position)
-            itemsRecyclerView.smoothScrollToPosition(0)
+            // Scroll to the position of the new item
+            itemsRecyclerView.smoothScrollToPosition(position)
+            // Reset dialog inputs to empty
             addItemEditText.setText(R.string.empty)
             addItemEditText.requestFocus()
             if (addCommentEditText.text.isEmpty() && isAddCommentShown) {
                 switchCommentSection()
             }
-
             addCommentEditText.setText(R.string.empty)
+            // Save current list on disk, with the added Item
             persistence.saveListAsync(selectedList)
-        } else listOf(addItemEditText, validate).forEach { it.shake() }
+        } else listOf(addItemEditText, validate).forEach { it.shake() } // Else, there is an issue with one of the inputs, we shake the UI to show there is an issue
     }
 
     override fun onRemoveItem(item: Item) {

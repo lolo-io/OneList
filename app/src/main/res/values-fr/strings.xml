@@ -62,4 +62,6 @@
     <string name="other">Autre</string>
     <string name="item_comment">Commentaire de tâche</string>
     <string name="move_to_list">Déplacer vers la liste</string>
+    <string name="add_items_to_bottom">Ajouter les tâches en fin de liste</string>
+    <string name="add_items_to_bottom_summary">... au lieu du haut de liste.</string>
 </resources>
