@@ -66,4 +66,6 @@
     <string name="move_to_list">Move to list</string>
     <string name="add_items_to_bottom">Add items to the bottom</string>
     <string name="add_items_to_bottom_summary">... instead of the top of the list, as is the default.</string>
+    <string name="done_items_to_bottom">Move done items to the bottom</string>
+    <string name="done_items_to_bottom_summary">If disabled, done items will stay at the same position.</string>
 </resources>

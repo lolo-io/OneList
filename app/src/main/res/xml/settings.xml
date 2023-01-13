@@ -41,6 +41,12 @@
             android:summary="@string/add_items_to_bottom_summary"
             android:defaultValue="false"
             />
+        <CheckBoxPreference
+            android:key="doneItemsToBottom"
+            android:title="@string/done_items_to_bottom"
+            android:summary="@string/done_items_to_bottom_summary"
+            android:defaultValue="true"
+            />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="cat_about"

@@ -79,6 +79,18 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             editor.apply()
         }
 
+    var doneItemsToBottom: Boolean
+        get() {
+            val sp = PreferenceManager.getDefaultSharedPreferences(appContext)
+            return sp.getBoolean("doneItemsToBottom", false) ?: false
+        }
+        set(value) {
+            val sp = PreferenceManager.getDefaultSharedPreferences(appContext)
+            val editor = sp.edit()
+            editor.putBoolean("doneItemsToBottom", value)
+            editor.apply()
+        }
+
     private val popupMenu: PowerMenu? by lazy {
         context?.let {
             createPowerMenu(it) {
@@ -441,19 +453,28 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     }
 
     override fun onSwitchItemStatus(item: Item) {
-        // When an item is clicked and we need to mark it done or undone
+        // When an item is clicked and we need to mark it as done or undone
         item.done = !item.done
-        val oldPosition = selectedList.items.indexOf(item)
-        val newPosition = when (item.done) {
-            true -> selectedList.items.size - 1
-            else -> 0
+        if (doneItemsToBottom) {
+            // Move item to the bottom of the list if done, or top if undone
+            val oldPosition = selectedList.items.indexOf(item)
+            val newPosition = when (item.done) {
+                true -> selectedList.items.size - 1
+                else -> 0
+            }
+            selectedList.items.removeAt(oldPosition)
+            selectedList.items.add(newPosition, item)
+            // Force refresh view
+            itemsAdapter.notifyItemChanged(oldPosition)
+            itemsAdapter.notifyItemMoved(oldPosition, newPosition)
+            // Scroll to top
+            val scrolledToTop = (itemsRecyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0
+            if (scrolledToTop || oldPosition == 0) itemsRecyclerView.scrollToPosition(0)
+        } else {
+            // Leave item in place when done or undone, just update view
+            itemsAdapter.notifyItemChanged(selectedList.items.indexOf(item))
         }
-        selectedList.items.removeAt(oldPosition)
-        selectedList.items.add(newPosition, item)
-        itemsAdapter.notifyItemChanged(oldPosition)
-        itemsAdapter.notifyItemMoved(oldPosition, newPosition)
-        val scrolledToTop = (itemsRecyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0
-        if (scrolledToTop || oldPosition == 0) itemsRecyclerView.scrollToPosition(0)
+        // Save new Item state on-disk
         persistence.saveListAsync(selectedList)
     }
 
