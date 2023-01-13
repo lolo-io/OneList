@@ -414,7 +414,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         editItemDialog(mainActivity, item) { updatedItem, targetList ->
             // Callback OnDoneEditing() when Item edit dialog is validated or cancelled
             // If user does not want to move Item to another list
-            if (targetList == null) {
+            if (targetList == null || targetList.stableId == selectedList.stableId) { // if target list is null or is the same as current list, we do not move item
                 // Update item in current list
                 item.title = updatedItem.title
                 item.comment = updatedItem.comment
