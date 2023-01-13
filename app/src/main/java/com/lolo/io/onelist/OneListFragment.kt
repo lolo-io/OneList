@@ -414,7 +414,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
                 // Move updated item to another list
                 val newPosition = when (updatedItem.done) {  // move to a different position whether item is done or not
                     true -> targetList.items.size // if done, move to list end (remember we add one task simultaneously, so no -1)
-                    else -> 0
+                    else -> if (!addItemsToBottom) 0 else targetList.items.size // if not done, move to top or bottom of target list depending on preferences
                 }
                 // Refresh current list view, we need to do that BEFORE removing the item from the data structures
                 itemsAdapter.notifyItemRemoved(selectedList.items.indexOf(item))
