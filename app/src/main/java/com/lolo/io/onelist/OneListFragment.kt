@@ -82,7 +82,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     var doneItemsToBottom: Boolean
         get() {
             val sp = PreferenceManager.getDefaultSharedPreferences(appContext)
-            return sp.getBoolean("doneItemsToBottom", false) ?: false
+            return sp.getBoolean("doneItemsToBottom", true) ?: true
         }
         set(value) {
             val sp = PreferenceManager.getDefaultSharedPreferences(appContext)
