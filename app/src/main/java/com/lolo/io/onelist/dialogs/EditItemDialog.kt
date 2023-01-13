@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.dialog_edit_item.view.*
 fun editItemDialog(activity: Activity, item: Item, onDoneEditing: (Item, ItemList?) -> Any?): AlertDialog {
     // Get all lists
     val mainActivity: MainActivity = activity as MainActivity // to get access to persistence, we need the mainActivity
-    val lists = mainActivity.persistence.getAllLists()
+    val lists = mainActivity.fragment.allLists // reuse the already existing list of ItemLists to make the dialog open instantaneously, otherwise the alternative is to call mainActivity.persistence.getAllLists() which slows down UI a lot
     val listsMap = lists.map { it.title to it }.toMap() // convert to a map of title and list object: the title will be shown in a spinner, but when the user will select it, we will be able to retrieve the list from its title
 
     val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_item, null).apply {

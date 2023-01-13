@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
 
     var onPathChosenActivityResult: (String) -> Any? = {}
 
+    lateinit var fragment: OneListFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         App.instance.mainContext = this.baseContext
         setTheme(R.style.AppTheme)
@@ -40,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         Config.init(applicationContext)
 
-        val fragment = OneListFragment().apply {
+        fragment = OneListFragment().apply {
             if (intent.action == "android.intent.action.VIEW")
                 arguments = Bundle().apply {
                     putParcelable("EXT_FILE_URI", intent.data)

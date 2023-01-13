@@ -55,7 +55,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             else throw IllegalStateException("Activity must be MainActivity")
         }
 
-    private val allLists: MutableList<ItemList> = arrayListOf()
+    val allLists: MutableList<ItemList> = arrayListOf()
     private var listsAdapter: ListsAdapter = ListsAdapter(allLists, this)
     private val itemsAdapter = ItemsAdapter(this)
 
