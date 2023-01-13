@@ -358,8 +358,10 @@ class PersistenceHelper(private val app: Activity) {
         // Fetch list of all lists
         var lists = getAllLists()
         // Concat content of every lists
-        var lists_concat = "" // "# ALL LISTS\n-----\n\n"
+        var lists_concat = if (shareMarkdown) "# ALL LISTS\n-----\n\n" else "ALL LISTS\n-----\n\n"
         for (l in lists) {
+            // set markdown template if markdown is selected in preferences
+            l.markdown = shareMarkdown
             // toString() is overloaded to output the list's title, content and an ad for the software, except if toStringNoAd() is used
             lists_concat += l.toStringNoAd() + "\n\n----\n\n"
         }
