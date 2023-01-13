@@ -56,8 +56,10 @@
     <string name="storage_chooser_folder_error_toast_text">Erro ao criar pasta. Tente novamente.</string>
     <string name="storage_chooser_text_field_hint_text">Nome Da Pasta</string>
     <string name="storage_chooser_text_field_error_text">Nome Da Pasta Vazio</string>
-    <string name="share_list">Share this list</string>
-    <string name="share_all_lists">Share all lists</string>
     <string name="force_update_storage">Copy all lists to default storage</string>
     <string name="force_update_storage_summary">Each list has its own path, e.g., imported lists stay where they are. Clicking this button will create a copy of all currently existing lists into the selected default storage folder</string>
+    <string name="share_list">Share this list</string>
+    <string name="share_all_lists">Share all lists</string>
+    <string name="share_markdown">Share as markdown</string>
+    <string name="other">Other</string>
 </resources>

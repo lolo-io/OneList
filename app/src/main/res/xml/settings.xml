@@ -28,6 +28,15 @@
             android:summary="@string/force_update_storage_summary"/>
     </PreferenceCategory>
     <PreferenceCategory
+        android:key="cat_other"
+        android:title="@string/other">
+        <CheckBoxPreference
+            android:key="shareMarkdown"
+            android:title="@string/share_markdown"
+            android:defaultValue="false"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
         android:key="cat_about"
         android:title="@string/about">
         <Preference

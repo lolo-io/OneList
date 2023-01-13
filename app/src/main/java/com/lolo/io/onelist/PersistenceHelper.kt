@@ -9,7 +9,9 @@ import android.preference.PreferenceManager
 import android.util.JsonReader
 import android.util.Log
 import android.widget.Toast
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.anggrayudi.storage.file.*
+import com.google.android.material.internal.ContextUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lolo.io.onelist.model.ItemList
@@ -28,6 +30,7 @@ class PersistenceHelper(private val app: Activity) {
     private val selectedListPref = "selectedList"
     private val listIdsPref = "listsIds"
     private val defaultPathPref = "defaultPath"
+    private val shareMarkdownPref = "shareMarkdown"
     val themePref: String = "theme"
 
     private var listsIds: Map<Long, String> = linkedMapOf()
@@ -53,6 +56,18 @@ class PersistenceHelper(private val app: Activity) {
             val sp = app.getPreferences(Context.MODE_PRIVATE)
             val editor = sp.edit()
             editor.putString(versionPref, value)
+            editor.apply()
+        }
+
+    var shareMarkdown: Boolean
+        get() {
+            val sp = getDefaultSharedPreferences(appContext)  // for some reason, app.getPreferences(Context.MODE_PRIVATE) does not work here
+            return sp.getBoolean(shareMarkdownPref, false) ?: false
+        }
+        set(value) {
+            val sp = getDefaultSharedPreferences(appContext)
+            val editor = sp.edit()
+            editor.putBoolean(shareMarkdownPref, value)
             editor.apply()
         }
 
@@ -328,6 +343,8 @@ class PersistenceHelper(private val app: Activity) {
     }
 
     fun shareList(list: ItemList) {
+        Log.d("OneList", "Debugv shareMardown: " + shareMarkdown.toString())
+        list.markdown = shareMarkdown // set markdown template if markdown is selected in preferences
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, list.toString()) // toString() is overloaded to output the list's title, content and an ad for the software, except if toStringNoAd() is used
@@ -341,7 +358,7 @@ class PersistenceHelper(private val app: Activity) {
         // Fetch list of all lists
         var lists = getAllLists()
         // Concat content of every lists
-        var lists_concat = ""
+        var lists_concat = "" // "# ALL LISTS\n-----\n\n"
         for (l in lists) {
             // toString() is overloaded to output the list's title, content and an ad for the software, except if toStringNoAd() is used
             lists_concat += l.toStringNoAd() + "\n\n----\n\n"
@@ -356,6 +373,19 @@ class PersistenceHelper(private val app: Activity) {
         }
         val shareIntent = Intent.createChooser(sendIntent, null)
         app.startActivity(shareIntent)
+    }
+
+    fun updateAllPathsToDefault() {
+        // Fetch list of all lists
+        val lists = getAllLists()
+        // Loop through all lists
+        for (l in lists) {
+            // toString() is overloaded to output the list's title, content and an ad for the software, except if toStringNoAd() is used
+            l.path = "$defaultPath/${l.fileName}"
+            saveList(l)
+        }
+        // Update listsIds immutable Map all at once using the adequate function with our new list of ItemList objects
+        updateListIdsTable(lists)
     }
 
     var selectedListIndex: Int
