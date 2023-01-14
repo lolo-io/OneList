@@ -9,6 +9,7 @@ import android.preference.PreferenceManager
 import android.util.JsonReader
 import android.util.Log
 import android.widget.Toast
+import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.anggrayudi.storage.file.*
 import com.google.android.material.internal.ContextUtils
@@ -310,8 +311,8 @@ class PersistenceHelper(private val app: Activity) {
                 if (Build.VERSION.SDK_INT >= 29) {
                     // If Android >= 10, need to use scoped storage permissions via SimpleStorage
                     Log.d("OneList", "Debugv saveList SDK_INT >= 29")
-                    var file = DocumentFileCompat.fromFullPath(appContext, path!!, requiresWriteAccess=true, considerRawFile=true)
-                    if ((file == null) || (!file!!.exists())) {  // if file does not exist, we create it
+                    var file: DocumentFile? = DocumentFileCompat.fromFullPath(appContext, path!!, requiresWriteAccess=true, considerRawFile=true)
+                    if ((file == null) || (!file.exists())) {  // if file does not exist, we create it
                         Log.d("OneList", "Debugv saveList file does not exists, create it")
                         val parentFolderPath = path.substringBeforeLast("/")
                         val folder = DocumentFileCompat.fromFullPath(appContext, parentFolderPath!!, requiresWriteAccess=true)
