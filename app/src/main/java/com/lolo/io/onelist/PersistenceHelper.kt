@@ -316,7 +316,7 @@ class PersistenceHelper(private val app: Activity) {
                         Log.d("OneList", "Debugv saveList file does not exists, create it")
                         val parentFolderPath = path.substringBeforeLast("/")
                         val folder = DocumentFileCompat.fromFullPath(appContext, parentFolderPath!!, requiresWriteAccess=true)
-                        file = folder?.makeFile(appContext,path.substringAfterLast("/"), "text/json", mode=CreateMode.REPLACE) // important: the type "text/json" is what defines the file's extension as .json. If it was "text/plain", it would be a .txt. We cannot force an extension, it's Android's doing.
+                        file = folder?.makeFile(appContext,path.substringAfterLast("/"), "text/json", mode=CreateMode.REPLACE) // important: the type "text/json" is what defines the file's extension as .json. If it was "text/plain", it would be a .txt. We cannot force an extension, it's Android's doing. EDIT: workaround: if no mimeType is specified, it seems then we can input any file extension, but this may be risky, maybe Android will not recognize the filetype and prevent writing in what may be a MediaStore file instead of a DocumentFile
                     }
                     Log.d("OneList", "Debugv Try to open outputstream")
                     file = file?.recreateFile(appContext)  // erase content first by recreating file. For some reason, DocumentFileCompat.fromFullPath(requiresWriteAccess=true) and openOutputStream(append=false) only open the file in append mode, so we need to recreate the file to truncate its content first
