@@ -143,7 +143,23 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         buttonRemoveList.setOnClickListener { deleteList(selectedList) }
         buttonAddComment.setOnClickListener { switchCommentSection() }
         buttonClearComment.setOnClickListener { addCommentEditText.text.clear() }
-        buttonShareList.setOnClickListener { dialogSingleOptionList(mainActivity, mainActivity.getString(R.string.share), R.array.share_list_options) }
+        buttonShareList.setOnClickListener {
+            dialogSingleOptionList(
+                    mainActivity,
+                    {
+                        // Lambda function to select function to execute based on selected option in the alertDialog
+                        which: Int ->
+                        if (which == 0) {
+                            // First option in the array is Share this list
+                            persistence.shareList(selectedList)
+                        } else {
+                            // Second option in the array is Share all lists
+                            persistence.shareAllLists()
+                        }
+                    },
+                    mainActivity.getString(R.string.share),
+                    R.array.share_list_options)
+        }
 
         menu_arrow.setOnTouchListener { v, e ->
             if (e.action == MotionEvent.ACTION_DOWN) {
@@ -543,7 +559,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         buttonEditList.animTranslation(dpToPx(-32).toFloat())
     }
 
-    private fun dialogSingleOptionList(activity: MainActivity, title: String, arrayId: Int) {
+    private fun dialogSingleOptionList(activity: MainActivity, callback: (which: Int) -> Unit, title: String, arrayId: Int) {
         // Generic single option list dialog
         Log.d("OneList", "Debugv dialogSingleOptionList: $title")
 
@@ -558,13 +574,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         builder.setItems(arrayId) { dialog, which ->
             // The 'which' argument contains the index position
             // of the selected item
-            if (which == 0) {
-                // First option in the array is Share this list
-                persistence.shareList(selectedList)
-            } else {
-                // Second option in the array is Share all lists
-                persistence.shareAllLists()
-            }
+            callback(which)
         }
         // Get the AlertDialog from create()
         val alertDialog: AlertDialog = builder.create()

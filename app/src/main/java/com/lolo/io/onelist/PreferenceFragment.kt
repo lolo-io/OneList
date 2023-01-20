@@ -71,7 +71,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 mainActivity.persistence.defaultPath = path
                 displayDefaultPath()
             }
-            "storage_force" -> dialogYesNo(mainActivity, mainActivity.getString(R.string.dialog_confirm_force_storage_title), mainActivity.getString(R.string.dialog_confirm_force_storage_message))
+            "storage_force" -> dialogYesNo(mainActivity, { mainActivity.persistence.updateAllPathsToDefault() }, mainActivity.getString(R.string.dialog_confirm_force_storage_title), mainActivity.getString(R.string.dialog_confirm_force_storage_message))
             "releaseNote" -> ReleaseNote.releasesNotes.entries.last().value().show(mainActivity)
         }
         return true
@@ -88,7 +88,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
     }
 
-    private fun dialogYesNo(activity: MainActivity, title: String, message: String) {
+    private fun dialogYesNo(activity: MainActivity, callback: () -> Unit, title: String, message: String) {
         // Generic Yes/No confirmation dialog
         Log.d("OneList", "Debugv dialogYesNo: $title $message")
 
@@ -103,7 +103,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         builder.apply {
             setPositiveButton(R.string.ok) { dialog, id ->
                 // User clicked OK button
-                mainActivity.persistence.updateAllPathsToDefault()
+                callback()
                 dialog.dismiss()
             }
             setNegativeButton(R.string.cancel) { dialog, id ->
