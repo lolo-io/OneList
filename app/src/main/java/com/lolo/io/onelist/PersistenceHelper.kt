@@ -423,8 +423,9 @@ class PersistenceHelper(private val app: Activity) {
         // Loop through all lists
         for (l in lists) {
             // toString() is overloaded to output the list's title, content and an ad for the software, except if toStringNoAd() is used
-            l.path = "$defaultPath/${l.fileName}"
-            saveList(l)
+            l.path = if (defaultPath.isEmpty()) "" // store in App private storage (in Preferences), hence defaultPath and list.path are empty
+            else "$defaultPath/${l.fileName}" // otherwise, we have a custom path, we use it to build a new path to copy each list
+            saveList(l) // copy/save list in new location
         }
         // Update listsIds immutable Map all at once using the adequate function with our new list of ItemList objects
         updateListIdsTable(lists)
