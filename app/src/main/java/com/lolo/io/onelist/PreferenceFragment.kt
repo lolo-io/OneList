@@ -71,7 +71,22 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 mainActivity.persistence.defaultPath = path
                 displayDefaultPath()
             }
-            "storage_force" -> dialogYesNo(mainActivity, { mainActivity.persistence.updateAllPathsToDefault() }, mainActivity.getString(R.string.dialog_confirm_force_storage_title), mainActivity.getString(R.string.dialog_confirm_force_storage_message))
+            "storage_force" -> dialogYesNo(
+                    mainActivity,
+                    {
+                        // Callback function if user accepts
+                        // Copy all lists to defaultPath
+                        val allLists = mainActivity.persistence.updateAllPathsToDefault()
+                        // Refresh ListsAdapter content and view, so that , so that the new lists paths are reflected on EditListDialog
+                        mainActivity.fragment.allLists.clear()
+                        mainActivity.fragment.allLists.addAll(allLists)
+                        // Force refresh adapters
+                        // Same as swipe refresh and onStart() resuming
+                        mainActivity.fragment.listsAdapter.notifyDataSetChanged()
+                    },
+                    mainActivity.getString(R.string.dialog_confirm_force_storage_title),
+                    mainActivity.getString(R.string.dialog_confirm_force_storage_message)
+            )
             "releaseNote" -> ReleaseNote.releasesNotes.entries.last().value().show(mainActivity)
         }
         return true

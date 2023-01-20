@@ -59,8 +59,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         }
 
     val allLists: MutableList<ItemList> = arrayListOf()
-    private var listsAdapter: ListsAdapter = ListsAdapter(allLists, this)
-    private val itemsAdapter = ItemsAdapter(this)
+    internal var listsAdapter: ListsAdapter = ListsAdapter(allLists, this)
+    internal val itemsAdapter = ItemsAdapter(this)
 
     private var selectedList: ItemList = ItemList("")
 

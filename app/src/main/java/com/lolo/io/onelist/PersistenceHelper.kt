@@ -412,7 +412,7 @@ class PersistenceHelper(private val app: Activity) {
         app.startActivity(shareIntent)
     }
 
-    fun updateAllPathsToDefault() {
+    fun updateAllPathsToDefault(): List<ItemList> {
         // Copy all ItemLists to the urrently selected Default Storage
         // Otherwise, each ItemList stays stored where the default storage was defined at the time of the ItemList creation, or where they are if imported
         // By using this function, we copy all currently opened ItemLists in one same storage location
@@ -429,6 +429,8 @@ class PersistenceHelper(private val app: Activity) {
         }
         // Update listsIds immutable Map all at once using the adequate function with our new list of ItemList objects
         updateListIdsTable(lists)
+        // Return the new list, this can be used by the caller to refresh all lists, such as OneListFragment.allLists
+        return lists
     }
 
     var selectedListIndex: Int
