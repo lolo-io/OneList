@@ -4,16 +4,19 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.NinePatchDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -140,8 +143,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         buttonRemoveList.setOnClickListener { deleteList(selectedList) }
         buttonAddComment.setOnClickListener { switchCommentSection() }
         buttonClearComment.setOnClickListener { addCommentEditText.text.clear() }
-        buttonShareList.setOnClickListener { persistence.shareList(selectedList) }
-        buttonShareAllLists.setOnClickListener { persistence.shareAllLists() }
+        buttonShareList.setOnClickListener { dialogSingleOptionList(mainActivity, mainActivity.getString(R.string.share), R.array.share_list_options) }
 
         menu_arrow.setOnTouchListener { v, e ->
             if (e.action == MotionEvent.ACTION_DOWN) {
@@ -523,7 +525,6 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     private fun showEditionButtons() {
         buttonShareList.visibility = View.GONE
-        buttonShareAllLists.visibility = View.GONE
         buttonRemoveList.animShowFlip()
         buttonAddList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
         buttonEditList.animShowFlip()
@@ -532,10 +533,38 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     private fun hideEditionButtons() {
         buttonShareList.visibility = View.VISIBLE
-        buttonShareAllLists.visibility = View.VISIBLE
         buttonAddList.animShowFlip()
         buttonRemoveList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
         buttonEditList.animHideFlip()
         buttonEditList.animTranslation(dpToPx(-32).toFloat())
+    }
+
+    private fun dialogSingleOptionList(activity: MainActivity, title: String, arrayId: Int) {
+        // Generic single option list dialog
+        Log.d("OneList", "Debugv dialogSingleOptionList: $title")
+
+        // Instantiate an AlertDialog.Builder with its constructor
+        val builder: AlertDialog.Builder = activity.let {
+            AlertDialog.Builder(it)
+        }
+        // Chain together various setter methods to set the dialog characteristics
+        builder.setTitle(title)
+        //.setMessage(message) // can't simultaneously set a message and display items (a list of options), we need to choose
+        // Setup options
+        builder.setItems(arrayId) { dialog, which ->
+            // The 'which' argument contains the index position
+            // of the selected item
+            if (which == 0) {
+                // First option in the array is Share this list
+                persistence.shareList(selectedList)
+            } else {
+                // Second option in the array is Share all lists
+                persistence.shareAllLists()
+            }
+        }
+        // Get the AlertDialog from create()
+        val alertDialog: AlertDialog = builder.create()
+        // Show it
+        alertDialog.show()
     }
 }

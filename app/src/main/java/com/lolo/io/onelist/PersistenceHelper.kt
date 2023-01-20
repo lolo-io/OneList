@@ -417,6 +417,7 @@ class PersistenceHelper(private val app: Activity) {
         // Otherwise, each ItemList stays stored where the default storage was defined at the time of the ItemList creation, or where they are if imported
         // By using this function, we copy all currently opened ItemLists in one same storage location
 
+        Log.d("OneList", "Debugv: Force storage update initiated")
         // Fetch list of all lists
         val lists = getAllLists()
         // Loop through all lists

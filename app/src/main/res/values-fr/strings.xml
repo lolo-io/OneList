@@ -65,5 +65,9 @@
     <string name="add_items_to_bottom">Ajouter les tâches en fin de liste</string>
     <string name="add_items_to_bottom_summary">... au lieu du haut de liste.</string>
     <string name="done_items_to_bottom">Déplacer les tâches terminées en fin de liste</string>
-    <string name="done_items_to_bottom_summary">Si désactivé, les tâches terminées resteront à la même position.</string>
+    <string name="done_items_to_bottom_summary">Si désactivé, les tâches terminées resteront à la même position</string>
+    <string name="dialog_confirm_force_storage_title">Confirmer la copie des listes</string>
+    <string name="dialog_confirm_force_storage_message">Cela copiera toutes les listes actuellement ouvertes vers l\'emplacement de stockage par défaut, et utilisera ces chemins à l\'avenir, êtes-vous sûr?</string>
+    <string name="ok">OK</string>
+    <string name="share">Partager</string>
 </resources>

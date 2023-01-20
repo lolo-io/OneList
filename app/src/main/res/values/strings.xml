@@ -68,4 +68,8 @@
     <string name="add_items_to_bottom_summary">... instead of the top of the list, as is the default.</string>
     <string name="done_items_to_bottom">Move done items to the bottom</string>
     <string name="done_items_to_bottom_summary">If disabled, done items will stay at the same position.</string>
+    <string name="dialog_confirm_force_storage_title">Confirm force storage update</string>
+    <string name="dialog_confirm_force_storage_message">This will copy all currently open lists into the default storage and then use these copies in the future, are you sure?</string>
+    <string name="ok">OK</string>
+    <string name="share">Share</string>
 </resources>

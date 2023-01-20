@@ -1,10 +1,11 @@
 package com.lolo.io.onelist
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -65,11 +66,12 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
         when (preference?.key) {
+            // Manage what actions to do when the clickable preferences options are clicked
             "storage" -> defaultPathDialog(mainActivity) { path ->
                 mainActivity.persistence.defaultPath = path
                 displayDefaultPath()
             }
-            "storage_force" -> mainActivity.persistence.updateAllPathsToDefault()
+            "storage_force" -> dialogYesNo(mainActivity, mainActivity.getString(R.string.dialog_confirm_force_storage_title), mainActivity.getString(R.string.dialog_confirm_force_storage_message))
             "releaseNote" -> ReleaseNote.releasesNotes.entries.last().value().show(mainActivity)
         }
         return true
@@ -84,6 +86,35 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 }
                 else getString(R.string.app_private_storage)
 
+    }
+
+    private fun dialogYesNo(activity: MainActivity, title: String, message: String) {
+        // Generic Yes/No confirmation dialog
+        Log.d("OneList", "Debugv dialogYesNo: $title $message")
+
+        // Instantiate an AlertDialog.Builder with its constructor
+        val builder: AlertDialog.Builder = activity.let {
+            AlertDialog.Builder(it)
+        }
+        // Chain together various setter methods to set the dialog characteristics
+        builder.setTitle(title)
+                .setMessage(message)
+        // Setup buttons
+        builder.apply {
+            setPositiveButton(R.string.ok) { dialog, id ->
+                // User clicked OK button
+                mainActivity.persistence.updateAllPathsToDefault()
+                dialog.dismiss()
+            }
+            setNegativeButton(R.string.cancel) { dialog, id ->
+                // User cancelled the dialog
+                dialog.cancel()
+            }
+        }
+        // Get the AlertDialog from create()
+        val alertDialog: AlertDialog = builder.create()
+        // Show it
+        alertDialog.show()
     }
 }
 

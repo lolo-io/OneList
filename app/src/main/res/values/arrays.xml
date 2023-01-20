@@ -10,4 +10,8 @@
         <item>Light</item>
         <item>Dark</item>
     </string-array>
+    <string-array name="share_list_options">
+        <item>Share this list</item>
+        <item>Share all lists</item>
+    </string-array>
 </resources>

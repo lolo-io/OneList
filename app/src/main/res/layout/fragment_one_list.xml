@@ -139,22 +139,6 @@
                         android:scaleY="0.8"
                         app:srcCompat="@drawable/ic_share_black_24dp" />
 
-                    <ImageButton
-                        android:id="@+id/buttonShareAllLists"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginEnd="64dp"
-                        android:layout_marginRight="64dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:tint="?android:attr/colorForeground"
-                        android:contentDescription="@string/share_all_lists"
-                        android:padding="5dp"
-                        android:scaleX="0.8"
-                        android:scaleY="0.8"
-                        app:srcCompat="@drawable/ic_storage_black_24dp" />
-
                 </RelativeLayout>
 
             </RelativeLayout>
