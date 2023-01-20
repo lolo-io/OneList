@@ -386,8 +386,12 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
                 // Add item to the top of the list
                 selectedList.items.add(0, item)
             } else {
-                // Add item to the bottom of the list (after done tasks too)
-                selectedList.items.add(item)
+                // Add item to the bottom of the list before done tasks
+                // Note: if we wanted to add after done tasks, we need to also update ItemsAdapter.onGetItemDraggableRange() to avoid crashing when trying to move newly added tasks below done tasks
+                val nbDone = selectedList.items.count { it.done }
+                val itemCount = selectedList.items.size
+                val doneLimit = itemCount - nbDone - 1
+                selectedList.items.add(doneLimit, item)
             }
             // Refresh adapter and view by signalling that a new item was inserted
             val position = selectedList.items.indexOf(item)

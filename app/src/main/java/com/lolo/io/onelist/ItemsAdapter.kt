@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
@@ -17,6 +18,7 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionMoveToSwipedDirection
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder
 import com.lolo.io.onelist.model.Item
+import com.lolo.io.onelist.updates.appContext
 import com.lolo.io.onelist.util.ifVisible
 import kotlinx.android.synthetic.main.list_item.view.*
 
@@ -24,12 +26,23 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
         SwipeableItemAdapter<ItemsAdapter.ItemViewHolder>,
         DraggableItemAdapter<ItemsAdapter.ItemViewHolder> {
 
-
     var items: MutableList<Item> = arrayListOf()
 
     init {
         setHasStableIds(true)
     }
+
+    var doneItemsToBottom: Boolean
+        get() {
+            val sp = PreferenceManager.getDefaultSharedPreferences(appContext)
+            return sp.getBoolean("doneItemsToBottom", true) ?: true
+        }
+        set(value) {
+            val sp = PreferenceManager.getDefaultSharedPreferences(appContext)
+            val editor = sp.edit()
+            editor.putBoolean("doneItemsToBottom", value)
+            editor.apply()
+        }
 
     override fun getItemCount(): Int {
         return items.size
@@ -134,9 +147,22 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
 
     // Drag :
     override fun onGetItemDraggableRange(holder: ItemViewHolder, position: Int): ItemDraggableRange? {
-        val nbDone = items.count { it.done }
-        return if (items[position].done) ItemDraggableRange(itemCount - nbDone, itemCount - 1)
-        else ItemDraggableRange(0, itemCount - nbDone - 1)
+        // Define where we can move items across the list
+        val nbDone = items.count { it.done } // get the count of done tasks
+        val doneLimit = itemCount - nbDone - 1 // calculate where in the list is the separation between done tasks and not done tasks
+        val idr : ItemDraggableRange =
+            if (!doneItemsToBottom // if items are left in place when done (expected behavior)
+                    || (!items[position].done && position > doneLimit) // or a not done item is among done items (quick fix to avoid a crash, such as when user used !doneItemsBottom but now re-enabled the option again)
+                    || items[position].done && position <= doneLimit) // or a done item is among not done items (quick fix to avoid a crash, such as when user used !doneItemsBottom but now re-enabled the option again)
+            {
+                // then we allow the item to be draggable across the entire list
+                ItemDraggableRange(0, itemCount - 1)
+            } else {
+                // Else the item is either done or not done, we only allow it to be moved in the range of done or not done tasks respectively
+                if (items[position].done) ItemDraggableRange(doneLimit + 1, itemCount - 1) // for done item, we can move from where done tasks starts up to the end of the list
+                else ItemDraggableRange(0, doneLimit) // for not done tasks, we can only move from the start of the list up to where done tasks start
+            }
+        return idr
     }
 
     override fun onCheckCanStartDrag(holder: ItemViewHolder, position: Int, x: Int, y: Int): Boolean = x > 0 && y > 0 && holder.swipeableContainerView.translationX == 0f
