@@ -1,8 +1,9 @@
 # <img src="icon.png" width="32" /> 1List
 
-1List is a simple app to manage several lists from only one screen.
+1List is a simple Android app to manage several lists from only one screen.
 
-## Download :
+## Download
+
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
      height="80">](https://f-droid.org/packages/com.lolo.io.onelist/)
@@ -10,26 +11,36 @@
      alt="Get it on Google Play"
      height="80">](https://play.google.com/store/apps/details?id=com.lolo.io.onelist)
 
-## Target platforms :
+## Target platforms
 
-API 19 or later
+Minimum: Android 4.4 KitKat (API 19) or later.
 
-## Features :
+Tested up to Android 13 Tiramisu (API 33).
 
--   User friendly lists management and smooth navigation
--   Add, delete, edit items in your lists
--   Move items within your lists
--   Mark items as done or undone
--   Add comments on each items
--   Create an unlimited number of lists
--   Move, edit, remove your lists
--   ... more to come in the near future
+## Features
 
-## Screenshots :
+- User friendly lists management and smooth navigation
+- Add, delete, edit items in your lists
+- Move items within your lists
+- Mark items as done or undone
+- Add comments on each items
+- Create an unlimited number of lists
+- Move, edit, remove your lists
+- Dark and Light modes
+- Compatible with file synchronizers such as [SyncThing](https://syncthing.net/).
+- Pull requests are welcome for more features!
 
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen1.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen2.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen3.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen4.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen5.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen6.png" width="200" />
+## Screenshots
 
-## Donations :
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen1.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen2.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen3.png" width="200" />
+
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen4.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen5.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen6.png" width="200" />
+
+## License
+
+Licensed under the MIT Public License by Loic Teyssier.
+
+## Donations
 
 [<img src="https://image.flaticon.com/icons/svg/931/931949.svg?sanitize=true"
      alt="Beer"
