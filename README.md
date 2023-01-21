@@ -28,7 +28,7 @@ Tested up to Android 13 Tiramisu (API 33).
 - Move, edit, remove your lists
 - Dark and Light modes
 - Compatible with file synchronizers such as [SyncThing](https://syncthing.net/).
-- Pull requests are welcome for more features!
+- Open-Source, [pull requests](https://github.com/lolo-io/OneList/pulls) for new features are welcome!
 
 ## Screenshots
 
