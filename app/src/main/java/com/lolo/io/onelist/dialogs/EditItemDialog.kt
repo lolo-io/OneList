@@ -67,6 +67,7 @@ fun editItemDialog(activity: Activity, item: Item, onDoneEditing: (Item, ItemLis
             if (view.item_title.text.toString().isEmpty()) {
                 dialog.item_title.shake()
             } else {
+                Log.d("OneList", "Debugv EditItem validation with content")
                 // Craft new Item from user's inputs
                 val newItem = Item(view.item_title.text.toString(), view.item_comment.text.toString(), item.done, item.commentDisplayed)
                 // User wants to move Item to another ItemList?
@@ -79,6 +80,7 @@ fun editItemDialog(activity: Activity, item: Item, onDoneEditing: (Item, ItemLis
                     // Note that here we do not have access to which ItemList we are in, so we can't know if user selected the same ItemList we currently are in, we check this in the callback
                     listsMap[item_list_spinner_selection] // simply fetch the ItemList object from the Map using the list's title selected by user
                 }
+                Log.d("OneList", "Debugv EditItem validation almost done: " + newItem.toString() + " into list " + targetList?.title)
                 // Callback, supplying the new Item and also whether we move to another ItemList
                 onDoneEditing(newItem, targetList)
                 // Hide dialog

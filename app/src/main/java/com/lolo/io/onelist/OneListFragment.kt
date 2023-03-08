@@ -436,15 +436,21 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         editItemDialog(mainActivity, item) { updatedItem, targetList ->
             // Callback OnDoneEditing() when Item edit dialog is validated or cancelled
             // If user does not want to move Item to another list
+            Log.d("OneList", "Debugv onEditItem OnDoneEditing of EditItemDialog")
             if (targetList == null || targetList.stableId == selectedList.stableId) { // if target list is null or is the same as current list, we do not move item
+                Log.d("OneList", "Debugv onEditItem OnDoneEditing : 1st branch: updatedItem: " + updatedItem.toString() + " oldItem: " + item.toString())
+                // Memorize old Item index before we modify it
+                val oldItemIndex : Int = selectedList.items.indexOf(item)
+                Log.d("OneList", "Debugv onEditItem OnDoneEditing : 1st branch: selectedList oldItem: " + oldItemIndex.toString())
                 // Update item in current list
-                item.title = updatedItem.title
-                item.comment = updatedItem.comment
+                selectedList.items[oldItemIndex].title = updatedItem.title // alternative to `item.title = updatedItem.title`, which does not work if user minimize and restore app while EditItemDialog is already opened, then any change won't be committed because the function context is lost and the `item` is not connected to `selectedList` anymore, but if we modify based on item index, then we are fine
+                selectedList.items[oldItemIndex].comment = updatedItem.comment
                 // Save current list state on file
                 persistence.saveListAsync(selectedList)
                 // Refresh current list view
-                itemsAdapter.notifyItemChanged(selectedList.items.indexOf(item))
+                itemsAdapter.notifyItemChanged(oldItemIndex)
             } else { // If user wants to move Item to another list (targetList is not null)
+                Log.d("OneList", "Debugv onEditItem OnDoneEditing : 2nd branch")
                 // Move updated item to another list
                 val newPosition = when (updatedItem.done) {  // move to a different position whether item is done or not
                     true -> targetList.items.size // if done, move to list end (remember we add one task simultaneously, so no -1)
