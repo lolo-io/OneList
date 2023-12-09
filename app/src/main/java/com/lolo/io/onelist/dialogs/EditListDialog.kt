@@ -14,8 +14,8 @@ import androidx.documentfile.provider.DocumentFile
 import com.lolo.io.onelist.model.ItemList
 import com.lolo.io.onelist.MainActivity
 import com.lolo.io.onelist.R
+import com.lolo.io.onelist.databinding.DialogEditListBinding
 import com.lolo.io.onelist.util.*
-import kotlinx.android.synthetic.main.dialog_edit_list.view.*
 import kotlin.math.abs
 
 @SuppressLint("InflateParams")
@@ -33,7 +33,8 @@ fun editListDialog(activity: MainActivity, list: ItemList = ItemList(), onPositi
         pathChanged = true
     }
 
-    val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_list, null).apply {
+    val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_list, null)
+    val binding = DialogEditListBinding.bind(view).apply {
         listTitle.setText(list.title)
         listTitle.setSelection(list.title.length)
         listTitle.requestFocus()
@@ -63,9 +64,9 @@ fun editListDialog(activity: MainActivity, list: ItemList = ItemList(), onPositi
     }
 
     view.apply {
-        validateEditList.setOnClickListener {
-            if (canValidate(listTitle)) {
-                list.title = view.listTitle.text.toString()
+        binding.validateEditList.setOnClickListener {
+            if (canValidate(binding.listTitle)) {
+                list.title = binding.listTitle.text.toString()
                 dialog.dismiss()
 
                 treeUri?.let { uri ->
@@ -79,7 +80,7 @@ fun editListDialog(activity: MainActivity, list: ItemList = ItemList(), onPositi
             }
         }
 
-        listStorageButton.apply {
+        binding.listStorageButton.apply {
             text = list.path.toUri?.path?.beautify()
                     ?: treeUri?.path?.beautify()
                     ?: list.path.takeIf { it.isNotBlank() }
@@ -88,7 +89,7 @@ fun editListDialog(activity: MainActivity, list: ItemList = ItemList(), onPositi
                 storagePathDialog(activity) { path ->
                     treeUri = path.toUri
                     list.path = if (treeUri == null && path.isNotBlank()) "$it/${list.fileName}" else ""
-                    listStorageButton.text = treeUri?.path?.beautify()
+                    binding.listStorageButton.text = treeUri?.path?.beautify()
                             ?: list.path.takeIf { it.isNotBlank() }
                                     ?: context.getString(R.string.app_private_storage)
                     pathChanged = true
@@ -96,7 +97,7 @@ fun editListDialog(activity: MainActivity, list: ItemList = ItemList(), onPositi
             }
         }
 
-        listImportButton.apply {
+        binding.listImportButton.apply {
             visibility = if (isNewList) View.VISIBLE else View.GONE
             setOnClickListener {
                 selectFile(activity) {
@@ -113,10 +114,10 @@ fun editListDialog(activity: MainActivity, list: ItemList = ItemList(), onPositi
             }
         }
 
-        cancelEditList.setOnClickListener { dialog.cancel() }
+        binding.cancelEditList.setOnClickListener { dialog.cancel() }
 
-        listTitle.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) validateEditList.performClick()
+        binding.listTitle.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) binding.validateEditList.performClick()
             true
         }
     }

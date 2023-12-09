@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.codekidlabs.storagechooser.Content
@@ -12,38 +11,38 @@ import com.codekidlabs.storagechooser.StorageChooser
 import com.lolo.io.onelist.App
 import com.lolo.io.onelist.MainActivity
 import com.lolo.io.onelist.R
+import com.lolo.io.onelist.databinding.DialogListPathBinding
 import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT
 import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT_TREE
 import com.lolo.io.onelist.util.withStoragePermission
-import kotlinx.android.synthetic.main.dialog_list_path.view.*
-import java.io.File
-import java.net.URI
 
 
 @SuppressLint("InflateParams")
 fun defaultPathDialog(activity: MainActivity, onPathChosen: (String) -> Unit) {
     val view = LayoutInflater.from(activity).inflate(R.layout.dialog_list_path, null)
-    view.listPathTitle.text = activity.getString(R.string.default_storage_folder)
-    displayDialog(view, activity, onPathChosen)
+    val binding = DialogListPathBinding.bind(view)
+    binding.listPathTitle.text = activity.getString(R.string.default_storage_folder)
+    displayDialog(binding, activity, onPathChosen)
 }
 
 @SuppressLint("InflateParams")
 fun storagePathDialog(activity: MainActivity, onPathChosen: (String) -> Unit) {
     val view = LayoutInflater.from(activity).inflate(R.layout.dialog_list_path, null)
-    displayDialog(view, activity, onPathChosen)
+    val binding = DialogListPathBinding.bind(view)
+    displayDialog(binding, activity, onPathChosen)
 }
 
-fun displayDialog(view: View, activity: MainActivity, onPathChosen: (String) -> Unit) {
+fun displayDialog(binding: DialogListPathBinding, activity: MainActivity, onPathChosen: (String) -> Unit) {
 
     val dialog = AlertDialog.Builder(activity).run {
-        setView(view)
+        setView(binding.root)
         create()
     }.apply {
         setCanceledOnTouchOutside(true)
         show()
     }
 
-    view.apply {
+    binding.apply {
         appPrivateStorageButton.setOnClickListener {
             onPathChosen("")
             dialog.dismiss()

@@ -1,6 +1,5 @@
 package com.lolo.io.onelist
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,17 +8,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.get
+import com.lolo.io.onelist.databinding.FragmentSettingsBinding
 import com.lolo.io.onelist.dialogs.defaultPathDialog
 import com.lolo.io.onelist.updates.ReleaseNote
 import com.lolo.io.onelist.updates.show
 import com.lolo.io.onelist.util.beautify
 import com.lolo.io.onelist.util.toUri
-import kotlinx.android.synthetic.main.fragment_settings.*
 
 
 class PreferenceFragment : PreferenceFragmentCompat() {
 
-
+    private var _binding : FragmentSettingsBinding? = null
+    private val binding : FragmentSettingsBinding
+        get() = _binding!!
     private val mainActivity: MainActivity
         get() {
             if (activity is MainActivity) return activity as MainActivity
@@ -30,14 +31,16 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.settings, rootKey)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = activity as AppCompatActivity
-        customToolbar?.let { activity.setSupportActionBar(it) }
+
+        binding.customToolbar.let { activity.setSupportActionBar(it) }
         activity.supportActionBar?.apply {
             title = getString(R.string.settings)
             setDisplayShowHomeEnabled(true)
@@ -49,7 +52,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         this.preferenceScreen.get<Preference>("version")?.summary = mainActivity.persistence.version
 
 
-        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener { _, key ->
+        preferenceManager.sharedPreferences?.registerOnSharedPreferenceChangeListener { _, key ->
             when(key) {
                 "theme" -> activity.recreate()/*{
                     activity.finish()
@@ -63,7 +66,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         }
     }
 
-    override fun onPreferenceTreeClick(preference: Preference?): Boolean {
+    override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference?.key) {
             "storage" -> defaultPathDialog(mainActivity) { path ->
                 mainActivity.persistence.defaultPath = path
@@ -83,6 +86,11 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 }
                 else getString(R.string.app_private_storage)
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

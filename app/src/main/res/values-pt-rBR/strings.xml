@@ -18,7 +18,7 @@
     <string name="clear_comment">Limpar comentário</string>
     <string name="add_comment">Adicionar comentário</string>
     <string name="change_list_location">Mudar diretório para armazenamento da lista</string>
-    <string name="app_private_storage">Armazenamento privado do app</string>
+    <string name="app_private_storage">Apenas cache do aplicativo</string>
     <string name="choose_folder">Escolha o diretório …</string>
     <string name="more_options">mais opções</string>
     <string name="import_from_file">Importar</string>

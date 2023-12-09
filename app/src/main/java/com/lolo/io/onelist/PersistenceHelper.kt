@@ -212,7 +212,7 @@ class PersistenceHelper(private val app: Activity) {
                 } finally {
                     out?.close()
                 }
-            } ?: if (list.path.isNotBlank()) {
+            } ?: list.path.takeIf { it.isNotBlank() }?.run {
                 File(list.path).writeText(json)
             }
         } catch (e: Exception) {

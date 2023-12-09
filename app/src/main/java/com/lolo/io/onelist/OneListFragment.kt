@@ -26,10 +26,10 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator
-import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager
+import com.lolo.io.onelist.databinding.FragmentOneListBinding
 import com.lolo.io.onelist.dialogs.*
 import com.lolo.io.onelist.model.Item
 import com.lolo.io.onelist.model.ItemList
@@ -39,7 +39,6 @@ import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.PowerMenu
 import com.skydoves.powermenu.PowerMenuItem
 import com.skydoves.powermenu.kotlin.createPowerMenu
-import kotlinx.android.synthetic.main.fragment_one_list.*
 import java.util.*
 import androidx.recyclerview.widget.DividerItemDecoration
 
@@ -47,6 +46,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 
 
 class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity.OnDispatchTouchEvent {
+
+    private var _binding : FragmentOneListBinding? = null
+    private val binding : FragmentOneListBinding
+        get() = _binding!!
+
 
     private var container: ViewGroup? = null
     private val mainActivity: MainActivity
@@ -65,7 +69,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         get() = mainActivity.persistence
 
     private val isAddCommentShown
-        get() = addCommentEditText.height > 0
+        get() = binding.addCommentEditText.height > 0
 
     private val popupMenu: PowerMenu? by lazy {
         context?.let {
@@ -101,24 +105,25 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     @SuppressLint("InflateParams")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentOneListBinding.inflate(inflater, container, false)
         this.container = container
-        return inflater.inflate(R.layout.fragment_one_list, null)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-        addItemEditText.setOnEditorActionListener { _, actionId, _ -> if (actionId == EditorInfo.IME_ACTION_DONE) addItem(); true }
-        validate.setOnClickListener { addItem() }
-        buttonAddList.setOnClickListener { editListDialog(mainActivity) { list -> createList(list) }.show() }
-        buttonEditList.setOnClickListener { editList() }
-        buttonRemoveList.setOnClickListener { deleteList(selectedList) }
-        buttonAddComment.setOnClickListener { switchCommentSection() }
-        buttonClearComment.setOnClickListener { addCommentEditText.text.clear() }
-        buttonShareList.setOnClickListener { persistence.shareList(selectedList) }
+        binding.addItemEditText.setOnEditorActionListener { _, actionId, _ -> if (actionId == EditorInfo.IME_ACTION_DONE) addItem(); true }
+        binding.validate.setOnClickListener { addItem() }
+        binding.buttonAddList.setOnClickListener { editListDialog(mainActivity) { list -> createList(list) }.show() }
+        binding.buttonEditList.setOnClickListener { editList() }
+        binding.buttonRemoveList.setOnClickListener { deleteList(selectedList) }
+        binding.buttonAddComment.setOnClickListener { switchCommentSection() }
+        binding.buttonClearComment.setOnClickListener { binding.addCommentEditText.text.clear() }
+        binding.buttonShareList.setOnClickListener { persistence.shareList(selectedList) }
 
-        menu_arrow.setOnTouchListener { v, e ->
+        binding.menuArrow.setOnTouchListener { v, e ->
             if (e.action == MotionEvent.ACTION_DOWN) {
                 if (popupMenu?.isShowing == false)
                     popupMenu?.showAsAnchorLeftTop(v, dpToPx(12), dpToPx(12))
@@ -127,28 +132,28 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             true
         }
 
-        swipeContainer.setOnRefreshListener {
+        binding.swipeContainer.setOnRefreshListener {
             persistence.refreshAllLists(allLists)
             listsAdapter.notifyDataSetChanged()
             itemsAdapter.notifyDataSetChanged()
-            swipeContainer.isRefreshing = false
+            binding.swipeContainer.isRefreshing = false
         }
 
-        validate.visibility = View.INVISIBLE
-        buttonAddComment.visibility = View.INVISIBLE
-        addItemEditText.afterTextChanged {
+        binding.validate.visibility = View.INVISIBLE
+        binding.buttonAddComment.visibility = View.INVISIBLE
+        binding.addItemEditText.afterTextChanged {
             if (it.isNotEmpty()) {
-                validate.visibility = View.VISIBLE
-                buttonAddComment.visibility = View.VISIBLE
+                binding.validate.visibility = View.VISIBLE
+                binding.buttonAddComment.visibility = View.VISIBLE
             } else {
-                validate.visibility = View.INVISIBLE
-                if (!isAddCommentShown) buttonAddComment.visibility = View.INVISIBLE
+                binding.validate.visibility = View.INVISIBLE
+                if (!isAddCommentShown) binding.buttonAddComment.visibility = View.INVISIBLE
             }
         }
 
-        addCommentEditText.afterTextChanged {
-            if (it.isNotEmpty()) buttonClearComment.visibility = View.VISIBLE
-            else buttonClearComment.visibility = View.GONE
+        binding.addCommentEditText.afterTextChanged {
+            if (it.isNotEmpty()) binding.buttonClearComment.visibility = View.VISIBLE
+            else binding.buttonClearComment.visibility = View.GONE
         }
 
         setupListsRecyclerView()
@@ -187,20 +192,20 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     private fun setupListsRecyclerView() {
 
-        listsRecyclerView.adapter = listsAdapter
+        binding.listsRecyclerView.adapter = listsAdapter
 
         val layoutManager = FlexboxLayoutManager(mainActivity)
         layoutManager.flexDirection = FlexDirection.ROW
         layoutManager.justifyContent = JustifyContent.CENTER
         layoutManager.flexWrap = FlexWrap.WRAP
-        listsRecyclerView.layoutManager = layoutManager
+        binding.listsRecyclerView.layoutManager = layoutManager
 
-        listsRecyclerView.itemAnimator = DefaultItemAnimator()
+        binding.listsRecyclerView.itemAnimator = DefaultItemAnimator()
 
         val listCallback = ItemTouchHelperCallback(listsAdapter)
         val listTouchHelper = ItemTouchHelper(listCallback)
 
-        listTouchHelper.attachToRecyclerView(listsRecyclerView)
+        listTouchHelper.attachToRecyclerView(binding.listsRecyclerView)
     }
 
     private fun setupItemsRecyclerView() {
@@ -209,16 +214,16 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         val itemsSwipeManager = RecyclerViewSwipeManager()
         var wrappedAdapter = itemsDragDropManager.createWrappedAdapter(itemsAdapter)
         wrappedAdapter = itemsSwipeManager.createWrappedAdapter(wrappedAdapter)
-        itemsRecyclerView.adapter = wrappedAdapter
-        itemsRecyclerView.layoutManager = LinearLayoutManager(mainActivity)
+        binding.itemsRecyclerView.adapter = wrappedAdapter
+        binding.itemsRecyclerView.layoutManager = LinearLayoutManager(mainActivity)
 
         val itemsTouchActionGuardManager = RecyclerViewTouchActionGuardManager()
         itemsTouchActionGuardManager.setInterceptVerticalScrollingWhileAnimationRunning(true)
         itemsTouchActionGuardManager.isEnabled = true
 
-        itemsTouchActionGuardManager.attachRecyclerView(itemsRecyclerView)
-        itemsSwipeManager.attachRecyclerView(itemsRecyclerView)
-        itemsDragDropManager.attachRecyclerView(itemsRecyclerView)
+        itemsTouchActionGuardManager.attachRecyclerView(binding.itemsRecyclerView)
+        itemsSwipeManager.attachRecyclerView(binding.itemsRecyclerView)
+        itemsDragDropManager.attachRecyclerView(binding.itemsRecyclerView)
         itemsDragDropManager.setInitiateOnLongPress(true)
         itemsDragDropManager.setInitiateOnMove(false)
         itemsDragDropManager.setDraggingItemShadowDrawable(
@@ -226,38 +231,38 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
         val animator = DraggableItemAnimator()
         animator.supportsChangeAnimations = false
-        itemsRecyclerView.itemAnimator = animator
+        binding.itemsRecyclerView.itemAnimator = animator
 
         if(Config.smallScreen) {
             val dividerItemDecoration = DividerItemDecoration(
-                itemsRecyclerView.context,
-                (itemsRecyclerView.layoutManager as LinearLayoutManager).orientation
+                binding.itemsRecyclerView.context,
+                (binding.itemsRecyclerView.layoutManager as LinearLayoutManager).orientation
             )
-            itemsRecyclerView.addItemDecoration(dividerItemDecoration)
+            binding.itemsRecyclerView.addItemDecoration(dividerItemDecoration)
         }
     }
 
 
     private fun switchCommentSection() {
-        addCommentEditText.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
-        val measuredHeight = addCommentEditText.measuredHeight
-        val height = addCommentEditText.height
+        binding.addCommentEditText.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+        val measuredHeight = binding.addCommentEditText.measuredHeight
+        val height = binding.addCommentEditText.height
         val commentSlideAnimation = ValueAnimator.ofInt(height, measuredHeight - height).setDuration(BUTTON_ANIM_DURATION)
         commentSlideAnimation.addUpdateListener { animation ->
-            addCommentEditText.layoutParams.height = animation.animatedValue as Int
-            addCommentEditText.requestLayout()
-            buttonClearComment.visibility = View.GONE
+            binding.addCommentEditText.layoutParams.height = animation.animatedValue as Int
+            binding.addCommentEditText.requestLayout()
+            binding.buttonClearComment.visibility = View.GONE
             if (animation.animatedValue == measuredHeight && animation.animatedValue as Int > 0) {
-                addCommentEditText.layoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT
-                if (addCommentEditText.text.isNotEmpty()) buttonClearComment.visibility = View.VISIBLE
+                binding.addCommentEditText.layoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT
+                if (binding.addCommentEditText.text.isNotEmpty()) binding.buttonClearComment.visibility = View.VISIBLE
             }
         }
         commentSlideAnimation.start()
 
-        buttonAddComment.flipX()
+        binding.buttonAddComment.flipX()
 
-        val editText = if (!isAddCommentShown) addCommentEditText
-        else addItemEditText
+        val editText = if (!isAddCommentShown) binding.addCommentEditText
+        else binding.addItemEditText
         editText.requestFocus()
 
         val imm = mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -273,7 +278,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             saveListAsync(itemList)
             updateListIdsTableAsync(allLists)
         }
-        addItemEditText.requestFocus()
+        binding.addItemEditText.requestFocus()
     }
 
 
@@ -329,7 +334,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     override fun onListAdapterStartDrag() = showEditionButtons()
 
     override fun onListMoved(fromPosition: Int, toPosition: Int) {
-        if (buttonRemoveList.alpha == 1F)
+        if (binding.buttonRemoveList.alpha == 1F)
             hideEditionButtons()
 
         if (fromPosition < toPosition && toPosition < allLists.size) {
@@ -349,24 +354,24 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
 
     // Items handlers :
     private fun addItem() {
-        if (addItemEditText.text.toString().isNotEmpty()) {
+        if (binding.addItemEditText.text.toString().isNotEmpty()) {
             if (allLists.isEmpty()) createList(ItemList(getString(R.string.list_default_name)))
-            val item = Item(addItemEditText.text.toString())
+            val item = Item(binding.addItemEditText.text.toString())
             if (isAddCommentShown)
-                item.comment = addCommentEditText.text.toString()
+                item.comment = binding.addCommentEditText.text.toString()
             selectedList.items.add(0, item)
             val position = selectedList.items.indexOf(item)
             itemsAdapter.notifyItemInserted(position)
-            itemsRecyclerView.smoothScrollToPosition(0)
-            addItemEditText.setText(R.string.empty)
-            addItemEditText.requestFocus()
-            if (addCommentEditText.text.isEmpty() && isAddCommentShown) {
+            binding.itemsRecyclerView.smoothScrollToPosition(0)
+            binding.addItemEditText.setText(R.string.empty)
+            binding.addItemEditText.requestFocus()
+            if (binding.addCommentEditText.text.isEmpty() && isAddCommentShown) {
                 switchCommentSection()
             }
 
-            addCommentEditText.setText(R.string.empty)
+            binding.addCommentEditText.setText(R.string.empty)
             persistence.saveListAsync(selectedList)
-        } else listOf(addItemEditText, validate).forEach { it.shake() }
+        } else listOf(binding.addItemEditText, binding.validate).forEach { it.shake() }
     }
 
     override fun onRemoveItem(item: Item) {
@@ -395,8 +400,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         selectedList.items.add(newPosition, item)
         itemsAdapter.notifyItemChanged(oldPosition)
         itemsAdapter.notifyItemMoved(oldPosition, newPosition)
-        val scrolledToTop = (itemsRecyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0
-        if (scrolledToTop || oldPosition == 0) itemsRecyclerView.scrollToPosition(0)
+        val scrolledToTop = (binding.itemsRecyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0
+        if (scrolledToTop || oldPosition == 0) binding.itemsRecyclerView.scrollToPosition(0)
         persistence.saveListAsync(selectedList)
     }
 
@@ -419,9 +424,9 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
             val addItemRect = Rect()
             val addCommentRect = Rect()
             val showCommentRect = Rect()
-            addItemEditText.getGlobalVisibleRect(addItemRect)
-            addCommentEditText.getGlobalVisibleRect(addCommentRect)
-            buttonAddComment.getGlobalVisibleRect(showCommentRect)
+            binding.addItemEditText.getGlobalVisibleRect(addItemRect)
+            binding.addCommentEditText.getGlobalVisibleRect(addCommentRect)
+            binding.buttonAddComment.getGlobalVisibleRect(showCommentRect)
             val view = mainActivity.currentFocus
             val rawX = ev.rawX.toInt()
             val rawY = ev.rawY.toInt()
@@ -431,31 +436,37 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
                 if (!addItemRect.contains(rawX, rawY) && !addCommentRect.contains(rawX, rawY) && !showCommentRect.contains(rawX, rawY)) {
                     view.clearFocus()
                     val inputMethodManager = App.instance.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.hideSoftInputFromWindow(rootView.windowToken, 0)
+                    inputMethodManager.hideSoftInputFromWindow(binding.rootView.windowToken, 0)
                 }
             }
 
             val rectButtons = Rect()
-            buttonsLayout.getGlobalVisibleRect(rectButtons)
+            binding.buttonsLayout.getGlobalVisibleRect(rectButtons)
 
-            if (buttonRemoveList.alpha == 1F && !rectButtons.contains(rawX, rawY))
+            if (binding.buttonRemoveList.alpha == 1F && !rectButtons.contains(rawX, rawY))
                 hideEditionButtons()
         }
     }
 
     private fun showEditionButtons() {
-        buttonShareList.visibility = View.GONE
-        buttonRemoveList.animShowFlip()
-        buttonAddList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
-        buttonEditList.animShowFlip()
-        buttonEditList.animTranslation(stopX = dpToPx(-32).toFloat(), startDelay = BUTTON_ANIM_DURATION)
+        binding.buttonShareList.visibility = View.GONE
+        binding.buttonRemoveList.animShowFlip()
+        binding.buttonAddList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
+        binding.buttonEditList.animShowFlip()
+        binding.buttonEditList.animTranslation(stopX = dpToPx(-32).toFloat(), startDelay = BUTTON_ANIM_DURATION)
     }
 
     private fun hideEditionButtons() {
-        buttonShareList.visibility = View.VISIBLE
-        buttonAddList.animShowFlip()
-        buttonRemoveList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
-        buttonEditList.animHideFlip()
-        buttonEditList.animTranslation(dpToPx(-32).toFloat())
+        binding.buttonShareList.visibility = View.VISIBLE
+        binding.buttonAddList.animShowFlip()
+        binding.buttonRemoveList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
+        binding.buttonEditList.animHideFlip()
+        binding.buttonEditList.animTranslation(dpToPx(-32).toFloat())
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }

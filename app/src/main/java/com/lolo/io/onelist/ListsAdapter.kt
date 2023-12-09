@@ -4,8 +4,8 @@ import android.view.*
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.lolo.io.onelist.databinding.ButtonListBinding
 import com.lolo.io.onelist.model.ItemList
-import kotlinx.android.synthetic.main.button_list.view.*
 
 class ListsAdapter(val lists: MutableList<ItemList>, val callback: ListsCallbacks) :
         RecyclerView.Adapter<ListsAdapter.ListViewHolder>(),
@@ -25,9 +25,8 @@ class ListsAdapter(val lists: MutableList<ItemList>, val callback: ListsCallback
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.button_list, parent, false)
-
-        return ListViewHolder(view)
+        val binding = ButtonListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ListViewHolder(binding)
     }
 
     override fun getItemId(position: Int): Long {
@@ -39,7 +38,7 @@ class ListsAdapter(val lists: MutableList<ItemList>, val callback: ListsCallback
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val itemList = lists[position]
 
-        val currentView = holder.itemView.textView as TextView
+        val currentView = holder.binding.textView
 
         when (itemList) {
             selectedItemList -> {
@@ -64,10 +63,10 @@ class ListsAdapter(val lists: MutableList<ItemList>, val callback: ListsCallback
         notifyItemChanged(lists.indexOf(itemList))
     }
 
-    inner class ListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ListViewHolder(val binding: ButtonListBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            view.setOnTouchListener { _, motionEvent -> onTouch(motionEvent) }
+            binding.root.setOnTouchListener { _, motionEvent -> onTouch(motionEvent) }
         }
 
         private fun onTouch(motionEvent: MotionEvent?): Boolean {

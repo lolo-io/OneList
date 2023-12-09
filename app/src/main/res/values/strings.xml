@@ -18,7 +18,7 @@
     <string name="clear_comment">Clear comment</string>
     <string name="add_comment">Add comment</string>
     <string name="change_list_location">Change list storage folder</string>
-    <string name="app_private_storage">App private storage</string>
+    <string name="app_private_storage">App cache only</string>
     <string name="choose_folder">Choose folder …</string>
     <string name="more_options">more options</string>
     <string name="import_from_file">Import</string>

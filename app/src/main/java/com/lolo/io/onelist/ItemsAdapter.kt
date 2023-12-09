@@ -16,9 +16,9 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemConstant
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionDefault
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionMoveToSwipedDirection
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder
+import com.lolo.io.onelist.databinding.ListItemBinding
 import com.lolo.io.onelist.model.Item
 import com.lolo.io.onelist.util.ifVisible
-import kotlinx.android.synthetic.main.list_item.view.*
 
 class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAdapter.ItemViewHolder>(),
         SwipeableItemAdapter<ItemsAdapter.ItemViewHolder>,
@@ -36,51 +36,51 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(App.instance.mainContext.resources.getLayout(R.layout.list_item), parent, false)
-        return ItemViewHolder(v).apply {
-            view.badge.isVisible = !Config.smallScreen
+        val binding = ListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
+            badge.isVisible = !Config.smallScreen
         }
+        return ItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = items[position]
-        holder.view.text.text = item.title
+        holder.binding.text.text = item.title
         holder.itemView.tag = holder
-        holder.view.expandImg.visibility = View.GONE
+        holder.binding.expandImg.visibility = View.GONE
 
-        holder.view.expandImg.visibility = View.GONE
-        holder.view.comment.visibility = View.GONE
+        holder.binding.expandImg.visibility = View.GONE
+        holder.binding.comment.visibility = View.GONE
         if (item.comment.isNotEmpty()) {
-            holder.view.expandImg.visibility = View.VISIBLE
-            holder.view.comment.text = item.comment
+            holder.binding.expandImg.visibility = View.VISIBLE
+            holder.binding.comment.text = item.comment
             if (item.commentDisplayed) {
-                holder.view.comment.visibility = View.VISIBLE
-                holder.view.expandImg.rotationX = 180F
-            } else holder.view.expandImg.rotationX = 0f
+                holder.binding.comment.visibility = View.VISIBLE
+                holder.binding.expandImg.rotationX = 180F
+            } else holder.binding.expandImg.rotationX = 0f
         }
 
         if (item.done) strike(holder) else unStrike(holder)
     }
 
     private fun strike(viewHolder: ItemViewHolder) {
-        viewHolder.view.badge.ifVisible()?.setImageDrawable(ContextCompat.getDrawable(App.instance.mainContext, R.drawable.ic_bullet_outline_checked))
-        viewHolder.view.text.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
-        viewHolder.view.text.paintFlags = viewHolder.view.text.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        viewHolder.view.comment.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
-        viewHolder.view.comment.paintFlags = viewHolder.view.text.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        viewHolder.view.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight), PorterDuff.Mode.SRC_ATOP)
+        viewHolder.binding.badge.ifVisible()?.setImageDrawable(ContextCompat.getDrawable(App.instance.mainContext, R.drawable.ic_bullet_outline_checked))
+        viewHolder.binding.text.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
+        viewHolder.binding.text.paintFlags = viewHolder.binding.text.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        viewHolder.binding.comment.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight))
+        viewHolder.binding.comment.paintFlags = viewHolder.binding.text.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        viewHolder.binding.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentLight), PorterDuff.Mode.SRC_ATOP)
     }
 
 
     private fun unStrike(viewHolder: ItemViewHolder) {
-        viewHolder.view.badge.ifVisible()?.setImageDrawable(ContextCompat.getDrawable(App.instance.mainContext, R.drawable.ic_bullet_outline))
-        viewHolder.view.text.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.textColorPrimary))
+        viewHolder.binding.badge.ifVisible()?.setImageDrawable(ContextCompat.getDrawable(App.instance.mainContext, R.drawable.ic_bullet_outline))
+        viewHolder.binding.text.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.textColorPrimary))
         Paint().let {
-            viewHolder.view.text.paintFlags = it.flags
-            viewHolder.view.comment.paintFlags = it.flags
+            viewHolder.binding.text.paintFlags = it.flags
+            viewHolder.binding.comment.paintFlags = it.flags
         }
-        viewHolder.view.comment.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccent))
-        viewHolder.view.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentDark), PorterDuff.Mode.SRC_ATOP)
+        viewHolder.binding.comment.setTextColor(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccent))
+        viewHolder.binding.expandImg.drawable.setColorFilter(ContextCompat.getColor(App.instance.mainContext, R.color.colorAccentDark), PorterDuff.Mode.SRC_ATOP)
     }
 
     override fun getItemId(position: Int): Long {
@@ -104,8 +104,8 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
 
     private var touchedItems = arrayListOf<Item>()
     override fun onSwipeItemStarted(holder: ItemViewHolder, position: Int) {
-        holder.view.leftBar.visibility = View.VISIBLE
-        holder.view.rightBar.visibility = View.VISIBLE
+        holder.binding.leftBar.visibility = View.VISIBLE
+        holder.binding.rightBar.visibility = View.VISIBLE
         touchedItems.add(items[position])
     }
 
@@ -115,18 +115,18 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
         when (type) {
             SwipeableItemConstants.DRAWABLE_SWIPE_NEUTRAL_BACKGROUND -> {
                 bgRes = 0
-                holder.view.leftBar.visibility = View.GONE
-                holder.view.rightBar.visibility = View.GONE
+                holder.binding.leftBar.visibility = View.GONE
+                holder.binding.rightBar.visibility = View.GONE
             }
             SwipeableItemConstants.DRAWABLE_SWIPE_LEFT_BACKGROUND -> {
                 bgRes = R.drawable.bg_swipe_left
-                holder.view.editIcon.visibility = View.INVISIBLE
-                holder.view.deleteIcon.visibility = View.VISIBLE
+                holder.binding.editIcon.visibility = View.INVISIBLE
+                holder.binding.deleteIcon.visibility = View.VISIBLE
             }
             SwipeableItemConstants.DRAWABLE_SWIPE_RIGHT_BACKGROUND -> {
                 bgRes = R.drawable.bg_swipe_right
-                holder.view.editIcon.visibility = View.VISIBLE
-                holder.view.deleteIcon.visibility = View.INVISIBLE
+                holder.binding.editIcon.visibility = View.VISIBLE
+                holder.binding.deleteIcon.visibility = View.INVISIBLE
             }
         }
         holder.itemView.setBackgroundResource(bgRes)
@@ -156,15 +156,15 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
         notifyDataSetChanged()
     }
 
-    inner class ItemViewHolder(val view: View) : AbstractDraggableSwipeableItemViewHolder(view) {
+    inner class ItemViewHolder(val binding: ListItemBinding) : AbstractDraggableSwipeableItemViewHolder(binding.root) {
 
         init {
-            view.setOnClickListener { callback.onSwitchItemStatus(items[layoutPosition]) }
-            view.expandImg.setOnClickListener { callback.onShowOrHideComment(items[layoutPosition]) }
+            binding.root.setOnClickListener { callback.onSwitchItemStatus(items[layoutPosition]) }
+            binding.expandImg.setOnClickListener { callback.onShowOrHideComment(items[layoutPosition]) }
         }
 
         override fun getSwipeableContainerView(): View {
-            return view.containerView
+            return binding.containerView
         }
     }
 

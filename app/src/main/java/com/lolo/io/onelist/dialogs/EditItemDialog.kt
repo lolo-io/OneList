@@ -5,20 +5,19 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
-import com.lolo.io.onelist.model.Item
 import com.lolo.io.onelist.R
+import com.lolo.io.onelist.databinding.DialogEditItemBinding
+import com.lolo.io.onelist.model.Item
 import com.lolo.io.onelist.util.shake
-import kotlinx.android.synthetic.main.dialog_edit_item.*
-import kotlinx.android.synthetic.main.dialog_edit_item.view.*
 
 @SuppressLint("InflateParams")
 fun editItemDialog(activity: Activity, item: Item, onDoneEditing: (_: Item) -> Any?): AlertDialog {
-    val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_item, null).apply {
-        item_title.setText(item.title)
-        item_title.setSelection(item_title.text.length)
-        item_comment.setText(item.comment)
-        item_title.requestFocus()
-    }
+    val view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_item, null)
+    val binding = DialogEditItemBinding.bind(view)
+    binding.itemTitle.setText(item.title)
+    binding.itemTitle.setSelection(binding.itemTitle.text.length)
+    binding.itemComment.setText(item.comment)
+    binding.itemTitle.requestFocus()
 
     val dialog = AlertDialog.Builder(activity).run {
         setView(view)
@@ -32,16 +31,16 @@ fun editItemDialog(activity: Activity, item: Item, onDoneEditing: (_: Item) -> A
     }
 
     view.apply {
-        validateEdit.setOnClickListener {
-            if (view.item_title.text.toString().isEmpty()) {
-                dialog.item_title.shake()
+        binding.validateEdit.setOnClickListener {
+            if (binding.itemTitle.text.toString().isEmpty()) {
+                binding.itemTitle.shake()
             } else {
-                val newItem = Item(view.item_title.text.toString(), view.item_comment.text.toString(), item.done, item.commentDisplayed)
+                val newItem = Item(binding.itemTitle.text.toString(), binding.itemComment.text.toString(), item.done, item.commentDisplayed)
                 onDoneEditing(newItem)
                 dialog.dismiss()
             }
         }
-        cancelEdit.setOnClickListener {
+        binding.cancelEdit.setOnClickListener {
             onDoneEditing(item)
             dialog.dismiss()
         }
