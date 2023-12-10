@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,9 +42,7 @@ import com.skydoves.powermenu.PowerMenuItem
 import com.skydoves.powermenu.kotlin.createPowerMenu
 import java.util.*
 import androidx.recyclerview.widget.DividerItemDecoration
-
-
-
+import kotlin.collections.ArrayList
 
 class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity.OnDispatchTouchEvent {
 
@@ -51,6 +50,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     private val binding : FragmentOneListBinding
         get() = _binding!!
 
+    var selectedList: ItemList = ItemList("")
 
     private var container: ViewGroup? = null
     private val mainActivity: MainActivity
@@ -63,7 +63,6 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
     private var listsAdapter: ListsAdapter = ListsAdapter(allLists, this)
     private val itemsAdapter = ItemsAdapter(this)
 
-    private var selectedList: ItemList = ItemList("")
 
     private val persistence: PersistenceHelper
         get() = mainActivity.persistence
@@ -177,17 +176,9 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         }
 
         val selectedListIndex = persistence.selectedListIndex
-        if (allLists.size > selectedListIndex) {
+        if (selectedListIndex > -1 && allLists.size > selectedListIndex) {
             onSelectList(allLists[selectedListIndex])
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // in case things have changed while stopped
-        persistence.refreshAndFetchNewLists(allLists)
-        listsAdapter.notifyDataSetChanged()
-        itemsAdapter.notifyDataSetChanged()
     }
 
     private fun setupListsRecyclerView() {
@@ -380,12 +371,11 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks, MainActivity
         persistence.saveListAsync(selectedList)
     }
 
-    override fun onEditItem(item: Item) {
-        editItemDialog(mainActivity, item) { updatedItem ->
-            item.title = updatedItem.title
-            item.comment = updatedItem.comment
+    override fun onEditItem(index: Int) {
+        editItemDialog(mainActivity, selectedList.items[index]) { updatedItem ->
+            selectedList.items[index] = updatedItem
             persistence.saveListAsync(selectedList)
-            itemsAdapter.notifyItemChanged(selectedList.items.indexOf(item))
+            itemsAdapter.notifyItemChanged(index)
         }.show()
     }
 

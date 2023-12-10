@@ -5,7 +5,7 @@ import com.lolo.io.onelist.model.ItemList
 
 interface ItemsCallbacks {
     fun onRemoveItem(item: Item)
-    fun onEditItem(item: Item)
+    fun onEditItem(index: Int)
     fun onMoveItem(fromPosition: Int, toPosition: Int)
     fun onSwitchItemStatus(item: Item)
     fun onShowOrHideComment(item: Item)

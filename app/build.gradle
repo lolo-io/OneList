@@ -81,6 +81,8 @@ dependencies {
     implementation 'com.karumi:dexter:6.0.0'
     implementation 'io.github.tonnyl:whatsnew:0.1.7'
     implementation 'com.google.firebase:firebase-crashlytics:18.6.0'
+
+    implementation "com.anggrayudi:storage:1.5.5"
 }
 
 def props = new Properties()

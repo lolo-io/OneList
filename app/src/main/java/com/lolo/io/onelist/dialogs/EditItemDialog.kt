@@ -35,7 +35,10 @@ fun editItemDialog(activity: Activity, item: Item, onDoneEditing: (_: Item) -> A
             if (binding.itemTitle.text.toString().isEmpty()) {
                 binding.itemTitle.shake()
             } else {
-                val newItem = Item(binding.itemTitle.text.toString(), binding.itemComment.text.toString(), item.done, item.commentDisplayed)
+                val newItem = item.copy(
+                    title = binding.itemTitle.text.toString(),
+                    comment = binding.itemComment.text.toString(),
+                )
                 onDoneEditing(newItem)
                 dialog.dismiss()
             }

@@ -92,7 +92,7 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
         val item = touchedItems[0]
         touchedItems.removeAt(0)
         return when (result) {
-            SwipeableItemConstants.RESULT_SWIPED_RIGHT -> SwipeResultAction { holder.swipeItemHorizontalSlideAmount = 0F; callback.onEditItem(item) }
+            SwipeableItemConstants.RESULT_SWIPED_RIGHT -> SwipeResultAction { holder.swipeItemHorizontalSlideAmount = 0F; callback.onEditItem(position) }
             SwipeableItemConstants.RESULT_SWIPED_LEFT -> SwipeResultAction { callback.onRemoveItem(item) }
             else -> SwipeResultActionCanceled { onSetSwipeBackground(holder, items.indexOf(item), SwipeableItemConstants.DRAWABLE_SWIPE_NEUTRAL_BACKGROUND) }
         }
@@ -172,6 +172,10 @@ class ItemsAdapter(val callback: ItemsCallbacks) : RecyclerView.Adapter<ItemsAda
         override fun onSlideAnimationEnd() {
             super.onSlideAnimationEnd()
             onSlideEnd()
+        }
+
+        override fun onCleanUp() {
+            super.onCleanUp()
         }
     }
 

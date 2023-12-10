@@ -67,7 +67,7 @@ class PersistenceHelper(private val app: Activity) {
         }
     }
 
-
+/* Not needed ?
     fun refreshAndFetchNewLists(lists: MutableList<ItemList>) {
         runBlocking {
             val newIds = getListIdsTable()
@@ -80,6 +80,8 @@ class PersistenceHelper(private val app: Activity) {
             refreshAllLists(lists)
         }
     }
+
+ */
 
     fun refreshAllLists(lists: List<ItemList>) {
         runBlocking {
