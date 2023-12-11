@@ -8,15 +8,20 @@ import android.os.Bundle
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.lolo.io.onelist.updates.ReleaseNote
-import com.lolo.io.onelist.updates.show
-import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT
-import com.lolo.io.onelist.util.REQUEST_CODE_OPEN_DOCUMENT_TREE
-import io.github.tonnyl.whatsnew.WhatsNew
+import com.anggrayudi.storage.SimpleStorageHelper
+import com.lolo.io.onelist.core.data.persistence.PersistenceHelper
+import com.lolo.io.onelist.core.ui.Config
+import com.lolo.io.onelist.core.ui.REQUEST_CODE_OPEN_DOCUMENT
+import com.lolo.io.onelist.core.ui.REQUEST_CODE_OPEN_DOCUMENT_TREE
+import com.lolo.io.onelist.feature.lists.OneListFragment
+import com.lolo.io.onelist.feature.lists.utils.StorageHelperHolder
+import org.koin.android.ext.android.inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), StorageHelperHolder  {
 
-    val persistence: PersistenceHelper by lazy { PersistenceHelper(this) }
+    override val storageHelper = SimpleStorageHelper(this)
+
+    val persistence by inject<PersistenceHelper>()
 
     // On some devices, displaying storage chooser fragment before activity is resumed leads to a crash.
     // This is a workaround.
@@ -30,31 +35,46 @@ class MainActivity : AppCompatActivity() {
     var onPathChosenActivityResult: (String) -> Any? = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        App.instance.mainContext = this.baseContext
         setTheme(R.style.AppTheme)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         Config.init(applicationContext)
 
         val fragment = OneListFragment().apply {
-            if (intent.action == "android.intent.action.VIEW")
-                arguments = Bundle().apply {
-                    putParcelable("EXT_FILE_URI", intent.data)
+            arguments = Bundle().apply {
+                if (intent.action == "android.intent.action.VIEW") {
+                    putString(
+                        OneListFragment.ARG_EXT_FILE_URI,
+                        intent.data.toString()
+                    )
                 }
+            }
         }
 
         savedInstanceState ?: supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.zoom_in, R.anim.zoom_out, R.anim.zoom_in, R.anim.zoom_out)
-                .replace(R.id.fragmentContainer, fragment, "OneListFragment")
-                .commit()
+            .setCustomAnimations(
+                R.anim.zoom_in,
+                R.anim.zoom_out,
+                R.anim.zoom_in,
+                R.anim.zoom_out
+            )
+            .replace(R.id.fragmentContainer, fragment, "OneListFragment")
+            .commit()
 
+
+        //supportFragmentManager.beginTransaction().add<SettingsFragment>(R.id.fragmentContainer).commit()
+
+
+        /* todo migrate whatsnew to a normal fragment
         // WORKAROUND FOR WHATSNEW LIB NOT HANDLING WELL CONFIG CHANGES
         if (savedInstanceState != null) {
             supportFragmentManager.findFragmentByTag(WhatsNew.TAG)
-                    ?.let { supportFragmentManager.beginTransaction().remove(it).commit() }
-                    ?.let { ReleaseNote.releasesNotes.entries.last().value().show(this) }
+                ?.let { supportFragmentManager.beginTransaction().remove(it).commit() }
+                ?.let { WhatsNew.releasesNotes.entries.last().value().show(this) }
         }
+         */
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
@@ -66,6 +86,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         whenResumed()
         whenResumed = {}
         isResumed = true
@@ -91,7 +112,10 @@ class MainActivity : AppCompatActivity() {
 
             if (requestCode == REQUEST_CODE_OPEN_DOCUMENT_TREE || requestCode == REQUEST_CODE_OPEN_DOCUMENT)
                 data?.data?.let { uri ->
-                    contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    contentResolver.takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    )
                     onPathChosenActivityResult(uri.toString())
                     onPathChosenActivityResult = { }
                 }
@@ -105,15 +129,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateThemeConfiguration(context: Context): Context {
         var mode = context.resources.configuration.uiMode
-        when (persistence.getTheme(context)) {
+        when (persistence.theme) {
             "light" -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 mode = Configuration.UI_MODE_NIGHT_NO;
             }
+
             "dark" -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 mode = Configuration.UI_MODE_NIGHT_YES;
             }
+
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
 

@@ -1,0 +1,17 @@
+<resources>
+    <string name="first_list_tuto_title">❓Tutorial</string>
+    <string name="first_list_todo_title">🗒️TODO</string>
+    <string name="first_list_tuto_one">"Click on top right + to add a list</string>
+    <string name="first_list_tuto_two">You can import a list or chose its storage folder by clicking on "more option" in the list creation window</string>
+    <string name="first_list_tuto_three">Switch lists by clicking on them</string>
+    <string name="first_list_tuto_four">Long click a list to move it or show its options (edit / delete)</string>
+    <string name="first_list_tuto_five">Add an item to the selected list with the top "Add" text box</string>
+    <string name="first_list_tuto_six">Swipe an item left to delete it</string>
+    <string name="first_list_tuto_seven">Swipe an item right to edit it</string>
+    <string name="first_list_tuto_eight">💡 Quickly add a comment by clicking the "⌄" button appearing under the "Add" edit box when you start typing !</string>
+    <string name="first_list_tuto_eight_comment">Show an item comments by clicking on the "⌄" button at the end of the line ---> </string>
+    <string name="first_list_tuto_nine">And as undone by clicking on it again !</string>
+    <string name="first_list_tuto_nine_comment">Mark item as done simply by clicking on it</string>
+    <string name="first_list_tuto_ten">Access the settings from the "⌄" button at the top of the screen</string>
+    <string name="first_list_todo_one">Enjoy the app ! 😃 100% FREE / 0 ads !</string>
+</resources>

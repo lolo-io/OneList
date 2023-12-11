@@ -17,11 +17,11 @@
     <PreferenceCategory
         android:key="cat_storage"
         android:title="@string/storage">
-        <Preference
+        <SwitchPreference
             android:icon="@drawable/ic_save_accent_24dp"
             android:key="storage"
-            android:title="@string/default_storage_folder"
-            android:summary="App private storage"/>
+            android:title="Backup Lists on device"
+            android:summary="Chose a folder where your lists will be saved"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="cat_about"
