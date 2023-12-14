@@ -80,7 +80,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.20"
     implementation 'org.immutables:gson:2.5.6'
     implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
-    implementation 'com.github.skydoves:powermenu:2.1.2'
     implementation 'com.karumi:dexter:6.0.0'
     implementation 'io.github.tonnyl:whatsnew:0.1.7'
     implementation 'com.google.firebase:firebase-crashlytics:18.6.0'

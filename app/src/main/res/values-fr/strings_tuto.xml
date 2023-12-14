@@ -1,6 +1,6 @@
 <resources>
-    <string name="first_list_tuto_title">❓Tutoriel</string>
-    <string name="first_list_todo_title">🗒️TODO</string>
+    <string name="first_list_tuto_title">❓ Tutoriel</string>
+    <string name="first_list_todo_title">🗒️ TODO</string>
     <string name="first_list_tuto_one">Cliquez sur le + en haut à droite pour ajouter une liste</string>
     <string name="first_list_tuto_two">Vous pouveez importer une liste ou choisir son dossier de stockage en cliquant sur "plus d'options" dans la fenêtre de création de liste</string>
     <string name="first_list_tuto_three">Changez de liste en cliquant sur une autre liste</string>
@@ -12,6 +12,6 @@
     <string name="first_list_tuto_eight_comment">Montrez le commentaire associé à un objet en cliquant sur le bouton "⌄" à droite ---></string>
     <string name="first_list_tuto_nine">"Et comme à faire en recliquant dessus!</string>
     <string name="first_list_tuto_nine_comment">Marquez un objet comme fait en cliquant simplement dessus.</string>
-    <string name="first_list_tuto_ten">Accédez aux réglages grâce au bouton "⌄" en haut de l\'écran</string>
+    <string name="first_list_tuto_ten">Accédez aux réglages grâce au bouton ⚙ en haut de l\'écran</string>
     <string name="first_list_todo_one">Profitez de l\'application ! 😃 100% GRATUIT / 0 pub !</string>
 </resources>

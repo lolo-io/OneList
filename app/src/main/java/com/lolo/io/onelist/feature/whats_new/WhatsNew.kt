@@ -1,6 +1,7 @@
 package com.lolo.io.onelist.feature.whats_new
 
 import android.content.Context
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -18,7 +19,7 @@ private fun shoReleaseNote(context: Context) = whatsNew {
     iconColor = ContextCompat.getColor(context, R.color.colorPrimaryDark)
     buttonBackground = ContextCompat.getColor(context, R.color.colorPrimaryDark)
     buttonText = context.getString(R.string.continue_button)
-    buttonTextColor = ContextCompat.getColor(context, R.color.white)
+    buttonTextColor = ContextCompat.getColor(context, R.color.colorBackground)
     itemTitleColor = ContextCompat.getColor(context, R.color.textColorPrimary)
     itemContentColor = ContextCompat.getColor(context, R.color.textColorSecondary)
     presentationOption = PresentationOption.ALWAYS

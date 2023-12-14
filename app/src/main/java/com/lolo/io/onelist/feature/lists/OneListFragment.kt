@@ -4,11 +4,9 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
-import android.graphics.Typeface
 import android.graphics.drawable.NinePatchDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -45,8 +43,6 @@ import com.lolo.io.onelist.core.ui.util.BUTTON_ANIM_DURATION
 import com.lolo.io.onelist.core.ui.util.afterTextChanged
 import com.lolo.io.onelist.core.ui.util.animHideFlip
 import com.lolo.io.onelist.core.ui.util.animShowFlip
-import com.lolo.io.onelist.core.ui.util.animTranslation
-import com.lolo.io.onelist.core.ui.util.dpToPx
 import com.lolo.io.onelist.core.ui.util.flipX
 import com.lolo.io.onelist.core.ui.util.isVisible
 import com.lolo.io.onelist.core.ui.util.isVisibleInvisible
@@ -62,10 +58,6 @@ import com.lolo.io.onelist.feature.lists.lists_adapters.ItemsCallbacks
 import com.lolo.io.onelist.feature.lists.lists_adapters.ListsAdapter
 import com.lolo.io.onelist.feature.lists.lists_adapters.ListsCallbacks
 import com.lolo.io.onelist.feature.settings.SettingsFragment
-import com.skydoves.powermenu.MenuAnimation
-import com.skydoves.powermenu.PowerMenu
-import com.skydoves.powermenu.PowerMenuItem
-import com.skydoves.powermenu.kotlin.createPowerMenu
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -92,42 +84,6 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
     private val isAddCommentShown
         get() = binding.addCommentEditText.height > 0
-
-    private val popupMenu: PowerMenu by lazy {
-        requireContext().let {
-            createPowerMenu(it) {
-                addItem(
-                    PowerMenuItem(
-                        getString(R.string.settings),
-                        R.drawable.ic_settings_accent_24dp
-                    )
-                )
-                setAnimation(MenuAnimation.SHOWUP_TOP_LEFT)
-                setMenuRadius(10f)
-                setMenuShadow(10f)
-                setTextGravity(Gravity.START)
-                setTextTypeface(Typeface.DEFAULT)
-                setTextColor(ContextCompat.getColor(it, R.color.textColorPrimary))
-                setMenuColor(ContextCompat.getColor(it, R.color.colorBackgroundPopup))
-                setShowBackground(false)
-                setAutoDismiss(true)
-                setOnMenuItemClickListener { _, _ ->
-
-
-                    parentFragmentManager.beginTransaction()
-                        .setCustomAnimations(
-                            R.anim.enter_from_right,
-                            R.anim.zoom_out,
-                            R.anim.zoom_in,
-                            R.anim.exit_to_right
-                        )
-                        .add(container?.id ?: 0, SettingsFragment())
-                        .hide(this@OneListFragment)
-                        .addToBackStack(null).commit()
-                }
-            }
-        }
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -224,8 +180,17 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         binding.buttonShareList.setOnClickListener { viewModel.shareSelectedList(this.requireContext()) }
 
 
-        binding.menuArrow.setOnClickListener { v ->
-            popupMenu.showAsAnchorLeftTop(v, dpToPx(12), dpToPx(12))
+        binding.menuSettings.setOnClickListener { v ->
+            parentFragmentManager.beginTransaction()
+                .setCustomAnimations(
+                    R.anim.enter_from_right,
+                    R.anim.zoom_out,
+                    R.anim.zoom_in,
+                    R.anim.exit_to_right
+                )
+                .add(container?.id ?: 0, SettingsFragment())
+                .hide(this@OneListFragment)
+                .addToBackStack(null).commit()
         }
 
         binding.swipeContainer.setOnRefreshListener {
@@ -512,20 +477,15 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
     private fun showEditionButtons() {
         binding.buttonShareList.visibility = View.GONE
         binding.buttonRemoveList.animShowFlip()
-        binding.buttonAddList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
+        binding.buttonAddList.animHideFlip()
         binding.buttonEditList.animShowFlip()
-        binding.buttonEditList.animTranslation(
-            stopX = dpToPx(-32).toFloat(),
-            startDelay = BUTTON_ANIM_DURATION
-        )
     }
 
     private fun hideEditionButtons() {
         binding.buttonShareList.visibility = View.VISIBLE
         binding.buttonAddList.animShowFlip()
-        binding.buttonRemoveList.animHideFlip(startDelay = BUTTON_ANIM_DURATION)
+        binding.buttonRemoveList.animHideFlip()
         binding.buttonEditList.animHideFlip()
-        binding.buttonEditList.animTranslation(dpToPx(-32).toFloat())
     }
 
     override fun onDestroyView() {

@@ -1,6 +1,6 @@
 <resources>
-    <string name="first_list_tuto_title">❓Tutorial</string>
-    <string name="first_list_todo_title">🗒️TODO</string>
+    <string name="first_list_tuto_title">❓ Tutorial</string>
+    <string name="first_list_todo_title">🗒️ TODO</string>
     <string name="first_list_tuto_one">"Clique no canto superior direito + para adicionar uma lista"</string>
     <string name="first_list_tuto_two">Você pode importar uma lista ou escolher sua pasta de armazenamento clicando em "mais opções" na janela de criação da lista</string>
     <string name="first_list_tuto_three">Troque de listas clicando nelas</string>
@@ -12,6 +12,6 @@
     <string name="first_list_tuto_eight_comment">Mostre os comentários de um item clicando no botão "⌄" no final da linha ---> </string>
     <string name="first_list_tuto_nine">E como não feito clicando nele novamente!</string>
     <string name="first_list_tuto_nine_comment">Marque um item como feito simplesmente clicando nele</string>
-    <string name="first_list_tuto_ten">Acesse as configurações a partir do botão "⌄" no topo da tela</string>
+    <string name="first_list_tuto_ten">Acesse as configurações a partir do botão ⚙ no topo da tela</string>
     <string name="first_list_todo_one">Aproveite o aplicativo! 😃 100% GRÁTIS / 0 anúncios!</string>
 </resources>
