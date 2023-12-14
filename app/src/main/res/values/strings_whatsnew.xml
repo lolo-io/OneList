@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="onelist_updated">1List has been updated !</string>
-    <string name="external_folder_title">Save your lists in an external folder</string>
-    <string name="external_folder_content">From the list edition window, under the \'more options\' button.</string>
-    <string name="import_title">Import external lists</string>
-    <string name="import_content">From the list creation window, under the \'more options\' button.</string>
-    <string name="pull_title">Pull to refresh</string>
-    <string name="pull_content">Pull the content of your list down to refresh it in case the file has been updated by someone else elsewhere.</string>
-    <string name="settings_title">Settings screen</string>
-    <string name="settings_content">Click the "⌄" button the top of the screen to access the settings.</string>
-    <string name="share_title">Share your liststhe list has</string>
-    <string name="share_content">Click the share icon to share your list as text with someone else.</string>
-    <string name="see_again_in_settings">You can see this release note again from the settings screen.</string>
+    <string name="onelist_updated">Breaking Change !</string>
+    <string name="external_folder_title">The way you save your lists on your device has changed.</string>
+    <string name="external_folder_content">\n\nIf you used the feature to backup your lists locally before, go to settings, check \"Backup lists on device\", and select or create a folder where your lists will be saved.
+        \n\nIf you used this feature before, your previous list files won\'t be updated anymore, be sure you make this operation in order to have your lists backed up again.
+        \n\nIf you didn\'t use this feature before, you can ignore this message.
+        \n\n
+        \n\nImport a list has also been moved into the settings.</string>
     <string name="continue_button">Continue</string>
-
-    <string name="external_folder_title_1_2">Save your lists on your SD Card</string>
-    <string name="external_folder_content_1_2">You can now save your lists on your SD Card ! (experimental)</string>
-
-    <string name="dark_theme_title_1_4">Dark Theme</string>
-    <string name="dark_theme_content_1_4">You can now choose between dark and light theme in the settings.</string>
 </resources>

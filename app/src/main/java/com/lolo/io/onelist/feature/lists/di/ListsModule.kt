@@ -7,7 +7,7 @@ import org.koin.dsl.module
 
 val listsModule = module {
     viewModel<OneListFragmentViewModel> {
-        OneListFragmentViewModel(get(), get())
+        OneListFragmentViewModel(get(), get(), get())
     }
     single {
         FirstLaunchLists(get())

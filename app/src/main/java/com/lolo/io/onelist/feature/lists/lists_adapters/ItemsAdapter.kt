@@ -114,7 +114,7 @@ class ItemsAdapter(
     }
 
     override fun getItemId(position: Int): Long {
-        return items[position].stableId
+        return items[position].id
     }
 
     @SuppressLint("SwitchIntDef")

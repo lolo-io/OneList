@@ -37,7 +37,7 @@ class ItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) : Ite
     }
 
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-        adapter.onItemMoved(viewHolder.adapterPosition, target.adapterPosition)
+        adapter.onItemMoved(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
         return true
     }
 

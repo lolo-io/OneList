@@ -3,126 +3,116 @@ package com.lolo.io.onelist.feature.lists
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lolo.io.onelist.BuildConfig
+import com.lolo.io.onelist.R
+import com.lolo.io.onelist.core.data.model.AllListsWithErrors
+import com.lolo.io.onelist.core.data.model.ErrorLoadingList
+import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
+import com.lolo.io.onelist.core.ui.util.UIString
 import com.lolo.io.onelist.feature.lists.tuto.FirstLaunchLists
 import com.lolo.io.onelist.feature.lists.utils.toStringForShare
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import updateOne
-import java.util.Collections
 
 class OneListFragmentViewModel(
     private val firstLaunchLists: FirstLaunchLists,
     private val useCases: OneListUseCases,
+    private val preferences: SharedPreferencesHelper
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
 
-    private val _allLists = MutableStateFlow<List<ItemList>>(listOf())
-    val allLists = _allLists.asStateFlow()
+    private val allListsResources = MutableStateFlow(AllListsWithErrors())
 
-    private val _selectedListIndex = MutableStateFlow(useCases.selectedListIndex())
+    private var getAllListsJob: Job? = null
 
-    private val _newListImportedTrigger = MutableStateFlow(0)
-    val newListImportedTrigger = _newListImportedTrigger.asStateFlow()
+    val allLists = allListsResources.map {
+        _errorMessage.value = getErrorMessageWhenLoadingLists(it.errors)
+        it.lists
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), listOf())
 
-    var selectedList = combine(_allLists, _selectedListIndex) { pAllLists, pIndex ->
+
+    private val selectedListIndex =
+        preferences.selectedListIndexStateFlow
+
+    private val _forceRefreshTrigger = MutableStateFlow(0)
+    val forceRefreshTrigger = _forceRefreshTrigger.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<UIString?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
+
+
+    private val _showWhatsNew = MutableStateFlow(false)
+    val showWhatsNew = _showWhatsNew.asStateFlow()
+
+    var selectedList = combine(allLists, selectedListIndex) { pAllLists, pIndex ->
         pAllLists.getOrNull(pIndex) ?: ItemList()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ItemList())
 
     suspend fun init() {
-        useCases.handleFirstLaunch(firstLaunchLists.firstLaunchLists())
-        _allLists.value = useCases.getAllLists()
+        if (useCases.handleFirstLaunch(firstLaunchLists.firstLaunchLists())) {
+            refreshAllLists()
+        }
+        setAppVersion()
     }
 
     private fun updateUiState(block: UIState.() -> UIState) {
         _uiState.value = block(_uiState.value).apply { }
     }
 
-
     fun createList(itemList: ItemList) {
         viewModelScope.launch {
-            _selectedListIndex.value = _allLists.value.size
-            itemList.position = _allLists.value.size
-            _allLists.value = (_allLists.value + useCases.upsertList(itemList))
+            useCases.createList(itemList)
         }
     }
 
     fun editList(itemList: ItemList) {
         viewModelScope.launch {
-            useCases.upsertList(itemList).let {
-                _allLists.value = _allLists.value.updateOne(itemList) { it.id == itemList.id }
-            }
+            useCases.editList(itemList)
         }
     }
 
     fun refreshAllLists() {
         viewModelScope.launch {
             updateUiState { copy(isRefreshing = true) }
-            _allLists.value = useCases.getAllLists()
+            getAllLists()
             updateUiState { copy(isRefreshing = false) }
+            _forceRefreshTrigger.value++
         }
     }
 
     fun removeList(itemList: ItemList, deleteBackupFile: Boolean) {
         viewModelScope.launch {
-            useCases.removeList(itemList, deleteBackupFile).let {
-                _allLists.value = _allLists.value.filter { it.id != itemList.id }.also {
-                    val position = allLists.value.indexOf(itemList)
-                    if (position < it.size) {
-                        selectList(position)
-                    } else if (position > 0) {
-                        selectList(position - 1)
-                    }
-                }
-
-            }
+            useCases.removeList(itemList, deleteBackupFile)
         }
     }
 
     fun selectList(position: Int) {
-        _selectedListIndex.value = position
-        useCases.selectedListIndex(position)
+        preferences.selectedListIndex = position
     }
 
     suspend fun importList(uri: Uri): ItemList {
-        return useCases.upsertList(uri).also {
-            viewModelScope.launch {
-                _allLists.value = useCases.getAllLists()
-                _selectedListIndex.value = _allLists.value.size
-                it.position = _allLists.value.size
-                _allLists.value = (_allLists.value + useCases.upsertList(it))
-                _newListImportedTrigger.value = _newListImportedTrigger.value + 1
-            }
-        }
+        return useCases.importList(uri)
     }
 
     fun moveList(fromPosition: Int, toPosition: Int) {
-        val tempAllList = ArrayList(allLists.value)
-        if (fromPosition < toPosition && toPosition < tempAllList.size) {
-            for (i in fromPosition until toPosition) {
-                Collections.swap(tempAllList, i, i + 1)
-            }
-        } else if (toPosition < tempAllList.size) {
-            for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(tempAllList, i, i - 1)
-            }
+        viewModelScope.launch {
+            useCases.moveList(fromPosition, toPosition, allLists.value)
         }
-        tempAllList.forEachIndexed { i, list -> list.position = i + 1 }
-        selectList(tempAllList.indexOf(selectedList.value))
-
-        _allLists.value = tempAllList
     }
 
     fun clearComment() {
@@ -195,8 +185,11 @@ class OneListFragmentViewModel(
         editList(selectedList.value.copy())
     }
 
-    fun setAppVersion(versionName: String) {
-        if (useCases.version() != versionName) useCases.version(versionName)
+    private fun setAppVersion() {
+        if (preferences.version != BuildConfig.VERSION_NAME) {
+            _showWhatsNew.value = useCases.showWhatsNew()
+            preferences.version = BuildConfig.VERSION_NAME
+        }
     }
 
     fun shareSelectedList(context: Context) {
@@ -207,5 +200,40 @@ class OneListFragmentViewModel(
         }
         val shareIntent = Intent.createChooser(sendIntent, null)
         context.startActivity(shareIntent)
+    }
+
+    private fun getAllLists() {
+        getAllListsJob?.cancel()
+        viewModelScope.launch {
+            useCases.getAllLists().onEach {
+                allListsResources.value = it
+            }.launchIn(this)
+        }
+    }
+
+    private fun getErrorMessageWhenLoadingLists(errors: List<ErrorLoadingList>): UIString? {
+        return if (errors.isNotEmpty()) {
+            UIString
+                .StringResources(
+                    R.string.error_could_not_fetch_some_lists,
+                    *errors.map { err ->
+                        when (err) {
+                            ErrorLoadingList.FileCorruptedError -> R.string.error_file_corrupted
+                            ErrorLoadingList.FileMissingError -> R.string.error_file_missing
+                            ErrorLoadingList.PermissionDeniedError -> R.string.error_permission_not_granted
+                            ErrorLoadingList.UnknownError -> R.string.error_unknown
+                        }
+                    }.toIntArray()
+                )
+        } else null
+    }
+
+    fun resetError() {
+        allListsResources.value = allListsResources.value.copy(errors = listOf())
+    }
+
+
+    fun whatsNewShown() {
+        _showWhatsNew.value = false
     }
 }

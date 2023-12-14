@@ -54,4 +54,18 @@
     <string name="storage_chooser_folder_error_toast_text">Erreur lors de la création du dossier. Veuillez rééssayer.</string>
     <string name="storage_chooser_text_field_hint_text">Nom du nouveau dossier</string>
     <string name="storage_chooser_text_field_error_text">Ce dossier doit être nommé</string>
+    <string name="error_could_not_fetch_some_lists">Certaines listes n\'ont pas pu être chargées depuis vos fichiers</string>
+    <string name="error_file_missing">Fichier inaccessible</string>
+    <string name="error_permission_not_granted">Permission refusée</string>
+    <string name="error_file_corrupted">Fichier corrompu</string>
+    <string name="error_unknown">Erreur inconnue</string>
+    <string name="settings_backup_select">Sélectionnez un dossier où vos listes seront sauvegardées</string>
+    <string name="settings_error_try_switch_option">ⓘ Essayez de désactiver puis de réactiver cette option.</string>
+    <string name="setting_prefer_backup_files_summary">Si activée, vos listes seront récupérées à partir des fichiers de sauvegarde. Utile si vous synchronisez votre dossier de sauvegarde avec d\'autres appareils.</string>
+    <string name="settings_backup_all_summary">Chaque liste est sauvegardée à chaque modification. Cliquez ici pour forcer une sauvegarde maintenant.</string>
+    <string name="settings_prefer_backup_files_title">Obtenir des listes à partir des fichiers de sauvegarde</string>
+    <string name="settings_import_summary">Importer une liste depuis votre système de fichiers (fichier .1list)</string>
+    <string name="settings_import_title">Importer une liste</string>
+    <string name="settings_backup_title">Sauvegarder les listes sur l\'appareil</string>
+    <string name="backup_all_lists">Sauvegarder toutes les listes</string>
 </resources>

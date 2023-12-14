@@ -56,4 +56,18 @@
     <string name="storage_chooser_folder_error_toast_text">Error occurred while creating folder. Try again.</string>
     <string name="storage_chooser_text_field_hint_text">Folder Name</string>
     <string name="storage_chooser_text_field_error_text">Empty Folder Name</string>
+    <string name="error_could_not_fetch_some_lists">Some lists could not be loaded from your filesystem</string>
+    <string name="error_file_missing">File missing</string>
+    <string name="error_permission_not_granted">Permission denied</string>
+    <string name="error_file_corrupted">File corrupted</string>
+    <string name="error_unknown">Unknown Error</string>
+    <string name="settings_backup_select">Select a folder where your lists will be backed up</string>
+    <string name="settings_error_try_switch_option">ⓘ Try disabling and then re-enabling this option.</string>
+    <string name="setting_prefer_backup_files_summary">If enabled, your lists will be fetched from the backup files. This is useful if you sync your backup folder with other devices.</string>
+    <string name="settings_backup_all_summary">Each list is backed up every time you modify it. Click here to force a backup now.</string>
+    <string name="settings_prefer_backup_files_title">Get lists from backup files</string>
+    <string name="settings_import_summary">Import a list from your filesystem (.1list file)</string>
+    <string name="settings_import_title">Import a list</string>
+    <string name="settings_backup_title">Backup lists on device</string>
+    <string name="backup_all_lists">Backup all lists</string>
 </resources>

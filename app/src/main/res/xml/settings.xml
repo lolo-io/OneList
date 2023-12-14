@@ -5,34 +5,53 @@
         android:key="cat_personalization"
         android:title="@string/personalization">
         <DropDownPreference
-            android:icon="@drawable/ic_color_lens_accent_24dp"
             android:defaultValue="auto"
-            android:key="theme"
-            android:title="Theme"
-            android:summary="Auto"
             android:entries="@array/theme_labels"
             android:entryValues="@array/theme_values"
+            android:icon="@drawable/ic_color_lens_accent_24dp"
+            android:key="theme"
+            android:summary="Auto"
+            android:title="Theme"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:key="cat_storage"
-        android:title="@string/storage">
+        android:key="cat_backup"
+        android:title="Backup">
+
         <SwitchPreference
             android:icon="@drawable/ic_save_accent_24dp"
             android:key="storage"
-            android:title="Backup Lists on device"
-            android:summary="Chose a folder where your lists will be saved"/>
+            android:summary=""
+            android:title="@string/settings_backup_title" />
+        <Preference
+            android:icon="@drawable/ic_add_circle_outline_accent_24dp"
+            android:key="import"
+            android:summary="@string/settings_import_summary"
+            android:title="@string/settings_import_title" />
+
+        <SwitchPreference
+            android:icon="@drawable/ic_file_accent"
+            android:key="preferUseFiles"
+            android:summary="@string/setting_prefer_backup_files_summary"
+            android:title="@string/settings_prefer_backup_files_title" />
+
+        <Preference
+            android:key="backup_all"
+            android:summary="@string/settings_backup_all_summary"
+            android:title="@string/backup_all_lists" />
+
     </PreferenceCategory>
+
     <PreferenceCategory
         android:key="cat_about"
         android:title="@string/about">
         <Preference
             android:key="version"
-            android:title="@string/app_version"
-            android:selectable="false"/>
+            android:selectable="false"
+            android:title="@string/app_version" />
         <Preference
             android:key="releaseNote"
-            android:title="@string/show_last_release_note"
-            android:selectable="true"/>
+            android:selectable="true"
+            android:title="@string/show_last_release_note" />
     </PreferenceCategory>
 </PreferenceScreen>

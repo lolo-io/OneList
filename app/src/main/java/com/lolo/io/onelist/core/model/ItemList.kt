@@ -7,7 +7,7 @@ import java.io.Serializable
 
 data class ItemList(
     var title: String = "",
-    var position: Int = 0,
+    @Transient  var position: Int = 0,
     val items: MutableList<Item> = arrayListOf(),
     @Transient var path: Uri? = null,
     @Transient var uri: Uri? = null,

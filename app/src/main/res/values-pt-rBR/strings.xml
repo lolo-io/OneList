@@ -56,4 +56,18 @@
     <string name="storage_chooser_folder_error_toast_text">Erro ao criar pasta. Tente novamente.</string>
     <string name="storage_chooser_text_field_hint_text">Nome Da Pasta</string>
     <string name="storage_chooser_text_field_error_text">Nome Da Pasta Vazio</string>
+    <string name="error_could_not_fetch_some_lists">Algumas listas não puderam ser carregadas do seu sistema de arquivos</string>
+    <string name="error_file_missing">Arquivo inacessível</string>
+    <string name="error_permission_not_granted">Permissão negada</string>
+    <string name="error_file_corrupted">Arquivo corrompido</string>
+    <string name="error_unknown">Erro desconhecido</string>
+    <string name="settings_backup_select">Selecione uma pasta onde suas listas serão salvas</string>
+    <string name="settings_error_try_switch_option">ⓘ Tente desativar e depois reativar esta opção.</string>
+    <string name="setting_prefer_backup_files_summary">Se ativada, suas listas serão recuperadas a partir dos arquivos de backup. Isso é útil se você sincronizar sua pasta de backup com outros dispositivos.</string>
+    <string name="settings_backup_all_summary">Cada lista é salva toda vez que você a modificar. Clique aqui para forçar uma backup agora.</string>
+    <string name="settings_prefer_backup_files_title">Obter listas a partir de arquivos de backup</string>
+    <string name="settings_import_summary">Importar uma lista do seu sistema de arquivos (arquivo .1list)</string>
+    <string name="settings_import_title">Importar uma lista</string>
+    <string name="settings_backup_title">Fazer backup das listas no dispositivo</string>
+    <string name="backup_all_lists">Fazer backup de todas as listas</string>
 </resources>

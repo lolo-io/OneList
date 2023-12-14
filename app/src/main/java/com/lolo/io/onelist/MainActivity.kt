@@ -9,7 +9,7 @@ import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.anggrayudi.storage.SimpleStorageHelper
-import com.lolo.io.onelist.core.data.persistence.PersistenceHelper
+import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.ui.Config
 import com.lolo.io.onelist.core.ui.REQUEST_CODE_OPEN_DOCUMENT
 import com.lolo.io.onelist.core.ui.REQUEST_CODE_OPEN_DOCUMENT_TREE
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder  {
 
     override val storageHelper = SimpleStorageHelper(this)
 
-    val persistence by inject<PersistenceHelper>()
+    val persistence by inject<SharedPreferencesHelper>()
 
     // On some devices, displaying storage chooser fragment before activity is resumed leads to a crash.
     // This is a workaround.
@@ -75,6 +75,15 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder  {
                 ?.let { WhatsNew.releasesNotes.entries.last().value().show(this) }
         }
          */
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        println()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {

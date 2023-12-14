@@ -1,10 +1,14 @@
 package com.lolo.io.onelist.core.domain.use_cases
 
 data class OneListUseCases(
-    val upsertList: UpsertList,
+    val createList: CreateList,
+    val importList: ImportList,
+    val moveList: MoveList,
+    val editList: EditList,
     val getAllLists: GetAllLists,
+    val setBackupUri: SetBackupUri,
     val removeList: RemoveList,
-    val selectedListIndex: SelectedListIndex,
     val handleFirstLaunch: HandleFirstLaunch,
-    val version: Version,
+    val syncAllLists: SyncAllLists,
+    val showWhatsNew: ShowWhatsNew,
 )

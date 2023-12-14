@@ -7,7 +7,6 @@ data class Item(
     var comment: String = "",
     var done: Boolean = false,
     var commentDisplayed: Boolean = false,
-    var stableId: Long = System.currentTimeMillis(),
-    var id: Long = 0L,
+    var id: Long = System.currentTimeMillis(),
 
 ) : Serializable

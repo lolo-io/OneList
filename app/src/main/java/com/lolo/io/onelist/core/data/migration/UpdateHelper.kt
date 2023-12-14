@@ -1,10 +1,9 @@
 package com.lolo.io.onelist.core.data.migration
 
-import com.lolo.io.onelist.MainActivity
-import com.lolo.io.onelist.core.data.persistence.PersistenceHelper
+import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 
 class UpdateHelper(
-    val persistenceHelper: PersistenceHelper
+    val persistenceHelper: SharedPreferencesHelper
 ) {
     fun applyUpdatePatches() {
 

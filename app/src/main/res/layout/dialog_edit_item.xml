@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:drawableStart="@drawable/ic_bullet_outline"
-        android:drawableLeft="@drawable/ic_bullet_outline"
         android:drawablePadding="5dp"
         android:hint="@string/item_name"
         android:imeOptions="actionNext"
@@ -24,9 +23,7 @@
         android:maxLines="1"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
         android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         tools:ignore="UnusedAttribute" />
 
@@ -44,15 +41,12 @@
         android:layout_below="@id/separator1"
         android:background="@null"
         android:drawableStart="@drawable/ic_more_horizontal_accent_light_18dp"
-        android:drawableLeft="@drawable/ic_more_horizontal_accent_light_18dp"
         android:drawablePadding="5dp"
         android:importantForAutofill="no"
         android:inputType="textMultiLine|textCapSentences"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
         android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
         android:textStyle="italic"
         tools:ignore="LabelFor,UnusedAttribute" />
 
@@ -70,11 +64,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/separator2"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/validate"
         android:padding="10dp"
-        android:tint="@color/colorPrimary"
+        app:tint="@color/colorPrimary"
         app:srcCompat="@drawable/ic_check_black_24dp" />
 
     <ImageButton
@@ -83,11 +76,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/separator2"
         android:layout_toStartOf="@id/validateEdit"
-        android:layout_toLeftOf="@id/validateEdit"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/cancel"
         android:padding="10dp"
-        android:tint="@color/colorAccentLight"
+        app:tint="@color/colorAccentLight"
         app:srcCompat="@drawable/ic_cancel_black_24dp" />
 
 </RelativeLayout>

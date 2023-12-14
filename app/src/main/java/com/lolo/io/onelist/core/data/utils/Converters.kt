@@ -20,7 +20,6 @@ fun Item.toItemEntity() = ItemEntity(
     comment = comment,
     done = done,
     commentDisplayed = commentDisplayed,
-    stableId = stableId
 )
 
 fun List<Item>.toItemEntities() = map { it.toItemEntity() }

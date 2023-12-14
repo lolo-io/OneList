@@ -51,7 +51,6 @@ fun ItemEntity.toItemModel() = Item(
     comment = comment,
     done = done,
     commentDisplayed = commentDisplayed,
-    stableId = stableId
 )
 
 fun List<ItemEntity>.toItemModels() = map { it.toItemModel() }
