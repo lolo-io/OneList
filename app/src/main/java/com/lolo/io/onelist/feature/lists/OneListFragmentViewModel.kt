@@ -9,6 +9,7 @@ import com.lolo.io.onelist.BuildConfig
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.core.data.model.AllListsWithErrors
 import com.lolo.io.onelist.core.data.model.ErrorLoadingList
+import com.lolo.io.onelist.core.data.model.Resource
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
 import com.lolo.io.onelist.core.model.Item
@@ -20,6 +21,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -74,10 +76,8 @@ class OneListFragmentViewModel(
         _uiState.value = block(_uiState.value).apply { }
     }
 
-    fun createList(itemList: ItemList) {
-        viewModelScope.launch {
-            useCases.createList(itemList)
-        }
+    suspend fun createList(itemList: ItemList) {
+        useCases.createList(itemList)
     }
 
     fun editList(itemList: ItemList) {
@@ -87,18 +87,20 @@ class OneListFragmentViewModel(
     }
 
     fun refreshAllLists() {
+        updateUiState { copy(isRefreshing = true) }
         viewModelScope.launch {
-            updateUiState { copy(isRefreshing = true) }
             getAllLists()
-            updateUiState { copy(isRefreshing = false) }
+
             _forceRefreshTrigger.value++
         }
     }
 
-    fun removeList(itemList: ItemList, deleteBackupFile: Boolean) {
-        viewModelScope.launch {
-            useCases.removeList(itemList, deleteBackupFile)
-        }
+    suspend fun removeList(
+        itemList: ItemList,
+        deleteBackupFile: Boolean,
+        onFieDeleted: () -> Unit
+    ) {
+        useCases.removeList(itemList, deleteBackupFile, onFieDeleted)
     }
 
     fun selectList(position: Int) {
@@ -205,8 +207,10 @@ class OneListFragmentViewModel(
     private fun getAllLists() {
         getAllListsJob?.cancel()
         viewModelScope.launch {
+            updateUiState { copy(isRefreshing = true) }
             useCases.getAllLists().onEach {
                 allListsResources.value = it
+                updateUiState { copy(isRefreshing = false) }
             }.launchIn(this)
         }
     }

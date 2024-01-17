@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ItemAnimator
+import com.anggrayudi.storage.extension.launchOnUiThread
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -39,6 +40,7 @@ import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchAct
 import com.lolo.io.onelist.BuildConfig
 import com.lolo.io.onelist.MainActivity
 import com.lolo.io.onelist.R
+import com.lolo.io.onelist.core.data.migration.UpdateHelper
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.ui.Config
@@ -63,8 +65,13 @@ import com.lolo.io.onelist.feature.lists.lists_adapters.ListsCallbacks
 import com.lolo.io.onelist.feature.settings.SettingsFragment
 import com.lolo.io.onelist.feature.settings.showReleaseNote
 import ifNotEmpty
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+import javax.inject.Inject
 
 
 class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
@@ -85,18 +92,37 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
     private var container: ViewGroup? = null
 
-    private val listsAdapter: ListsAdapter by lazy { ListsAdapter(requireActivity(), _fragmentAllListsFinalInstance, this) }
+    private val listsAdapter: ListsAdapter by lazy {
+        ListsAdapter(
+            requireActivity(),
+            _fragmentAllListsFinalInstance,
+            this
+        )
+    }
     private val itemsAdapter by lazy { ItemsAdapter(requireActivity(), this) }
 
     private val isAddCommentShown
         get() = binding.addCommentEditText.height > 0
 
+    private val updateHelper: UpdateHelper by inject()
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+
+        if (updateHelper.hasToMigratePrefs(requireActivity())) {
+            updateHelper.applyUpdatePatches(requireActivity()) {
+                launchOnUiThread {
+                    listsAdapter.notifyDataSetChanged()
+                    itemsAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+
         activity?.let {
             it.packageManager.getPackageInfo(it.packageName, 0).versionName
         }
+
     }
 
     override fun onCreateView(
@@ -146,7 +172,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.forceRefreshTrigger.collect {
-                    if(it > 0) {
+                    if (it > 0) {
                         _fragmentAllListsFinalInstance.clear()
                         _fragmentAllListsFinalInstance.addAll(viewModel.allLists.value)
                         listsAdapter.notifyDataSetChanged()
@@ -167,7 +193,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.errorMessage.collect {
 
-                    if(it != null) {
+                    if (it != null) {
                         val message = StringBuilder(getString(it.resId)).apply {
                             it.restResIds.ifNotEmpty { restResIds ->
                                 append(" : ")
@@ -181,7 +207,10 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        viewModel.resetError()
+                        launch {
+                            delay(500)
+                            viewModel.resetError()
+                        }
                     }
                 }
             }
@@ -191,7 +220,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showWhatsNew.collect {
-                    if(it) {
+                    if (it) {
                         showReleaseNote(requireActivity())
                         viewModel.whatsNewShown()
 
@@ -213,9 +242,11 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
         binding.buttonAddList.setOnClickListener {
             editListDialog(requireContext()) { list ->
-                createList(
-                    list
-                )
+                lifecycleScope.launch {
+                    createList(
+                        list
+                    )
+                }
             }.show()
         }
 
@@ -265,6 +296,11 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         binding.buttonClearComment.isVisible = uiState.showButtonClearComment
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.refreshAllLists()
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -289,10 +325,10 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                     Toast.makeText(activity, e.message, Toast.LENGTH_LONG).show()
                 }
             }
+            arguments?.clear()
+            viewModel.refreshAllLists()
         }
 
-        arguments?.clear()
-        viewModel.refreshAllLists()
     }
 
     private fun setupListsRecyclerView() {
@@ -343,7 +379,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
 
     // Lists handlers
-    private fun createList(itemList: ItemList) {
+    private suspend fun createList(itemList: ItemList) {
         listsAdapter.notifyItemInserted(viewModel.allLists.value.size)
         viewModel.createList(itemList)
         binding.addItemEditText.requestFocus()
@@ -364,7 +400,29 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
             itemsAdapter
                 .notifyItemRangeRemoved(0, viewModel.selectedList.value.items.size)
             listsAdapter.notifyItemRemoved(viewModel.allLists.value.indexOf(itemList))
-            viewModel.removeList(itemList, action and ACTION_RM_FILE != 0)
+            lifecycleScope.launch {
+                try {
+                    viewModel.removeList(itemList, action and ACTION_RM_FILE != 0,
+                        onFieDeleted = {
+                            activity?.runOnUiThread {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.file_deleted),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    )
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.error_deleting_list_file),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
             hideEditionButtons()
         }.show()
     }
@@ -383,7 +441,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
             viewModel.allLists.value[position].items.size
         )
 
-        (binding.itemsRecyclerView.itemAnimator as DraggableItemAnimator).supportsChangeAnimations = false
+        (binding.itemsRecyclerView.itemAnimator as DraggableItemAnimator).supportsChangeAnimations =
+            false
     }
 
     override fun onListAdapterStartDrag() = showEditionButtons()
@@ -397,23 +456,25 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
     // Items handlers :
     private fun addItem(item: Item) {
-        if (item.title.isNotEmpty()) {
-            if (viewModel.allLists.value.isEmpty()) {
-                createList(ItemList(title = getString(R.string.list_default_name)))
-            }
-            viewModel.addItem(item)
-            val position = viewModel.selectedList.value.items.indexOf(item)
+        lifecycleScope.launch {
+            if (item.title.isNotEmpty()) {
+                if (viewModel.allLists.value.isEmpty()) {
+                    createList(ItemList(title = getString(R.string.list_default_name)))
+                }
+                viewModel.addItem(item)
+                val position = viewModel.selectedList.value.items.indexOf(item)
 
-            itemsAdapter.notifyItemInserted(position)
-            binding.itemsRecyclerView.smoothScrollToPosition(0)
-            binding.addItemEditText.setText(R.string.empty)
-            binding.addItemEditText.requestFocus()
+                itemsAdapter.notifyItemInserted(position)
+                binding.itemsRecyclerView.smoothScrollToPosition(0)
+                binding.addItemEditText.setText(R.string.empty)
+                binding.addItemEditText.requestFocus()
 
-            if (binding.addCommentEditText.text.isEmpty() && isAddCommentShown) {
-                switchCommentSection()
-            }
+                if (binding.addCommentEditText.text.isEmpty() && isAddCommentShown) {
+                    switchCommentSection()
+                }
 
-        } else listOf(binding.addItemEditText, binding.validate).forEach { it.shake() }
+            } else listOf(binding.addItemEditText, binding.validate).forEach { it.shake() }
+        }
     }
 
     override fun onRemoveItem(item: Item) {

@@ -9,7 +9,6 @@ fun ItemList.toItemListEntity() = ItemListEntity(
     id = this.id,
     items = this.items.toItemEntities().toMutableList(),
     uri = this.uri,
-    path = this.path,
     position = this.position,
     title = this.title
 )

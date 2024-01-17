@@ -57,6 +57,7 @@ class OneListRepository(
                         list
                     } catch (e: IllegalArgumentException) {
                         errors += ErrorLoadingList.FileMissingError
+                        print(e)
                         list
                     } catch (e: JsonSyntaxException) {
                         errors += ErrorLoadingList.FileCorruptedError
@@ -122,14 +123,15 @@ class OneListRepository(
         }
     }
 
-    suspend fun deleteList(itemList: ItemList, deleteBackupFile: Boolean) {
+    @Throws
+    suspend fun deleteList(
+        itemList: ItemList,
+        deleteBackupFile: Boolean,
+        onFileDeleted: () -> Unit
+    ) {
 
         withContext(Dispatchers.IO) {
             dao.delete(itemList.toItemListEntity())
-        }
-
-        if (deleteBackupFile) {
-            fileAccess.deleteListBackupFile(itemList)
         }
 
         _allListsWithErrors.value =
@@ -143,6 +145,10 @@ class OneListRepository(
                         selectList(position - 1)
                     }
                 }
+
+        if (deleteBackupFile) {
+            fileAccess.deleteListBackupFile(itemList, onFileDeleted)
+        }
     }
 
     suspend fun importList(uri: Uri): ItemList {

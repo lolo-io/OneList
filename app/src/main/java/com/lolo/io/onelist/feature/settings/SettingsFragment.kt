@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -16,7 +17,9 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import androidx.preference.get
+import com.anggrayudi.storage.file.DocumentFileCompat
 import com.anggrayudi.storage.file.getAbsolutePath
+import com.anggrayudi.storage.file.toTreeDocumentFile
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.databinding.FragmentSettingsBinding
 import com.lolo.io.onelist.feature.lists.utils.StorageHelperHolder
@@ -24,7 +27,7 @@ import isNotNullOrEmpty
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-class SettingsFragment() : PreferenceFragmentCompat() {
+class SettingsFragment : PreferenceFragmentCompat() {
 
     private val viewModel by lazy { getViewModel<SettingsFragmentViewModel>() }
 
@@ -82,6 +85,7 @@ class SettingsFragment() : PreferenceFragmentCompat() {
                         it != null
                     displayDefaultPath()
                     setBackupOptionsVisible(it.isNotNullOrEmpty())
+                    (this@SettingsFragment.preferenceScreen.get<Preference>("preferUseFiles") as? SwitchPreference)?.isChecked = viewModel.preferUseFiles
                 }
             }
         }
@@ -124,20 +128,48 @@ class SettingsFragment() : PreferenceFragmentCompat() {
                 storageHolder?.storageHelper?.openFilePicker()
                 storageHolder?.storageHelper?.onFileSelected = { _, files ->
                     lifecycleScope.launch {
-                        viewModel.importList(files[0].uri)
+                        try {
+                            val treeUriIfPossible = DocumentFileCompat.fromUri(requireContext(), files[0].uri)
+                                ?.toTreeDocumentFile(requireContext())?.uri
+                                ?: files[0].uri
+
+                            viewModel.importList(treeUriIfPossible)
+
+                            Toast.makeText(
+                                activity,
+                                getString(R.string.list_imported), Toast.LENGTH_SHORT
+                            ).show()
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                activity,
+                                getString(R.string.error_import_list),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
-
             }
 
             "backup_all" -> {
-                viewModel.backupAllListsOnDevice()
+                lifecycleScope.launch {
+                    try {
+                        viewModel.backupAllListsOnDevice()
+                        Toast.makeText(
+                            activity,
+                            getString(R.string.success_all_backup), Toast.LENGTH_SHORT
+                        ).show()
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            activity,
+                            getString(R.string.error_all_backup), Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
 
             "preferUseFiles" -> {
                 viewModel.onPreferUseFiles()
             }
-
 
             "releaseNote" -> showReleaseNote(requireActivity())
         }

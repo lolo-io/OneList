@@ -14,8 +14,8 @@ android {
         compileSdk 34
         minSdkVersion 23
         targetSdkVersion 34
-        versionCode 14
-        versionName "1.4.1"
+        versionCode 17
+        versionName "1.4.0"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -25,16 +25,16 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig = true
     }
 
     signingConfigs {
         release {
-            storeFile file('C:\\Users\\Loic\\Dropbox (Personal)\\.keys\\keystores\\android.jks')
-            storePassword '7c3c1779c148a6ff3d5ee87e7ef70f81'
-            keyAlias 'OneListKey'
-            keyPassword '97220be66f2b279723c09f770ab45089'
+            storeFile = file(System.getenv("ONELIST_KEYSTORE_PATH"))
+            storePassword = System.getenv("ONELIST_KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("ONELIST_KEYSTORE_ALIAS")
+            keyPassword = System.getenv("ONELIST_KEYSTORE_ALIAS_PASSWORD")
         }
-        release
     }
 
     buildTypes {
@@ -68,6 +68,8 @@ repositories {
 }
 
 dependencies {
+    def room_version = "2.6.1"
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -92,21 +94,7 @@ dependencies {
     implementation "io.insert-koin:koin-android:3.5.0"
     implementation "io.insert-koin:koin-androidx-navigation:3.5.0"
 
-    def room_version = "2.6.1"
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     ksp "androidx.room:room-compiler:$room_version"
-
-}
-
-def props = new Properties()
-if (rootProject.file("release.properties").exists()) {
-    props.load(new FileInputStream(rootProject.file("release.properties")))
-    android.signingConfigs.release.storeFile file(props.keyStore)
-    android.signingConfigs.release.storePassword props.keyStorePassword
-    android.signingConfigs.release.keyAlias props.keyAlias
-    android.signingConfigs.release.keyPassword props.keyAliasPassword
-} else {
-    project.logger.info('INFO: Set the values storeFile, storePassword, keyAlias, and keyPassword in release.properties to sign the release.')
-    android.buildTypes.release.signingConfig = null
 }

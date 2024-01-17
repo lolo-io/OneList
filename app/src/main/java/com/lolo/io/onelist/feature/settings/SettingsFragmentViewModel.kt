@@ -20,6 +20,9 @@ class SettingsFragmentViewModel(
     private var _backupDisplayPath = MutableStateFlow<String?>(null)
     val backupDisplayPath = _backupDisplayPath.asStateFlow()
 
+    val preferUseFiles
+        get() = preferences.preferUseFiles
+
     val version: String
         get() = preferences.version
 
@@ -28,6 +31,9 @@ class SettingsFragmentViewModel(
     }
 
     fun setBackupPath(uri: Uri?, displayPath: String? = null) {
+        if(uri == null) {
+            preferences.preferUseFiles = false
+        }
         viewModelScope.launch {
             useCases.setBackupUri(uri, displayPath)
             _backupDisplayPath.value = displayPath
@@ -38,10 +44,8 @@ class SettingsFragmentViewModel(
         return useCases.importList(uri)
     }
 
-    fun backupAllListsOnDevice() {
-        viewModelScope.launch {
-            useCases.syncAllLists()
-        }
+    suspend fun backupAllListsOnDevice() {
+        useCases.syncAllLists()
     }
 
     fun onPreferUseFiles() {

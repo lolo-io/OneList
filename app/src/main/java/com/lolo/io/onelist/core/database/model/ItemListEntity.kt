@@ -12,7 +12,6 @@ data class ItemListEntity(
     val title: String = "",
     val position: Int = 0,
     val items: List<ItemEntity> = listOf(),
-    val path: Uri? = null,
     var uri: Uri? = null,
 
     @PrimaryKey(autoGenerate = true)

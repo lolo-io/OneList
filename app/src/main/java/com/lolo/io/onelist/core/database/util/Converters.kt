@@ -38,7 +38,6 @@ fun ItemListEntity.toItemListModel() = ItemList(
     id = this.id,
     items = this.items.toItemModels().toMutableList(),
     uri = this.uri,
-    path = this.path,
     position = this.position,
     title = this.title
 )

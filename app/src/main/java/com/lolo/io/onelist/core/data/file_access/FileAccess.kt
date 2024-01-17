@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.documentfile.provider.DocumentFile
 import com.anggrayudi.storage.file.DocumentFileCompat
 import com.anggrayudi.storage.file.getAbsolutePath
+import com.anggrayudi.storage.file.isTreeDocumentFile
 import com.anggrayudi.storage.file.makeFile
 import com.google.gson.Gson
 import com.google.gson.JsonIOException
@@ -19,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -34,12 +36,8 @@ class FileAccess(
         get() =
             DocumentFileCompat.fromUri(app, this)?.canWrite() == true
 
-    private fun Uri.isIntoBackupFolder(backupUri: Uri): Boolean =
-        DocumentFileCompat.fromUri(app, this)?.getAbsolutePath(app)
-            ?.startsWith(
-                DocumentFileCompat.fromUri(app, backupUri)?.getAbsolutePath(app)
-                    ?: throw IllegalArgumentException("Backup uri could not be parsed")
-            ) == true
+    private fun Uri.isIntoBackupFolder(): Boolean =
+        DocumentFileCompat.fromUri(app, this)?.isTreeDocumentFile == true
 
     private val Uri.fileExists
         get() =
@@ -52,7 +50,6 @@ class FileAccess(
         SecurityException::class
     )
     suspend fun getListFromLocalFile(list: ItemList): ItemList {
-        Log.d("1LogD", list.title)
         return coroutineIOScope.async(SupervisorJob()) {
             val listFromFile = list.uri?.let { uri ->
                 app.contentResolver.openInputStream(uri).use {
@@ -60,6 +57,7 @@ class FileAccess(
                 }
             } ?: list
             listFromFile.apply {
+                id = list.id
                 uri = list.uri
             }
         }.await()
@@ -73,9 +71,10 @@ class FileAccess(
     ): ItemList {
         if (backupUri != null) {
             list.uri.let {
-                if (it == null
+                if (
+                    it == null
                     || !it.fileExists
-                    || !it.isIntoBackupFolder(Uri.parse(backupUri))
+                    || !it.isIntoBackupFolder()
                     || !it.canWrite
                 ) {
                     val uri = createListFile(backupUri, list)?.uri
@@ -91,16 +90,8 @@ class FileAccess(
                         )
                     }
                 } catch (e: Exception) {
-                    coroutineIOScope.launch {
-                        Toast.makeText(
-                            app,
-                            app.getString(
-                                R.string.error_saving_to_path,
-                                list.title
-                            ), // todo change to path to just error while saving list
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    // Just don't save list in file. error has been toasted before normally.
+                    // Should be handled better
                 }
             }
         }
@@ -118,28 +109,20 @@ class FileAccess(
     }
 
 
-    // TODO Toasts should not be here !
-    fun deleteListBackupFile(list: ItemList) {
-        coroutineIOScope.launch {
+    @kotlin.jvm.Throws
+    fun deleteListBackupFile(
+        list: ItemList,
+        onFileDeleted: () -> Unit,
+    ) {
+        coroutineIOScope.run {
             list.uri?.let { uri ->
-                try {
+                if (
                     DocumentFile.fromSingleUri(app, uri)?.delete()
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            app,
-                            app.getString(R.string.file_deleted),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            app,
-                            app.getString(R.string.error_deleting_list_file),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    != true
+                ) {
+                    throw IOException("Could not delete file")
                 }
+                onFileDeleted()
             }
         }
     }
@@ -156,8 +139,10 @@ class FileAccess(
                         .use { iss -> iss?.bufferedReader()?.use { it.readText() } }
                 // return :
                 gson.fromJson(content, ItemList::class.java).also {
+                    it.uri = uri
                     onListCreated(it)
                 }
+
             } catch (e: IllegalArgumentException) {
                 throw e
             } catch (e: Exception) {

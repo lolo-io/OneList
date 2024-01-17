@@ -45,17 +45,6 @@
     <string name="changeFolderHelp">Concurrent modifications of files are not properly handled in 1List. New content will overwrite the file. Be sure you refresh your list before editing it if you are using a shared file. (Pull the list down to refresh it)</string>
     <string name="not_a_1list_file">The selected file is not a .1list file.</string>
     <string name="ok_with_tick">✓ OK</string>
-    <string name="storage_chooser_select_label">Select</string>
-    <string name="storage_chooser_create_label">Create</string>
-    <string name="storage_chooser_new_folder_label">New Folder</string>
-    <string name="storage_chooser_cancel_label">Cancel</string>
-    <string name="storage_chooser_overview_heading">Storage Devices</string>
-    <string name="storage_chooser_internal_storage_text">Internal Storage</string>
-    <string name="storage_chooser_free_space_text">%s free</string>
-    <string name="storage_chooser_folder_created_toast_text">Folder Created</string>
-    <string name="storage_chooser_folder_error_toast_text">Error occurred while creating folder. Try again.</string>
-    <string name="storage_chooser_text_field_hint_text">Folder Name</string>
-    <string name="storage_chooser_text_field_error_text">Empty Folder Name</string>
     <string name="error_could_not_fetch_some_lists">Some lists could not be loaded from your filesystem</string>
     <string name="error_file_missing">File missing</string>
     <string name="error_permission_not_granted">Permission denied</string>
@@ -66,8 +55,12 @@
     <string name="setting_prefer_backup_files_summary">If enabled, your lists will be fetched from the backup files. This is useful if you sync your backup folder with other devices.</string>
     <string name="settings_backup_all_summary">Each list is backed up every time you modify it. Click here to force a backup now.</string>
     <string name="settings_prefer_backup_files_title">Get lists from backup files</string>
-    <string name="settings_import_summary">Import a list from your filesystem (.1list file)</string>
+    <string name="settings_import_summary">Import a list from your filesystem (.1list file).\nIf the file is in your backup folder, the same file will be used for backups; if not, a new file will be created in your backup folder.</string>
     <string name="settings_import_title">Import a list</string>
     <string name="settings_backup_title">Backup lists on device</string>
     <string name="backup_all_lists">Backup all lists</string>
+    <string name="list_imported">Your list has been imported.</string>
+    <string name="error_import_list">Error while importing your list : This file can\'t be imported.</string>
+    <string name="success_all_backup">All your lists have been backed up.</string>
+    <string name="error_all_backup">An error occurred while processing backup.</string>
 </resources>

@@ -59,7 +59,7 @@ class SharedPreferencesHelper(
         set(value) = editPref(backUpLocallyPref, value)
 
     var version: String
-        get() = getPref(versionPref) ?: "0.0.0"
+        get() = getPref(versionPref) ?: ""
         set(value) = editPref(versionPref, value)
 
     var theme: String
@@ -71,7 +71,7 @@ class SharedPreferencesHelper(
         set(value) = firstLaunchPref.editPref(value)
 
     var preferUseFiles: Boolean
-        get() = preferUseFilesPref.getPref(true)
+        get() = preferUseFilesPref.getPref(false)
         set(value) = preferUseFilesPref.editPref(value)
 
     var selectedListIndex: Int

@@ -45,17 +45,6 @@
     <string name="changeFolderHelp">Modificações simultâneas de arquivos não são tratadas adequadamente no 1List. O novo conteúdo substituirá o arquivo. Atualize sua lista antes de editá-la se estiver usando um arquivo compartilhado. (Puxe a lista para baixo para atualizá-la)</string>
     <string name="not_a_1list_file">O arquivo selecionado não é do tipo .1list</string>
     <string name="ok_with_tick">✓ OK</string>
-    <string name="storage_chooser_select_label">Selecionar</string>
-    <string name="storage_chooser_create_label">Criar</string>
-    <string name="storage_chooser_new_folder_label">Nova Pasta</string>
-    <string name="storage_chooser_cancel_label">Cancelar</string>
-    <string name="storage_chooser_overview_heading">Dispositivos de armazenamento</string>
-    <string name="storage_chooser_internal_storage_text">Armazenamento interno</string>
-    <string name="storage_chooser_free_space_text">%s livre</string>
-    <string name="storage_chooser_folder_created_toast_text">Pasta Criada</string>
-    <string name="storage_chooser_folder_error_toast_text">Erro ao criar pasta. Tente novamente.</string>
-    <string name="storage_chooser_text_field_hint_text">Nome Da Pasta</string>
-    <string name="storage_chooser_text_field_error_text">Nome Da Pasta Vazio</string>
     <string name="error_could_not_fetch_some_lists">Algumas listas não puderam ser carregadas do seu sistema de arquivos</string>
     <string name="error_file_missing">Arquivo inacessível</string>
     <string name="error_permission_not_granted">Permissão negada</string>
@@ -66,8 +55,12 @@
     <string name="setting_prefer_backup_files_summary">Se ativada, suas listas serão recuperadas a partir dos arquivos de backup. Isso é útil se você sincronizar sua pasta de backup com outros dispositivos.</string>
     <string name="settings_backup_all_summary">Cada lista é salva toda vez que você a modificar. Clique aqui para forçar uma backup agora.</string>
     <string name="settings_prefer_backup_files_title">Obter listas a partir de arquivos de backup</string>
-    <string name="settings_import_summary">Importar uma lista do seu sistema de arquivos (arquivo .1list)</string>
+    <string name="settings_import_summary">Importar uma lista do seu sistema de arquivos (arquivo .1list).\nSe o arquivo estiver na sua pasta de backup, o mesmo arquivo será usado para backups; caso contrário, um novo arquivo será criado na sua pasta de backup.</string>
     <string name="settings_import_title">Importar uma lista</string>
     <string name="settings_backup_title">Fazer backup das listas no dispositivo</string>
     <string name="backup_all_lists">Fazer backup de todas as listas</string>
+    <string name="list_imported">Sua lista foi importada.</string>
+    <string name="error_import_list">Erro ao importar sua lista: Este arquivo não pode ser importado.</string>
+    <string name="success_all_backup">Todas as suas listas foram salvas.</string>
+    <string name="error_all_backup">Ocorreu um erro ao processar a cópia de segurança.</string>
 </resources>

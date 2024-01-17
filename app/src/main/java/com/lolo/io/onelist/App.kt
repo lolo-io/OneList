@@ -9,6 +9,7 @@ import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
 
 class App : Application() {
+
     override fun onCreate() {
         super.onCreate()
         startKoin {
