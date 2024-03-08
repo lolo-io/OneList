@@ -3,7 +3,7 @@
     <color name="app_color">#b71c1c</color>
 
     <color name="textColorPrimary">@android:color/primary_text_dark</color>
-    <color name="textColorPrimaryInverse">@android:color/primary_text_light</color>
+    <color name="textColorPrimaryDark">@android:color/primary_text_light</color>
     <color name="textColorSecondary">@android:color/secondary_text_dark</color>
 
     <color name="transparent">@android:color/transparent</color>

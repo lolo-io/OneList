@@ -1,31 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:navigationBarColor">@color/textColorPrimaryInverse</item>
+    <style name="AppThemeV27" parent="AppThemeV23">
         <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:statusBarColor">@color/textColorPrimaryInverse</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="preferenceTheme">@style/AppPreferenceTheme</item>
     </style>
 
-    <style name="AppThemeLauncher" parent="AppTheme">
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="android:windowBackground">@mipmap/logo_9</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item>
-        <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
-        <item name="android:windowLightStatusBar">false</item>
+    <style name="AppThemeLauncherV27" parent="AppThemeLauncherV23">
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 
-    <!-- Custom Preference Theme -->
-    <style name="AppPreferenceTheme"
-        parent="PreferenceThemeOverlay">
-        <item name="android:layout">
-            @layout/fragment_settings
-        </item>
-        <item name="android:textColor">@color/textColorPrimary</item>
-    </style>
+    <style name="AppTheme" parent="AppThemeV27"/>
+    <style name="AppThemeLauncher" parent="AppThemeLauncherV27" />
 </resources>

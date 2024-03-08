@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorBackground</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppThemeV21Night" parent="AppThemeNight">
         <item name="android:navigationBarColor">?attr/colorSurface</item>
         <item name="android:statusBarColor">?attr/colorSurface</item>
-        <item name="preferenceTheme">@style/AppPreferenceTheme</item>
     </style>
 
-    <style name="AppThemeLauncher" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimaryDark">@color/app_color</item>
-        <item name="android:windowBackground">@mipmap/logo_9</item>
+    <style name="AppThemeLauncherV21Night" parent="AppThemeLauncherNight">
         <item name="android:navigationBarColor">@color/app_color</item>
         <item name="preferenceTheme">@style/AppPreferenceTheme</item>
     </style>
+
+    <style name="AppTheme" parent="AppThemeV21Night"/>
+    <style name="AppThemeLauncher" parent="AppThemeLauncherV21Night" />
 
 </resources>
