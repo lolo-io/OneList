@@ -2,8 +2,12 @@
 <resources>
     <color name="app_color">#b71c1c</color>
 
+    <color name="pure_white">#FFFFFF</color>
+    <color name="pure_black">#000000</color>
+
+
     <color name="textColorPrimary">@android:color/primary_text_light</color>
-    <color name="textColorPrimaryInverse">@android:color/primary_text_dark</color>
+    <color name="textColorPrimaryDark">@android:color/primary_text_dark</color>
     <color name="textColorSecondary">@android:color/secondary_text_light</color>
 
     <color name="transparent">@android:color/transparent</color>
