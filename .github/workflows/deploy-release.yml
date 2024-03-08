@@ -1,11 +1,9 @@
-name: Build Release [Deploy on push]
+name: Build & Deploy Release
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [master]
-  pull_request:
     branches: [master]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -43,7 +41,6 @@ jobs:
           KEYSTORE_KEY_ALIAS: ${{ secrets.ONELIST_KEYSTORE_ALIAS }}
           KEYSTORE_KEY_PASSWORD: ${{ secrets.ONELIST_KEYSTORE_ALIAS_PASSWORD }}
         run: ./gradlew bundleRelease
-        working-directory: ./android
 
       - name: Decode Base64 Keystore
         if: github.event_name == 'push'
