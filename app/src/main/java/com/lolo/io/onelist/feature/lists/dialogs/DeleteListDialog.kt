@@ -28,7 +28,7 @@ fun deleteListDialog(context: Context, itemList: ItemList, onPositiveClicked: (a
         setCanceledOnTouchOutside(false)
     }
 
-    var action = ACTION_RM_FILE
+    var action = 0
     if (itemList.uri == null) binding.deleteFileCb.apply {
         visibility = View.GONE
     } else {
