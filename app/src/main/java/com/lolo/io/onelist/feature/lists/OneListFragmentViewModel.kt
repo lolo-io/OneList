@@ -9,7 +9,6 @@ import com.lolo.io.onelist.BuildConfig
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.core.data.model.AllListsWithErrors
 import com.lolo.io.onelist.core.data.model.ErrorLoadingList
-import com.lolo.io.onelist.core.data.model.Resource
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
 import com.lolo.io.onelist.core.model.Item
@@ -21,7 +20,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -98,9 +96,9 @@ class OneListFragmentViewModel(
     suspend fun removeList(
         itemList: ItemList,
         deleteBackupFile: Boolean,
-        onFieDeleted: () -> Unit
+        onFileDeleted: () -> Unit
     ) {
-        useCases.removeList(itemList, deleteBackupFile, onFieDeleted)
+        useCases.removeList(itemList, deleteBackupFile, onFileDeleted)
     }
 
     fun selectList(position: Int) {
@@ -174,6 +172,11 @@ class OneListFragmentViewModel(
         editList(selectedList.value.copy())
     }
 
+    fun clearSelectedList() {
+        selectedList.value.items.clear()
+        editList(selectedList.value.copy())
+    }
+
     fun editItem(index: Int, item: Item) {
         selectedList.value.items[index] = item
         editList(selectedList.value.copy())
@@ -183,7 +186,6 @@ class OneListFragmentViewModel(
         val fromItem = selectedList.value.items[fromPosition]
         selectedList.value.items.removeAt(fromPosition)
         selectedList.value.items.add(toPosition, fromItem)
-
         editList(selectedList.value.copy())
     }
 

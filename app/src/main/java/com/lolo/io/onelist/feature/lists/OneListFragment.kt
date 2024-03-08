@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import com.anggrayudi.storage.extension.launchOnUiThread
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -37,7 +36,6 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager
-import com.lolo.io.onelist.BuildConfig
 import com.lolo.io.onelist.MainActivity
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.core.data.migration.UpdateHelper
@@ -53,6 +51,8 @@ import com.lolo.io.onelist.core.ui.util.isVisible
 import com.lolo.io.onelist.core.ui.util.isVisibleInvisible
 import com.lolo.io.onelist.core.ui.util.shake
 import com.lolo.io.onelist.databinding.FragmentOneListBinding
+import com.lolo.io.onelist.feature.lists.dialogs.ACTION_CLEAR
+import com.lolo.io.onelist.feature.lists.dialogs.ACTION_DELETE
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_RM_FILE
 import com.lolo.io.onelist.feature.lists.dialogs.deleteListDialog
 import com.lolo.io.onelist.feature.lists.dialogs.editItemDialog
@@ -71,7 +71,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-import javax.inject.Inject
 
 
 class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
@@ -397,32 +396,41 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
     private fun showDeleteDialog(itemList: ItemList) {
         deleteListDialog(requireContext(), itemList) { action ->
-            itemsAdapter
-                .notifyItemRangeRemoved(0, viewModel.selectedList.value.items.size)
-            listsAdapter.notifyItemRemoved(viewModel.allLists.value.indexOf(itemList))
-            lifecycleScope.launch {
-                try {
-                    viewModel.removeList(itemList, action and ACTION_RM_FILE != 0,
-                        onFieDeleted = {
-                            activity?.runOnUiThread {
-                                Toast.makeText(
-                                    requireContext(),
-                                    getString(R.string.file_deleted),
-                                    Toast.LENGTH_LONG
-                                ).show()
+            if(action and ACTION_CLEAR != 0) {
+                itemsAdapter
+                    .notifyItemRangeRemoved(0, viewModel.selectedList.value.items.size)
+                viewModel.clearSelectedList()
+            } else {
+                itemsAdapter
+                    .notifyItemRangeRemoved(0, viewModel.selectedList.value.items.size)
+                listsAdapter.notifyItemRemoved(viewModel.allLists.value.indexOf(itemList))
+                lifecycleScope.launch {
+                    try {
+                        viewModel.removeList(itemList, action and ACTION_RM_FILE != 0,
+                            onFileDeleted = {
+                                activity?.runOnUiThread {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.file_deleted),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
                             }
+                        )
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.error_deleting_list_file),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    )
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.error_deleting_list_file),
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
                 }
             }
+
+
+
             hideEditionButtons()
         }.show()
     }
