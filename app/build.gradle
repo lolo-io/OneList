@@ -6,7 +6,18 @@ plugins {
     id 'com.google.devtools.ksp'
 }
 
+
+
 android {
+
+    def versionPropsFile = file('../version.properties')
+    if (!versionPropsFile.canRead()) {
+        throw new GradleException("Could not read version.properties !")
+    }
+    Properties versionProps = new Properties()
+    versionProps.load(new FileInputStream(versionPropsFile))
+    def _versionName = versionProps['VERSION_NAME']
+    def _versionCode = versionProps['VERSION_CODE'].toInteger()
 
     defaultConfig {
         multiDexEnabled true
@@ -14,8 +25,8 @@ android {
         compileSdk 34
         minSdkVersion 23
         targetSdkVersion 34
-        versionCode 17
-        versionName "1.4.0"
+        versionCode _versionCode
+        versionName _versionName
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -30,7 +41,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile = file(System.getenv("ONELIST_KEYSTORE_PATH"))
+            storeFile = file("keystore.jks")
             storePassword = System.getenv("ONELIST_KEYSTORE_PASSWORD")
             keyAlias = System.getenv("ONELIST_KEYSTORE_ALIAS")
             keyPassword = System.getenv("ONELIST_KEYSTORE_ALIAS_PASSWORD")
@@ -66,6 +77,8 @@ repositories {
     mavenCentral()
     maven { url "https://jitpack.io" }
 }
+
+
 
 dependencies {
     def room_version = "2.6.1"
