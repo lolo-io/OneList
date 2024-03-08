@@ -1,0 +1,53 @@
+name: Build & Deploy Release
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    name: Android build
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: oracle
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Decode Base64 Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_SIGNING_KEYSTORE }}
+        run: echo $KEYSTORE_BASE64 | base64 --decode > keystore.jks
+        working-directory: ./app
+
+      - name: Assemble & Sign App Release Bundle
+        env:
+          ONELIST_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEYSTORE_PASSWORD }}
+          ONELIST_KEYSTORE_ALIAS: ${{ secrets.ONELIST_KEYSTORE_ALIAS }}
+          ONELIST_KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ONELIST_KEYSTORE_ALIAS_PASSWORD }}
+        run: ./gradlew bundleRelease
+
+      - name: Decode Base64 Keystore
+        env:
+          JSON_KEY_BASE64: ${{ secrets.ANDROID_API_JSON_KEY }}
+        run: echo $JSON_KEY_BASE64 | base64 --decode > publish.json
+
+      - name: Deploy on Google Play Internal Track
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ./publish.json
+          packageName: com.lolo.io.onelist
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          track: internal

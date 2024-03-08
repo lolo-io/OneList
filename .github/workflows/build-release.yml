@@ -1,12 +1,10 @@
-name: Build Release [Deploy on push]
+name: Build App
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [master]
   pull_request:
-    branches: [master]
+    branches: [develop, master]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -36,26 +34,11 @@ jobs:
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_SIGNING_KEYSTORE }}
         run: echo $KEYSTORE_BASE64 | base64 --decode > keystore.jks
+        working-directory: ./app
 
       - name: Assemble & Sign App Release Bundle
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEYSTORE_PASSWORD }}
-          KEYSTORE_KEY_ALIAS: ${{ secrets.ONELIST_KEYSTORE_ALIAS }}
-          KEYSTORE_KEY_PASSWORD: ${{ secrets.ONELIST_KEYSTORE_ALIAS_PASSWORD }}
+          ONELIST_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEYSTORE_PASSWORD }}
+          ONELIST_KEYSTORE_ALIAS: ${{ secrets.ONELIST_KEYSTORE_ALIAS }}
+          ONELIST_KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ONELIST_KEYSTORE_ALIAS_PASSWORD }}
         run: ./gradlew bundleRelease
-        working-directory: ./android
-
-      - name: Decode Base64 Keystore
-        if: github.event_name == 'push'
-        env:
-          JSON_KEY_BASE64: ${{ secrets.ANDROID_API_JSON_KEY }}
-        run: echo $JSON_KEY_BASE64 | base64 --decode > publish.json
-
-      - name: Deploy on Google Play Internal Track
-        if: github.event_name == 'push'
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJson: ./publish.json
-          packageName: com.lolo.io.onelist
-          releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
-          track: internal
