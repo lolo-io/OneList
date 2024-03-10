@@ -1,19 +1,18 @@
-name: Build & Deploy Release
+name: Build App & Deploy Internal
 
-# Controls when the workflow will run
 on:
-  # Allows you to run this workflow manually from the Actions tab
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    name: Android build
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    name: Build
     steps:
+
       - name: Checkout the code
         uses: actions/checkout@v3
 
@@ -31,6 +30,10 @@ jobs:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_SIGNING_KEYSTORE }}
         run: echo $KEYSTORE_BASE64 | base64 --decode > keystore.jks
         working-directory: ./app
+       
+      - name: Get current date for version code
+        id: date
+        run: echo "::set-output name=date::$(date +'%y%m%d%H%M')"
 
       - name: Assemble & Sign App Release Bundle
         env:
@@ -39,7 +42,25 @@ jobs:
           ONELIST_KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ONELIST_KEYSTORE_ALIAS_PASSWORD }}
         run: ./gradlew bundleRelease
 
+      - name: Upload aab
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: app/build/outputs/bundle/release/app-release.aab
+
+
+  deploy:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+
+      - name: Download aab
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release
       - name: Decode Base64 Keystore
+        
         env:
           JSON_KEY_BASE64: ${{ secrets.ANDROID_API_JSON_KEY }}
         run: echo $JSON_KEY_BASE64 | base64 --decode > publish.json
@@ -49,5 +70,7 @@ jobs:
         with:
           serviceAccountJson: ./publish.json
           packageName: com.lolo.io.onelist
-          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          releaseFiles: app-release.aab
+          whatsNewDirectory: whatsnew
           track: internal
+  
