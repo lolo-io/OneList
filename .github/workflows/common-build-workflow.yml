@@ -1,0 +1,58 @@
+name: Build App & Deploy Internal
+
+on:
+  workflow_call:
+    inputs:
+      upload-artifact:
+        required: true
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build App
+    steps:
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: oracle
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Decode Base64 Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_SIGNING_KEYSTORE }}
+        run: echo $KEYSTORE_BASE64 | base64 --decode > keystore.jks
+        working-directory: ./app
+
+      - name: Prepare Version Code
+        id: versionCode
+        run: |
+          sum=`expr ${{vars.VERSION_CODE_OFFSET}} + ${{github.run_number}}`
+          echo "versionCode=$sum" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare version.properties
+        run: |
+          touch version.properties && \
+            echo "VERSION_CODE=${{ steps.versionCode.outputs.versionCode }}" >> version.properties
+
+      - name: Assemble & Sign App Release Bundle
+        env:
+          ONELIST_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEYSTORE_PASSWORD }}
+          ONELIST_KEYSTORE_ALIAS: ${{ secrets.ONELIST_KEYSTORE_ALIAS }}
+          ONELIST_KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ONELIST_KEYSTORE_ALIAS_PASSWORD }}
+        run: ./gradlew bundleRelease
+
+      - name: Upload aab
+        if: inputs.upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.aab
+          path: app/build/outputs/bundle/release/app-release.aab
+  
