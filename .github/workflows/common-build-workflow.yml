@@ -1,4 +1,4 @@
-name: Build App & Deploy Internal
+name: .reusable-workflow-build-app
 
 on:
   workflow_call:
