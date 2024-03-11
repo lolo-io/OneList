@@ -3,58 +3,25 @@ name: Build App & Deploy Internal
 on:
   push:
     branches: [develop]
-  pull_request:
-    branches: [develop]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     name: Build
-    steps:
-
-      - name: Checkout the code
-        uses: actions/checkout@v3
-
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: oracle
-          java-version: 17
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Decode Base64 Keystore
-        env:
-          KEYSTORE_BASE64: ${{ secrets.ANDROID_SIGNING_KEYSTORE }}
-        run: echo $KEYSTORE_BASE64 | base64 --decode > keystore.jks
-        working-directory: ./app
-       
-      - name: Get current date for version code
-        id: date
-        run: echo "::set-output name=date::$(date +'%y%m%d%H%M')"
-
-      - name: Assemble & Sign App Release Bundle
-        env:
-          ONELIST_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEYSTORE_PASSWORD }}
-          ONELIST_KEYSTORE_ALIAS: ${{ secrets.ONELIST_KEYSTORE_ALIAS }}
-          ONELIST_KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ONELIST_KEYSTORE_ALIAS_PASSWORD }}
-        run: ./gradlew bundleRelease
-
-      - name: Upload aab
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release.aab
-          path: app/build/outputs/bundle/release/app-release.aab
+    uses: ./.github/workflows/common-build-workflow.yml
+    secrets: inherit
+    with:
+      upload-artifact: true
 
 
   deploy:
-    if: github.event_name == 'push'
     needs: build
     runs-on: ubuntu-latest
     name: Deploy
     steps:
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
 
       - name: Download aab
         uses: actions/download-artifact@v4

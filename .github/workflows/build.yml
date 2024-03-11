@@ -1,0 +1,14 @@
+name: Build App
+
+on:
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/common-build-workflow.yml
+    secrets: inherit
+    with:
+      upload-artifact: false
