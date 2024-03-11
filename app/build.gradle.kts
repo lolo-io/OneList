@@ -16,7 +16,6 @@ android {
     if (versionPropsFile.canRead()) {
         val versionProps = Properties()
         versionProps.load(FileInputStream(versionPropsFile))
-        val v = versionProps["VERSION_CODE"]
         versionCodeCI = (versionProps["VERSION_CODE"] as String).toInt()
     }
 
@@ -39,6 +38,11 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
 
     signingConfigs {
@@ -86,7 +90,6 @@ repositories {
 }
 
 dependencies {
-
     // android
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.preference.ktx)
@@ -104,6 +107,20 @@ dependencies {
     // kotlin
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlin.stdlib.jdk7)
+
+    // compose
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    // compose: android studio preview support
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    // compose: ui tests
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // firebase
     implementation(libs.firebase.crashlytics)
