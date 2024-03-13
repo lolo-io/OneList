@@ -134,6 +134,10 @@
 
             </RelativeLayout>
 
+
+
+
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -142,8 +146,15 @@
                 android:clipChildren="false"
                 android:clipToPadding="false">
 
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/listsRecyclerViewComposed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/listsRecyclerView"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:overScrollMode="never" />

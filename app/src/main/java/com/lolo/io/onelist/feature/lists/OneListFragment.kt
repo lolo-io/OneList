@@ -18,6 +18,12 @@ import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -39,6 +45,7 @@ import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchAct
 import com.lolo.io.onelist.MainActivity
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.core.data.migration.UpdateHelper
+import com.lolo.io.onelist.core.design.OneListTheme
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.ui.Config
@@ -51,6 +58,7 @@ import com.lolo.io.onelist.core.ui.util.isVisible
 import com.lolo.io.onelist.core.ui.util.isVisibleInvisible
 import com.lolo.io.onelist.core.ui.util.shake
 import com.lolo.io.onelist.databinding.FragmentOneListBinding
+import com.lolo.io.onelist.feature.lists.components.ListsFlowRow
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_CLEAR
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_RM_FILE
 import com.lolo.io.onelist.feature.lists.dialogs.deleteListDialog
@@ -121,6 +129,21 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
     }
 
+    @Composable
+    fun TestViewCompose() {
+        Text(text = "This is a text")
+    }
+
+
+    fun ComposeView.set(content: @Composable () -> Unit) {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+            OneListTheme {
+                content()
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -128,6 +151,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
     ): View {
         _binding = FragmentOneListBinding.inflate(inflater, container, false)
         this.container = container
+
         return binding.root
     }
 
@@ -144,6 +168,13 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
             if (_fragmentAllListsFinalInstance.size != viewModel.allLists.value.size) {
                 listsAdapter.notifyItemRangeInserted(0, viewModel.allLists.value.size)
             }
+        }
+
+
+        binding.listsRecyclerViewComposed.set {
+            val allLists = viewModel.allLists.collectAsState().value
+            val selectedList = viewModel.selectedList.collectAsState().value
+            ListsFlowRow(lists = allLists, selectedList = selectedList, onClick = { viewModel.selectList(allLists.indexOf(it)) })
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -393,7 +424,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
     private fun showDeleteDialog(itemList: ItemList) {
         deleteListDialog(requireContext(), itemList) { action ->
-            if(action and ACTION_CLEAR != 0) {
+            if (action and ACTION_CLEAR != 0) {
                 itemsAdapter
                     .notifyItemRangeRemoved(0, viewModel.selectedList.value.items.size)
                 viewModel.clearSelectedList()
