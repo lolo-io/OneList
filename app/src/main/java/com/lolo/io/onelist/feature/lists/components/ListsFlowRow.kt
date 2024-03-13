@@ -28,6 +28,7 @@ fun ListsFlowRow(
             ListChip(label = it.title, ListChipState.DRAGGED)
         },
         onDragStart = {
+            onClick(it)
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         },
         horizontalArrangement = Arrangement.Center,
