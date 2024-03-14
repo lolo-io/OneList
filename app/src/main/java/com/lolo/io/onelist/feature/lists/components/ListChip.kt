@@ -71,32 +71,25 @@ fun ListChip(
 
 @Preview
 @Composable
-private fun Preview_Default() = WithTheme {
+private fun Preview_Default() = OneListTheme {
     ListChip("List Chip")
 }
 
 
 @Preview
 @Composable
-private fun Preview_Selected() = WithTheme {
+private fun Preview_Selected() = OneListTheme {
     ListChip("List Chip", state = ListChipState.SELECTED)
 }
 
 @Preview
 @Composable
-private fun Preview_Dragged() = WithTheme {
+private fun Preview_Dragged() = OneListTheme {
     ListChip("List Chip", state = ListChipState.DRAGGED)
 }
 
 @Preview
 @Composable
-private fun Preview_Shadow() = WithTheme {
+private fun Preview_Shadow() = OneListTheme {
     ListChip("List Chip", state = ListChipState.SHADOW)
-}
-
-@Composable
-fun WithTheme(content: @Composable () -> Unit) {
-    OneListTheme {
-        content()
-    }
 }

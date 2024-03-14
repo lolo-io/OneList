@@ -1,4 +1,5 @@
-package com.lolo.io.onelist.feature.lists.components
+package com.lolo.io.onelist.feature.lists.components.core
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.Spring
@@ -80,13 +81,10 @@ fun <T> DraggableFlowRow(
     maxItemsInEachRow: Int = Int.MAX_VALUE,
     modifier: Modifier = Modifier,
 ) {
-    var data by remember {
-        mutableStateOf(
-            items.map {
-                DraggableItem(it)
-            }
-        )
-    }
+    var data =
+        items.map {
+            DraggableItem(it)
+        }
 
     var draggedItem by remember {
         mutableStateOf<DraggableItem<T>?>(null)
@@ -181,13 +179,17 @@ fun <T> DraggableFlowRow(
 
     draggedItem?.let { draggedItem ->
         Box(
-            modifier = Modifier.graphicsLayer {
-                translationX = dragOffset.x
-                translationY = dragOffset.y
-            }.offset {
-                IntOffset(-draggedItem.bounds.width.roundToInt() / 2,
-                    -draggedItem.bounds.height.roundToInt() / 2)
-            }
+            modifier = Modifier
+                .graphicsLayer {
+                    translationX = dragOffset.x
+                    translationY = dragOffset.y
+                }
+                .offset {
+                    IntOffset(
+                        -draggedItem.bounds.width.roundToInt() / 2,
+                        -draggedItem.bounds.height.roundToInt() / 2
+                    )
+                }
         ) {
             drawDragItem(draggedItem.item)
         }

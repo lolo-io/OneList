@@ -22,7 +22,7 @@ fun lightColorScheme(): ColorScheme = materialLightColorScheme(
 //    tertiaryContainer = ColorLightTokens.TertiaryContainer,
 //    onTertiaryContainer = ColorLightTokens.OnTertiaryContainer,
 //    background = ColorLightTokens.Background,
-//    onBackground = ColorLightTokens.OnBackground,
+    onBackground = Palette.PURE_BLACK,
 //    surface = ColorLightTokens.Surface,
     onSurface = Palette.GRAY,
 //    surfaceVariant = ColorLightTokens.SurfaceVariant,
@@ -46,19 +46,28 @@ fun lightColorScheme(): ColorScheme = materialLightColorScheme(
 //    surfaceDim = ColorLightTokens.SurfaceDim,
 )
 
-val ColorScheme.app: AppColors
-    @Composable get() = appColors()
+
 
 data class AppColors(
-    val listChipDefaultText: Color = Color.Unspecified,
-    val listChipSelectedText: Color = Color.Unspecified,
-    val listChipShadowText: Color = Color.Unspecified,
-    val listChipDefaultBorder: Color = Color.Unspecified,
-    val listSelectedBorder: Color = Color.Unspecified,
-    val listChipShadowBorder: Color = Color.Unspecified,
-    val listChipDefaultContainer: Color = Color.Unspecified,
-    val listChipSelectedContainer: Color = Color.Unspecified,
+    val listChipDefaultText: Color,
+    val listChipSelectedText: Color,
+    val listChipShadowText: Color,
+    val listChipDefaultBorder: Color,
+    val listSelectedBorder: Color,
+    val listChipShadowBorder: Color,
+    val listChipDefaultContainer: Color,
+    val listChipSelectedContainer: Color,
+    val itemBullet: Color,
+    val itemComment: Color,
+    val itemDone: Color,
+
+    val swipeDeleteBackground: Color,
+    val swipeEditBackground: Color
 )
+
+
+val ColorScheme.app: AppColors
+    @Composable get() = appColors()
 
 @Composable
 fun appColors() = AppColors(
@@ -70,5 +79,10 @@ fun appColors() = AppColors(
     listChipShadowBorder = MaterialTheme.colorScheme.outlineVariant,
     listChipDefaultContainer = Palette.Transparent,
     listChipSelectedContainer = MaterialTheme.colorScheme.secondary,
+    itemComment = MaterialTheme.colorScheme.outline,
+    itemBullet = MaterialTheme.colorScheme.primary,
+    itemDone = MaterialTheme.colorScheme.outline,
+    swipeDeleteBackground = MaterialTheme.colorScheme.secondary,
+    swipeEditBackground = MaterialTheme.colorScheme.outlineVariant,
 )
 

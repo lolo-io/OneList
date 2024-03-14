@@ -8,9 +8,11 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun OneListTheme(content: @Composable () -> Unit) {
+    val colorScheme = lightColorScheme()
     MaterialTheme(
         //colorScheme = dynamicLightColorScheme(LocalContext.current),
-        colorScheme = lightColorScheme(),
-        content = content
+        colorScheme = colorScheme,
+        content = content,
+        typography = typography(colorScheme)
     )
 }

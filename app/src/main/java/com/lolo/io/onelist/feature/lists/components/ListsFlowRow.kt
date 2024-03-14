@@ -4,13 +4,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.model.ItemList
+import com.lolo.io.onelist.core.model.previewMany
+import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.feature.lists.components.core.DraggableFlowRow
 
 @Composable
 fun ListsFlowRow(
     lists: List<ItemList>,
     selectedList: ItemList,
-    onClick: (ItemList) -> Unit
+    onClick: (ItemList) -> Unit,
+    onLongClick: (ItemList) -> Unit = {}
 ) {
     val haptic = LocalHapticFeedback.current
     DraggableFlowRow(
@@ -28,9 +33,18 @@ fun ListsFlowRow(
             ListChip(label = it.title, ListChipState.DRAGGED)
         },
         onDragStart = {
-            onClick(it)
+            onLongClick(it)
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         },
         horizontalArrangement = Arrangement.Center,
     )
+}
+
+@Preview
+@Composable
+private fun Preview_ListsFlowRow() = ComposePreview {
+    val lists = ItemList.previewMany(5)
+    val selectedList = lists.get(0)
+    ListsFlowRow(lists = lists, selectedList = selectedList,
+        onClick = { showPreviewDialog(it.title) })
 }
