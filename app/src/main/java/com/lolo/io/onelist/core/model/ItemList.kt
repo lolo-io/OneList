@@ -9,8 +9,23 @@ data class ItemList(
     val items: MutableList<Item> = arrayListOf(),
     @Transient var uri: Uri? = null,
     @Transient var id: Long = 0L,
-) : Serializable
+) : Serializable {
+    companion object
+}
 
 
+val ItemList.Companion.preview
+    get() = ItemList(
+        title = "Preview Item List",
+        position = 1,
+        items = (0 .. 3).map { Item.preview.copy(title = "Preview Item $it") }.toMutableList(),
+        uri = null,
+        id = Math.random().toLong()
+    )
 
-
+fun ItemList.Companion.previewMany(n: Int) = (0 .. n).map {
+    ItemList.preview.copy(
+        title = "Preview Item List $it",
+        position = n+1,
+    )
+}

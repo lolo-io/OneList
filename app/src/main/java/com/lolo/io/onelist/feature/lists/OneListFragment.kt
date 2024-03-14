@@ -18,7 +18,6 @@ import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -129,12 +128,6 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
     }
 
-    @Composable
-    fun TestViewCompose() {
-        Text(text = "This is a text")
-    }
-
-
     fun ComposeView.set(content: @Composable () -> Unit) {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setContent {
@@ -174,7 +167,11 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         binding.listsRecyclerViewComposed.set {
             val allLists = viewModel.allLists.collectAsState().value
             val selectedList = viewModel.selectedList.collectAsState().value
-            ListsFlowRow(lists = allLists, selectedList = selectedList, onClick = { viewModel.selectList(allLists.indexOf(it)) })
+            ListsFlowRow(lists = allLists, selectedList = selectedList,
+                onClick = { viewModel.selectList(allLists.indexOf(it)) },
+                onLongClick = {
+                    viewModel.selectList(allLists.indexOf(it))
+                })
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
