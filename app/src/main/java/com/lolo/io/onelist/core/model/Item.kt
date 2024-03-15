@@ -24,3 +24,11 @@ val Item.Companion.preview
         commentDisplayed = false,
         id = Math.random().roundToLong()
     )
+
+
+fun Item.Companion.previewMany(n: Int) = (0 .. n).map {
+    Item.preview.copy(
+        title = "Preview Item $it",
+        id = it.toLong(),
+    )
+}

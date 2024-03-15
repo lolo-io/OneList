@@ -2,15 +2,17 @@ package com.lolo.io.onelist.feature.lists.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,47 +23,35 @@ import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import com.lolo.io.onelist.feature.lists.components.core.SwipeableRow
+import com.lolo.io.onelist.feature.lists.components.core.SwipeableRowScope
+import com.lolo.io.onelist.feature.lists.components.core.swipeableRowScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 enum class SwipeState {
     START, END, NONE
 }
 
 @Composable
-internal fun SwipeableItem(
+internal fun SwipeableRowScope.SwipeableItem(
     item: Item,
+    onSwipedToStart: () -> Unit = {},
 ) {
-    var swipeState by remember {
-        mutableStateOf<SwipeState>(SwipeState.NONE)
-    }
-
     val onSwipedToEnd = {
         // param.onSwiped()
-        swipeState = SwipeState.END
-
-        GlobalScope.launch {
-            delay(1000)
-            swipeState = SwipeState.NONE
-        }
     }
 
     val onSwipedToStart = {
-        // param.onSwiped()
-        swipeState = SwipeState.START
-
-        GlobalScope.launch {
-            delay(1000)
-            swipeState = SwipeState.NONE
-        }
+        onSwipedToStart()
     }
 
     SwipeableRow(
+        swipeState = swipeState,
         backgroundStartToEnd = {
             Box(
                 Modifier
@@ -93,26 +83,52 @@ internal fun SwipeableItem(
             }
         },
         onSwipedToEnd = {
+            setSwipeState(SwipeState.END)
             onSwipedToEnd()
         },
         onSwipedToStart = {
+            setSwipeState(SwipeState.START)
             onSwipedToStart()
         }
     ) {
-
-        LaunchedEffect(swipeState) {
-            if (swipeState == SwipeState.NONE) {
-                reset()
-            }
-        }
-
         ItemRow(item)
     }
 }
 
-
 @Preview
 @Composable
 private fun Preview_SwipeableItem() = ComposePreview {
-    SwipeableItem(Item.preview)
+
+    val coroutineScope = rememberCoroutineScope()
+
+    var swipeState by remember {
+        mutableStateOf(SwipeState.NONE)
+    }
+
+
+    val PreviewSwipeableItem: @Composable SwipeableRowScope.() -> Unit = {
+        SwipeableItem(Item.preview)
+    }
+
+    Column {
+        val scope = swipeableRowScope(
+            swipeState = swipeState,
+            setSwipeState = {
+                swipeState = it
+                coroutineScope.launch {
+                    delay(1000)
+                    swipeState = SwipeState.NONE
+                }
+            }
+        )
+        PreviewSwipeableItem(scope)
+        Button(
+            modifier = Modifier.padding(MaterialTheme.space.Normal),
+            onClick = {
+                scope.setSwipeState(SwipeState.NONE) }
+        ) {
+            Text(text = "Reset Swipe")
+        }
+    }
+
 }
