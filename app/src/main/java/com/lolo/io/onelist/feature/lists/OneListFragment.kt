@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -58,6 +59,8 @@ import com.lolo.io.onelist.core.ui.util.isVisibleInvisible
 import com.lolo.io.onelist.core.ui.util.shake
 import com.lolo.io.onelist.databinding.FragmentOneListBinding
 import com.lolo.io.onelist.feature.lists.components.ListsFlowRow
+import com.lolo.io.onelist.feature.lists.components.SwipeableItemList
+import com.lolo.io.onelist.feature.lists.components.core.rememberSwipeableListState
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_CLEAR
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_RM_FILE
 import com.lolo.io.onelist.feature.lists.dialogs.deleteListDialog
@@ -165,13 +168,23 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
 
         binding.listsRecyclerViewComposed.set {
-            val allLists = viewModel.allLists.collectAsState().value
-            val selectedList = viewModel.selectedList.collectAsState().value
+            val allLists = viewModel.allLists.collectAsStateWithLifecycle().value
+            val selectedList = viewModel.selectedList.collectAsStateWithLifecycle().value
             ListsFlowRow(lists = allLists, selectedList = selectedList,
                 onClick = { viewModel.selectList(allLists.indexOf(it)) },
                 onLongClick = {
                     viewModel.selectList(allLists.indexOf(it))
                 })
+        }
+
+        binding.itemsRecyclerViewComposed.set {
+            val selectedList = viewModel.selectedList.collectAsStateWithLifecycle().value
+            SwipeableItemList(
+                items = selectedList.items,
+                onItemSwipedToStart = {
+                    viewModel.removeItem(it)
+                }
+            )
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

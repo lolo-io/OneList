@@ -1,5 +1,6 @@
 package com.lolo.io.onelist.feature.lists.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,14 +9,17 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.core.design.app
 import com.lolo.io.onelist.core.design.dimen
@@ -31,6 +35,7 @@ fun ItemRow(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = MaterialTheme.space.SmallUpper)
     ) {
         Row(
             modifier = Modifier
@@ -49,7 +54,7 @@ fun ItemRow(
                         modifier = Modifier.padding(
                             start = MaterialTheme.space.SmallUpper,
                             end = MaterialTheme.space.Tiny
-                        )
+                        ).alignBy { it.measuredHeight }
                     ) {
                         Icon(
                             modifier = Modifier.size(MaterialTheme.space.Small),
@@ -71,7 +76,10 @@ fun ItemRow(
                         modifier = Modifier
                             .weight(1f)
                             .padding(horizontal = MaterialTheme.space.Small)
+                            .padding(vertical = MaterialTheme.space.Tiny)
                             .heightIn(MaterialTheme.dimen.listItemMinHeight)
+                            .alignByBaseline()
+                            .padding(vertical = MaterialTheme.space.Tiny)
                             .wrapContentHeight(align = Alignment.CenterVertically),
                     )
 
@@ -139,4 +147,10 @@ private fun Preview_ItemRowDoneWithComment() = ComposePreview {
             commentDisplayed = true
         )
     )
+}
+
+@Preview
+@Composable
+private fun Preview_ItemRowLong() = ComposePreview {
+    ItemRow(Item.preview.copy(title = "Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long "))
 }

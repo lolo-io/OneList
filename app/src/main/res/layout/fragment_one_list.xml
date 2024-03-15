@@ -172,7 +172,14 @@
         android:clipToPadding="false"
         android:orientation="vertical">
 
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/itemsRecyclerViewComposed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:visibility="gone"
             android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

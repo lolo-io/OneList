@@ -26,6 +26,6 @@ val ItemList.Companion.preview
 fun ItemList.Companion.previewMany(n: Int) = (0 .. n).map {
     ItemList.preview.copy(
         title = "Preview Item List $it",
-        position = n+1,
+        position = it+1,
     )
 }

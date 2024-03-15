@@ -121,6 +121,7 @@ dependencies {
     // compose: ui tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation (libs.androidx.lifecycle.runtime.compose)
 
     // firebase
     implementation(libs.firebase.crashlytics)

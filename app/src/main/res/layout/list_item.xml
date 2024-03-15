@@ -76,7 +76,7 @@
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:paddingRight="?android:attr/listPreferredItemPaddingRight"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                tools:text="Text" />
+                tools:text="Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text " />
 
             <TextView
                 android:id="@+id/comment"

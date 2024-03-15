@@ -6,44 +6,54 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.feature.lists.components.SwipeState
 import kotlinx.coroutines.launch
 
-interface SwipableRowScope {
-    fun reset()
+
+interface SwipeableRowScope {
+    val swipeState: SwipeState
+    val setSwipeState: (SwipeState) -> Unit
 }
 
-private fun swipableRowScope(
-    reset: () -> Unit,
+fun swipeableRowScope(
+    swipeState: SwipeState,
+    setSwipeState: (SwipeState) -> Unit
 ) =
-    object : SwipableRowScope {
-        override fun reset() {
-            reset()
-        }
-    }
+    object : SwipeableRowScope {
+        override val swipeState: SwipeState
+            get() = swipeState
+        override val setSwipeState: (SwipeState) -> Unit
+            get() = setSwipeState
 
+    }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwipeableRow(
-    backgroundStartToEnd: @Composable RowScope.() -> Unit,
-    backgroundEndToStart: @Composable RowScope.() -> Unit,
+    swipeState: SwipeState,
+    backgroundStartToEnd: @Composable() (RowScope.() -> Unit),
+    backgroundEndToStart: @Composable() (RowScope.() -> Unit),
     onSwipedToEnd: () -> Unit = {},
     onSwipedToStart: () -> Unit = {},
-    content: @Composable SwipableRowScope.() -> Unit,
-) {
+    content: @Composable() (() -> Unit),
 
-    val coroutineScope = rememberCoroutineScope()
+    ) {
 
     Row(modifier = Modifier.fillMaxWidth()) {
         val state = rememberSwipeToDismissBoxState(
@@ -64,9 +74,12 @@ fun SwipeableRow(
             }
         )
 
-        val reset = {
-            coroutineScope.launch {
-                state.reset()
+
+        LaunchedEffect(swipeState) {
+            when (swipeState) {
+                SwipeState.START -> state.snapTo(SwipeToDismissBoxValue.EndToStart)
+                SwipeState.END -> state.snapTo(SwipeToDismissBoxValue.StartToEnd)
+                SwipeState.NONE -> state.reset()
             }
         }
 
@@ -80,10 +93,11 @@ fun SwipeableRow(
         ) {
             Row(
                 Modifier
-                    .background(Color.White)
+                    .background(shape = RoundedCornerShape(5f), color = Color.White)
                     .fillMaxWidth()
+
             ) {
-                content(swipableRowScope(reset = { reset() }))
+                content()
             }
 
         }
@@ -102,6 +116,11 @@ private val transparentBackground: @Composable RowScope.() -> Unit = {
 @Preview
 @Composable
 private fun Preview_SwipableRow() = ComposePreview {
+
+    val swipeState by remember {
+        mutableStateOf(SwipeState.NONE)
+    }
+
     SwipeableRow(
         backgroundStartToEnd = {
             Box(
@@ -116,8 +135,10 @@ private fun Preview_SwipableRow() = ComposePreview {
                     .background(Color.Red)
                     .fillMaxSize()
             ) {}
-        }
-    ) {
-        Text(text = "Hello Swiper")
-    }
+        },
+        content = {
+            Text(text = "Hello Swiper")
+        },
+        swipeState = swipeState
+    )
 }
