@@ -18,11 +18,21 @@ import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -46,6 +56,7 @@ import com.lolo.io.onelist.MainActivity
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.core.data.migration.UpdateHelper
 import com.lolo.io.onelist.core.design.OneListTheme
+import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.ui.Config
@@ -58,9 +69,9 @@ import com.lolo.io.onelist.core.ui.util.isVisible
 import com.lolo.io.onelist.core.ui.util.isVisibleInvisible
 import com.lolo.io.onelist.core.ui.util.shake
 import com.lolo.io.onelist.databinding.FragmentOneListBinding
-import com.lolo.io.onelist.feature.lists.components.ListsFlowRow
-import com.lolo.io.onelist.feature.lists.components.SwipeableItemList
-import com.lolo.io.onelist.feature.lists.components.core.rememberSwipeableListState
+import com.lolo.io.onelist.feature.lists.components.add_item_input.AddItemInput
+import com.lolo.io.onelist.feature.lists.components.list_chips.ListsFlowRow
+import com.lolo.io.onelist.feature.lists.components.items_lists.SwipeableItemList
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_CLEAR
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_RM_FILE
 import com.lolo.io.onelist.feature.lists.dialogs.deleteListDialog
@@ -80,6 +91,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+import kotlin.math.roundToInt
 
 
 class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
@@ -177,9 +189,40 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                 })
         }
 
+
+        binding.addItem.set {
+
+            var itemTitle by remember { mutableStateOf("") }
+            var itemComment by remember { mutableStateOf("") }
+
+
+            AddItemInput(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.space.Normal)
+                    .padding(top = MaterialTheme.space.Small),
+                value = itemTitle,
+                onValueChange = { itemTitle = it },
+                commentValue = itemComment,
+                onCommentValueChange = { itemComment = it },
+                onSubmit = {
+                    viewModel.addItem(
+                        Item(
+                            title = itemTitle,
+                            comment = itemComment,
+                            commentDisplayed = itemComment.isNotEmpty()
+                        )
+                    )
+                }
+            )
+        }
+
         binding.itemsRecyclerViewComposed.set {
             val selectedList = viewModel.selectedList.collectAsStateWithLifecycle().value
+            val themeSpaces = MaterialTheme.space
             SwipeableItemList(
+                modifier = Modifier.offset {
+                    IntOffset(x= 0, y = themeSpaces.Small.toPx().roundToInt() * -1)
+                },
                 items = selectedList.items,
                 onItemSwipedToStart = {
                     viewModel.removeItem(it)
