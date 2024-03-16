@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.feature.lists.components
+package com.lolo.io.onelist.feature.lists.components.items_lists
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -23,9 +23,11 @@ import kotlinx.coroutines.delay
 fun SwipeableItemList(
     items: List<Item>,
     onItemSwipedToStart: (Item) -> Unit = {},
-    state: SwipableListState<Item> = rememberSwipeableListState<Item>()
+    state: SwipableListState<Item> = rememberSwipeableListState<Item>(),
+    modifier: Modifier = Modifier
 ) {
     SwipeableList(
+        modifier = modifier,
         items = items,
         drawItem = { item ->
             SwipeableItem(

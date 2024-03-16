@@ -136,16 +136,12 @@
 
 
 
-
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/titleLayout"
-                android:layout_marginTop="6dp"
                 android:clipChildren="false"
                 android:clipToPadding="false">
-
 
                 <androidx.compose.ui.platform.ComposeView
                     android:id="@+id/listsRecyclerViewComposed"
@@ -176,14 +172,15 @@
         <androidx.compose.ui.platform.ComposeView
             android:id="@+id/itemsRecyclerViewComposed"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/addItem"/>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:visibility="gone"
             android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/addItemLayout">
+            android:layout_below="@id/addItem">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/itemsRecyclerView"
@@ -192,7 +189,14 @@
                 android:requiresFadingEdge="vertical" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/addItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/addItemLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

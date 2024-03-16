@@ -17,13 +17,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
-import com.lolo.io.onelist.feature.lists.components.SwipeState
-import kotlinx.coroutines.launch
 
 
 interface SwipeableRowScope {

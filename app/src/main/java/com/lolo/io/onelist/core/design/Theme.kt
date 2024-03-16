@@ -13,6 +13,7 @@ fun OneListTheme(content: @Composable () -> Unit) {
         //colorScheme = dynamicLightColorScheme(LocalContext.current),
         colorScheme = colorScheme,
         content = content,
-        typography = typography(colorScheme)
+        typography = typography(colorScheme),
+        shapes = Shapes
     )
 }

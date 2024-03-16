@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.feature.lists.components
+package com.lolo.io.onelist.feature.lists.components.items_lists
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,15 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import com.lolo.io.onelist.feature.lists.components.core.SwipeableRow
 import com.lolo.io.onelist.feature.lists.components.core.SwipeableRowScope
 import com.lolo.io.onelist.feature.lists.components.core.swipeableRowScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-enum class SwipeState {
-    START, END, NONE
-}
 
 @Composable
 internal fun SwipeableRowScope.SwipeableItem(

@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.feature.lists.components
+package com.lolo.io.onelist.feature.lists.components.list_chips
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
