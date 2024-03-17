@@ -48,11 +48,12 @@ fun SwipeableRow(
     backgroundEndToStart: @Composable() (RowScope.() -> Unit),
     onSwipedToEnd: () -> Unit = {},
     onSwipedToStart: () -> Unit = {},
+    modifier: Modifier = Modifier,
     content: @Composable() (() -> Unit),
 
     ) {
 
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(modifier = modifier.fillMaxWidth()) {
         val state = rememberSwipeToDismissBoxState(
             confirmValueChange = {
                 when (it) {

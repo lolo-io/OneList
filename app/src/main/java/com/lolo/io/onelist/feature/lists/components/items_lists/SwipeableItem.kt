@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import com.lolo.io.onelist.feature.lists.components.core.DraggableItem
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import com.lolo.io.onelist.feature.lists.components.core.SwipeableRow
 import com.lolo.io.onelist.feature.lists.components.core.SwipeableRowScope
@@ -37,6 +38,7 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun SwipeableRowScope.SwipeableItem(
     item: Item,
+    modifier: Modifier = Modifier,
     onSwipedToStart: () -> Unit = {},
 ) {
     val onSwipedToEnd = {
@@ -48,6 +50,7 @@ internal fun SwipeableRowScope.SwipeableItem(
     }
 
     SwipeableRow(
+        modifier = modifier,
         swipeState = swipeState,
         backgroundStartToEnd = {
             Box(
