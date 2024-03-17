@@ -13,8 +13,11 @@ import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.feature.lists.components.core.DraggableListState
 import com.lolo.io.onelist.feature.lists.components.core.SwipableListState
 import com.lolo.io.onelist.feature.lists.components.core.SwipeableList
+import com.lolo.io.onelist.feature.lists.components.core.draggableItem
+import com.lolo.io.onelist.feature.lists.components.core.rememberDraggableListState
 import com.lolo.io.onelist.feature.lists.components.core.rememberSwipeableListState
 import kotlinx.coroutines.delay
 
@@ -26,14 +29,22 @@ fun SwipeableItemList(
     state: SwipableListState<Item> = rememberSwipeableListState<Item>(),
     modifier: Modifier = Modifier
 ) {
+
+    val draggableListState = rememberDraggableListState(
+        items,
+    )
+
     SwipeableList(
         modifier = modifier,
         items = items,
-        drawItem = { item ->
+        itemKeys = { it.id },
+        draggableListState = draggableListState,
+        drawItem = { draggableItem ->
             SwipeableItem(
-                item = item,
+                modifier = Modifier.draggableItem(draggableListState, draggableItem),
+                item = draggableItem.item,
                 onSwipedToStart = {
-                    onItemSwipedToStart(item)
+                    onItemSwipedToStart(draggableItem.item)
                 })
         },
         state = state,
