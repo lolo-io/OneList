@@ -51,16 +51,16 @@ class DraggableItem<T>(
             DraggableListState.Orientation.VERTICAL
     ) {
         bounds = value
-        if(orientation == DraggableListState.Orientation.HORIZONTAL) {
+        if (orientation == DraggableListState.Orientation.HORIZONTAL) {
             startHitBox =
-                Rect(value.left, value.top, (value.left + value.width / 4.0f), value.bottom)
+                Rect(value.left, value.top, (value.left + value.width / 2.0f), value.bottom)
             endHitBox =
-                Rect((value.right - value.width / 4.0f), value.top, value.right, value.bottom)
+                Rect((value.right - value.width / 2.0f), value.top, value.right, value.bottom)
         } else {
             startHitBox =
-                Rect(value.left, value.top, value.right, (value.top + value.height / 4.0f))
+                Rect(value.left, value.top, value.right, (value.top + value.height / 2.0f))
             endHitBox =
-                Rect(value.left, (value.bottom - value.height / 4.0f), value.right, value.bottom)
+                Rect(value.left, (value.bottom - value.height / 2.0f), value.right, value.bottom)
         }
 
     }
@@ -120,8 +120,6 @@ fun <T> Modifier.draggableItemList(
     onDragCancel: () -> Unit = {},
 ): Modifier {
 
-    var debounce = false
-
     return this.pointerInput(Unit) {
         detectDragGesturesAfterLongPress(
             onDragStart = { offset ->
@@ -139,38 +137,31 @@ fun <T> Modifier.draggableItemList(
                 draggableListState.dragOffset += Offset(dragAmmount.x, dragAmmount.y)
 
 
-                if (!debounce) {
-                    draggableListState.draggedItem?.let { draggedItem ->
+                draggableListState.draggedItem?.let { draggedItem ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        draggableListState.draggableItems
+                            .forEach {
+                                val hitLeft =
+                                    it.startHitBox.contains(draggableListState.dragOffset) && it.item != draggedItem.item
+                                val hitRight =
+                                    it.endHitBox.contains(draggableListState.dragOffset) && it.item != draggedItem.item
+                                when {
+                                    hitLeft -> draggableListState.draggableItems =
+                                        draggableListState.draggableItems.moveItemToLeftOf(
+                                            draggedItem,
+                                            it
+                                        )
 
-                        CoroutineScope(Dispatchers.IO).launch {
-                            draggableListState.draggableItems
-                                .forEach {
-                                    val hitLeft =
-                                        it.startHitBox.contains(draggableListState.dragOffset) && it.item != draggedItem.item
-                                    val hitRight =
-                                        it.endHitBox.contains(draggableListState.dragOffset) && it.item != draggedItem.item
-                                    when {
-                                        hitLeft -> draggableListState.draggableItems =
-                                            draggableListState.draggableItems.moveItemToLeftOf(
-                                                draggedItem,
-                                                it
-                                            )
-
-                                        hitRight -> draggableListState.draggableItems =
-                                            draggableListState.draggableItems.moveItemToRightOf(
-                                                draggedItem,
-                                                it
-                                            )
-
-                                    }
-                                    if (hitLeft || hitRight) {
-                                        debounce = true
-                                        delay(500)
-                                        debounce = false
-                                    }
+                                    hitRight -> draggableListState.draggableItems =
+                                        draggableListState.draggableItems.moveItemToRightOf(
+                                            draggedItem,
+                                            it
+                                        )
 
                                 }
-                        }
+
+
+                            }
                     }
                 }
             },
@@ -202,6 +193,24 @@ fun <T> Modifier.draggedItem(
         .offset {
             IntOffset(
                 -draggedItem.bounds.width.roundToInt() / 2,
+                -draggedItem.bounds.height.roundToInt() / 2
+            )
+        }
+}
+
+
+@Composable
+fun <T> Modifier.draggedItemVertical(
+    draggableListState: DraggableListState<T>,
+    draggedItem: DraggableItem<T>
+): Modifier {
+    return this
+        .graphicsLayer {
+            translationY = draggableListState.dragOffset.y
+        }
+        .offset {
+            IntOffset(
+                0,
                 -draggedItem.bounds.height.roundToInt() / 2
             )
         }

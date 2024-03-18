@@ -1,22 +1,31 @@
 package com.lolo.io.onelist.feature.lists.components.items_lists
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
-import com.lolo.io.onelist.feature.lists.components.core.DraggableListState
 import com.lolo.io.onelist.feature.lists.components.core.SwipableListState
-import com.lolo.io.onelist.feature.lists.components.core.SwipeableList
+import com.lolo.io.onelist.feature.lists.components.core.DraggableAndSwipeableList
 import com.lolo.io.onelist.feature.lists.components.core.draggableItem
+import com.lolo.io.onelist.feature.lists.components.core.draggedItem
+import com.lolo.io.onelist.feature.lists.components.core.draggedItemVertical
 import com.lolo.io.onelist.feature.lists.components.core.rememberDraggableListState
 import com.lolo.io.onelist.feature.lists.components.core.rememberSwipeableListState
 import kotlinx.coroutines.delay
@@ -34,18 +43,29 @@ fun SwipeableItemList(
         items,
     )
 
-    SwipeableList(
+    DraggableAndSwipeableList(
         modifier = modifier,
         items = items,
         itemKeys = { it.id },
         draggableListState = draggableListState,
         drawItem = { draggableItem ->
             SwipeableItem(
-                modifier = Modifier.draggableItem(draggableListState, draggableItem),
+                modifier = Modifier
+                    .draggableItem(draggableListState, draggableItem)
+                    .then(
+                        if (draggableListState.draggedItem != null &&
+                            draggableListState.draggedItem == draggableItem
+                        ) Modifier.alpha(0.2f) else Modifier
+                    ),
                 item = draggableItem.item,
                 onSwipedToStart = {
                     onItemSwipedToStart(draggableItem.item)
                 })
+        },
+        drawItemShadow = { draggableItem ->
+            Surface(shadowElevation = 24.dp){
+                ItemRow(draggableItem.item)
+            }
         },
         state = state,
     )
