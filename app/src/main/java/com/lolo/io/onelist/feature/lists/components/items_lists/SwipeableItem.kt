@@ -13,7 +13,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,11 +27,6 @@ import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import com.lolo.io.onelist.feature.lists.components.core.DraggableItem
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import com.lolo.io.onelist.feature.lists.components.core.SwipeableRow
 import com.lolo.io.onelist.feature.lists.components.core.SwipeableRowScope
@@ -39,7 +38,9 @@ import kotlinx.coroutines.launch
 internal fun SwipeableRowScope.SwipeableItem(
     item: Item,
     modifier: Modifier = Modifier,
+    onShowOrHideComment : () -> Unit = {},
     onSwipedToStart: () -> Unit = {},
+    onClick: () -> Unit = {},
 ) {
     val onSwipedToEnd = {
         // param.onSwiped()
@@ -54,6 +55,7 @@ internal fun SwipeableRowScope.SwipeableItem(
     SwipeableRow(
         modifier = modifier,
         swipeState = swipeState,
+        onClick = onClick,
         backgroundStartToEnd = {
             Box(
                 Modifier
@@ -94,7 +96,10 @@ internal fun SwipeableRowScope.SwipeableItem(
         }
     ) {
 
-        ItemRow(item)
+        ItemRow(item,
+            onClickDisplayComment = {
+                onShowOrHideComment()
+            })
     }
 }
 

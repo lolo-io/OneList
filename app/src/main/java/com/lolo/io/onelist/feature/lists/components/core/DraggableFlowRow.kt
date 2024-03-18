@@ -26,7 +26,7 @@ fun <T> DraggableFlowRow(
 
     val draggableListState = rememberDraggableListState(
         items,
-        DraggableListState.Orientation.VERTICAL
+        DraggableListState.Orientation.VERTICAL,
     )
 
     FlowRow(

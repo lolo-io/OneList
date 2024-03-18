@@ -1,12 +1,8 @@
 package com.lolo.io.onelist.feature.lists.components.items_lists
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -14,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.design.space
@@ -24,24 +19,30 @@ import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipableListState
 import com.lolo.io.onelist.feature.lists.components.core.DraggableAndSwipeableList
 import com.lolo.io.onelist.feature.lists.components.core.draggableItem
-import com.lolo.io.onelist.feature.lists.components.core.draggedItem
-import com.lolo.io.onelist.feature.lists.components.core.draggedItemVertical
 import com.lolo.io.onelist.feature.lists.components.core.rememberDraggableListState
 import com.lolo.io.onelist.feature.lists.components.core.rememberSwipeableListState
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun SwipeableItemList(
+fun SwipeableReorderableItemList(
     items: List<Item>,
     onItemSwipedToStart: (Item) -> Unit = {},
+    onClickOnItem: (Item) -> Unit = {},
     state: SwipableListState<Item> = rememberSwipeableListState<Item>(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onListReordered: (List<Item>) -> Unit,
+    onShowOrHideComment: (Item) -> Unit
 ) {
 
     val draggableListState = rememberDraggableListState(
         items,
+        onListReordered = onListReordered
     )
+
+    LaunchedEffect(items) {
+        draggableListState.setItems(items)
+    }
 
     DraggableAndSwipeableList(
         modifier = modifier,
@@ -60,11 +61,18 @@ fun SwipeableItemList(
                 item = draggableItem.item,
                 onSwipedToStart = {
                     onItemSwipedToStart(draggableItem.item)
+                },
+                onClick = {
+                    onClickOnItem(draggableItem.item)
+                },
+                onShowOrHideComment = {
+                    onShowOrHideComment(draggableItem.item)
                 })
+
         },
-        drawItemShadow = { draggableItem ->
-            Surface(shadowElevation = 24.dp){
-                ItemRow(draggableItem.item)
+        drawDraggedItem = { draggedItem ->
+            Surface(shadowElevation = 24.dp) {
+                ItemRow(draggedItem.item)
             }
         },
         state = state,
@@ -97,10 +105,15 @@ private fun Preview_SwipeableItemList() = ComposePreview {
     }
 
     Column {
-        SwipeableItemList(
+        SwipeableReorderableItemList(
             items = items,
             state = itemListSwipeState,
-        )
+            onListReordered = {
+
+            },
+        ) {
+
+        }
 
         Button(
             modifier = Modifier.padding(MaterialTheme.space.Normal),

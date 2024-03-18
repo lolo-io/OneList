@@ -3,15 +3,12 @@ package com.lolo.io.onelist.feature.lists.components.core
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.lolo.io.onelist.core.model.Item
 
 class SwipableListState<T>(
     val itemsStates: SnapshotStateMap<T, SwipeState> = SnapshotStateMap()
@@ -41,7 +38,7 @@ fun <T> DraggableAndSwipeableList(
     itemKeys: (item: T) -> Any,
     draggableListState: DraggableListState<T>,
     drawItem: @Composable() (SwipeableRowScope.(DraggableItem<T>) -> Unit),
-    drawItemShadow: @Composable() (SwipeableRowScope.(DraggableItem<T>) -> Unit),
+    drawDraggedItem: @Composable() (SwipeableRowScope.(DraggableItem<T>) -> Unit),
     state: SwipableListState<T>,
     modifier: Modifier = Modifier
 ) {
@@ -74,7 +71,7 @@ fun <T> DraggableAndSwipeableList(
                     state.setItemSwipe(draggedItem.item, it)
                 }
             )
-            drawItemShadow(scope, draggedItem)
+            drawDraggedItem(scope, draggedItem)
         }
     }
 }
