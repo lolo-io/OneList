@@ -6,7 +6,7 @@ import java.io.Serializable
 data class ItemList(
     var title: String = "",
     @Transient  var position: Int = 0,
-    val items: MutableList<Item> = arrayListOf(),
+    var items: List<Item> = listOf(),
     @Transient var uri: Uri? = null,
     @Transient var id: Long = 0L,
 ) : Serializable {

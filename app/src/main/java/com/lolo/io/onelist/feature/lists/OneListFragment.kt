@@ -28,11 +28,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -71,7 +69,7 @@ import com.lolo.io.onelist.core.ui.util.shake
 import com.lolo.io.onelist.databinding.FragmentOneListBinding
 import com.lolo.io.onelist.feature.lists.components.add_item_input.AddItemInput
 import com.lolo.io.onelist.feature.lists.components.list_chips.ListsFlowRow
-import com.lolo.io.onelist.feature.lists.components.items_lists.SwipeableItemList
+import com.lolo.io.onelist.feature.lists.components.items_lists.SwipeableReorderableItemList
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_CLEAR
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_RM_FILE
 import com.lolo.io.onelist.feature.lists.dialogs.deleteListDialog
@@ -191,13 +189,12 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
 
         binding.addItem.set {
-
             var itemTitle by remember { mutableStateOf("") }
             var itemComment by remember { mutableStateOf("") }
 
-
             AddItemInput(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = MaterialTheme.space.Normal)
                     .padding(top = MaterialTheme.space.Small),
                 value = itemTitle,
@@ -212,20 +209,32 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                             commentDisplayed = itemComment.isNotEmpty()
                         )
                     )
+                    itemTitle = ""
+                    itemComment = ""
+                    // todo focus to item title
                 }
             )
         }
 
         binding.itemsRecyclerViewComposed.set {
-            val selectedList = viewModel.selectedList.collectAsStateWithLifecycle().value
+            val displayedItems = viewModel.displayedItems.collectAsStateWithLifecycle().value
             val themeSpaces = MaterialTheme.space
-            SwipeableItemList(
+            SwipeableReorderableItemList(
                 modifier = Modifier.offset {
-                    IntOffset(x= 0, y = themeSpaces.Small.toPx().roundToInt() * -1)
+                    IntOffset(x = 0, y = themeSpaces.Small.toPx().roundToInt() * -1)
                 },
-                items = selectedList.items,
+                onClickOnItem = {
+                    viewModel.switchItemStatus(it)
+                },
+                items = displayedItems,
                 onItemSwipedToStart = {
                     viewModel.removeItem(it)
+                },
+                onShowOrHideComment = {
+                    viewModel.switchItemCommentShown(it)
+                },
+                onListReordered = {
+                    viewModel.onSelectedListReordered(it)
                 }
             )
         }
@@ -242,7 +251,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.selectedList.collect {
-                    itemsAdapter.items = it.items
+                    //     itemsAdapter.items = it.items
                     itemsAdapter.notifyDataSetChanged()
                     listsAdapter.selectList(it)
                 }
@@ -579,7 +588,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
     }
 
     override fun onSwitchItemStatus(item: Item) {
-        viewModel.switchItemStatus(item) { oldPosition, newPosition ->
+       /* viewModel.switchItemStatus(item) { oldPosition, newPosition ->
             itemsAdapter.notifyItemChanged(oldPosition)
             itemsAdapter.notifyItemMoved(oldPosition, newPosition)
 
@@ -589,10 +598,13 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
             if (scrolledToTop || oldPosition == 0) binding.itemsRecyclerView
                 .scrollToPosition(0)
         }
+        */
+
+        // todo scrolls
     }
 
     override fun onShowOrHideComment(item: Item) {
-        viewModel.showOrHideComment(item)
+        viewModel.switchItemCommentShown(item)
         itemsAdapter.notifyItemChanged(viewModel.selectedList.value.items.indexOf(item))
     }
 

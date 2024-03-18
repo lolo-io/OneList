@@ -9,8 +9,6 @@ import java.util.Collections
 class MoveList(private val repository: OneListRepository) {
     suspend operator fun invoke(fromPosition: Int, toPosition: Int, lists: List<ItemList>) {
 
-        Log.d("Psition", ""+fromPosition)
-
         val tempAllList = ArrayList(lists)
         if (fromPosition in 0..<toPosition && toPosition < tempAllList.size) {
             for (i in fromPosition until toPosition) {

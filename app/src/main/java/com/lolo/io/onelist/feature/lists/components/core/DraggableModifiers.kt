@@ -1,5 +1,6 @@
 package com.lolo.io.onelist.feature.lists.components.core
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.Spring
@@ -28,7 +29,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.round
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import moveItemToLeftOf
 import moveItemToRightOf
@@ -68,7 +68,8 @@ class DraggableItem<T>(
 
 class DraggableListState<T>(
     private val data: MutableState<List<DraggableItem<T>>>,
-    val orientation: Orientation = Orientation.VERTICAL
+    val orientation: Orientation = Orientation.VERTICAL,
+    val onListReordered: (List<T>) -> Unit
 ) {
     enum class Orientation { HORIZONTAL, VERTICAL }
 
@@ -91,12 +92,19 @@ class DraggableListState<T>(
         set(value) {
             _dragOffset.value = value
         }
+
+    fun setItems(items: List<T>) {
+        draggableItems = items.map {
+            DraggableItem(it)
+        }
+    }
 }
 
 @Composable
 fun <T> rememberDraggableListState(
     items: List<T>,
     orientation: DraggableListState.Orientation = DraggableListState.Orientation.VERTICAL,
+    onListReordered: (List<T>) -> Unit = {}
 ): DraggableListState<T> {
     val draggableListState = remember {
         val data =
@@ -105,7 +113,7 @@ fun <T> rememberDraggableListState(
                     DraggableItem(it)
                 }
             )
-        DraggableListState(data, orientation)
+        DraggableListState(data, orientation, onListReordered)
     }
 
     return draggableListState
@@ -136,31 +144,36 @@ fun <T> Modifier.draggableItemList(
                 change.consume()
                 draggableListState.dragOffset += Offset(dragAmmount.x, dragAmmount.y)
 
-
                 draggableListState.draggedItem?.let { draggedItem ->
                     CoroutineScope(Dispatchers.IO).launch {
                         draggableListState.draggableItems
                             .forEach {
-                                val hitLeft =
-                                    it.startHitBox.contains(draggableListState.dragOffset) && it.item != draggedItem.item
-                                val hitRight =
-                                    it.endHitBox.contains(draggableListState.dragOffset) && it.item != draggedItem.item
                                 when {
-                                    hitLeft -> draggableListState.draggableItems =
-                                        draggableListState.draggableItems.moveItemToLeftOf(
-                                            draggedItem,
-                                            it
-                                        )
+                                    it.startHitBox.contains(draggableListState.dragOffset)
+                                            && it.item != draggedItem.item
+                                            && draggableListState.draggableItems.indexOf(it) < draggableListState.draggableItems.indexOf(draggedItem)
+                                    -> {
+                                        draggableListState.draggableItems =
+                                            draggableListState.draggableItems.moveItemToLeftOf(
+                                                draggedItem,
+                                                it
+                                            )
+                                        draggableListState.onListReordered(draggableListState.draggableItems.map { it.item })
+                                    }
 
-                                    hitRight -> draggableListState.draggableItems =
-                                        draggableListState.draggableItems.moveItemToRightOf(
-                                            draggedItem,
-                                            it
-                                        )
+
+                                    it.endHitBox.contains(draggableListState.dragOffset) && it.item != draggedItem.item
+                                            && draggableListState.draggableItems.indexOf(it) > draggableListState.draggableItems.indexOf(draggedItem)
+                                    -> {
+                                        draggableListState.draggableItems =
+                                            draggableListState.draggableItems.moveItemToRightOf(
+                                                draggedItem,
+                                                it
+                                            )
+                                        draggableListState.onListReordered(draggableListState.draggableItems.map { it.item })
+                                    }
 
                                 }
-
-
                             }
                     }
                 }

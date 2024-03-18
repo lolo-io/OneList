@@ -1,6 +1,7 @@
 package com.lolo.io.onelist.feature.lists.components.core
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -17,10 +18,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 interface SwipeableRowScope {
@@ -48,12 +52,18 @@ fun SwipeableRow(
     backgroundEndToStart: @Composable() (RowScope.() -> Unit),
     onSwipedToEnd: () -> Unit = {},
     onSwipedToStart: () -> Unit = {},
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     content: @Composable() (() -> Unit),
 
     ) {
+    val corountineScope = rememberCoroutineScope()
 
-    Row(modifier = modifier.fillMaxWidth()) {
+    Row(modifier = modifier
+        .fillMaxWidth()
+        .clickable {
+            onClick()
+        }) {
         val state = rememberSwipeToDismissBoxState(
             confirmValueChange = {
                 when (it) {
@@ -63,7 +73,10 @@ fun SwipeableRow(
                     }
 
                     SwipeToDismissBoxValue.EndToStart -> {
-                        onSwipedToStart()
+                        corountineScope.launch {
+                            delay(500)
+                            onSwipedToStart()
+                        }
                         true
                     }
 

@@ -5,5 +5,5 @@ data class UIState (
     val showValidate: Boolean = false,
     val isRefreshing: Boolean = false,
     val addCommentText: String = "",
-    val showButtonClearComment: Boolean = false,
+    val showButtonClearComment: Boolean = false, // todo rm
 )
