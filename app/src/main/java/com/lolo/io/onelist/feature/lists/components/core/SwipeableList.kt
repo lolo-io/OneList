@@ -36,11 +36,12 @@ fun <T> rememberSwipeableListState(): SwipableListState<T> {
 
 
 @Composable
-fun <T> SwipeableList(
+fun <T> DraggableAndSwipeableList(
     items: List<T>,
     itemKeys: (item: T) -> Any,
     draggableListState: DraggableListState<T>,
     drawItem: @Composable() (SwipeableRowScope.(DraggableItem<T>) -> Unit),
+    drawItemShadow: @Composable() (SwipeableRowScope.(DraggableItem<T>) -> Unit),
     state: SwipableListState<T>,
     modifier: Modifier = Modifier
 ) {
@@ -50,24 +51,30 @@ fun <T> SwipeableList(
             draggableListState = draggableListState
         ),
     ) {
-        items(draggableListState.draggableItems) { draggableItem ->
+        items(
+            items = draggableListState.draggableItems,
+            key = { itemKeys(it.item) }) { draggableItem ->
             val scope = swipeableRowScope(
                 swipeState = state.itemsStates.get(draggableItem.item) ?: SwipeState.NONE,
                 setSwipeState = {
                     state.setItemSwipe(draggableItem.item, it)
                 }
             )
-            key(itemKeys(draggableItem.item)) {
-                drawItem(scope, draggableItem)
-            }
+            drawItem(scope, draggableItem)
         }
     }
 
     draggableListState.draggedItem?.let { draggedItem ->
         Box(
-            modifier = Modifier.draggedItem(draggableListState, draggedItem)
+            modifier = Modifier.draggedItemVertical(draggableListState, draggedItem)
         ) {
-            Text("DRAGGED ITEM")
+            val scope = swipeableRowScope(
+                swipeState = state.itemsStates.get(draggedItem.item) ?: SwipeState.NONE,
+                setSwipeState = {
+                    state.setItemSwipe(draggedItem.item, it)
+                }
+            )
+            drawItemShadow(scope, draggedItem)
         }
     }
 }
