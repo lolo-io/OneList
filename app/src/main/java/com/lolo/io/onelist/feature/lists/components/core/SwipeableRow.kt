@@ -104,7 +104,7 @@ fun SwipeableRow(
         ) {
             Row(
                 Modifier
-                    .background(shape = RoundedCornerShape(5f), color = Color.White)
+                    .background(shape = RoundedCornerShape(5f), color = Color.White) // todo must set a color becaus otherwise when swiped it is filled by swipe color
                     .fillMaxWidth()
 
             ) {

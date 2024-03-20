@@ -18,19 +18,32 @@ import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -68,8 +81,9 @@ import com.lolo.io.onelist.core.ui.util.isVisibleInvisible
 import com.lolo.io.onelist.core.ui.util.shake
 import com.lolo.io.onelist.databinding.FragmentOneListBinding
 import com.lolo.io.onelist.feature.lists.components.add_item_input.AddItemInput
+import com.lolo.io.onelist.feature.lists.components.header.OneListHeader
 import com.lolo.io.onelist.feature.lists.components.list_chips.ListsFlowRow
-import com.lolo.io.onelist.feature.lists.components.items_lists.SwipeableReorderableItemList
+import com.lolo.io.onelist.feature.lists.components.items_lists.SwipeableAndReorderableItemList
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_CLEAR
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_RM_FILE
 import com.lolo.io.onelist.feature.lists.dialogs.deleteListDialog
@@ -158,7 +172,119 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         _binding = FragmentOneListBinding.inflate(inflater, container, false)
         this.container = container
 
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                OneListTheme {
+
+                    val keyboardController = LocalSoftwareKeyboardController.current
+                    var showSelectedListControls by remember { mutableStateOf(false) }
+
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                            .pointerInput(Unit) {
+                                detectTapGestures (onTap = {
+                                    showSelectedListControls = false
+                                    keyboardController?.hide()
+                                })
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        val allLists = viewModel.allLists.collectAsStateWithLifecycle().value
+                        val selectedList =
+                            viewModel.selectedList.collectAsStateWithLifecycle().value
+
+                        var addItemTitle by remember { mutableStateOf("") }
+                        var addItemComment by remember { mutableStateOf("") }
+
+                        val displayedItems =
+                            viewModel.displayedItems.collectAsStateWithLifecycle().value
+                        val themeSpaces = MaterialTheme.space
+                        val refreshing =
+                            viewModel.uiState.collectAsStateWithLifecycle().value.isRefreshing
+
+
+                        Surface(
+                            modifier = Modifier
+                                .padding(bottom = MaterialTheme.space.Small),
+                            shadowElevation = 8.dp) {
+                            Column(
+                                modifier = Modifier
+                                    .padding(bottom = MaterialTheme.space.SmallUpper),
+                                horizontalAlignment = Alignment.CenterHorizontally) {
+
+                                OneListHeader(
+                                    showSelectedListControls = showSelectedListControls
+                                )
+
+                                ListsFlowRow(
+                                    modifier = Modifier.padding(horizontal = MaterialTheme.space.Small),
+                                    lists = allLists, selectedList = selectedList,
+                                    onClick = {
+                                        showSelectedListControls = false
+                                        viewModel.selectList(it) },
+                                    onLongClick = {
+                                        viewModel.selectList(it)
+                                        showSelectedListControls = true
+                                    },
+                                    onListReordered = {
+                                        viewModel.reorderLists(it)
+                                    })
+
+                            }
+                        }
+
+                        AddItemInput(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.space.Normal)
+                                .padding(top = MaterialTheme.space.Small)
+                                .zIndex(10f),
+                            value = addItemTitle,
+                            onValueChange = { addItemTitle = it },
+                            commentValue = addItemComment,
+                            onCommentValueChange = { addItemComment = it },
+                            onSubmit = {
+                                viewModel.addItem(
+                                    Item(
+                                        title = addItemTitle,
+                                        comment = addItemComment,
+                                        commentDisplayed = addItemComment.isNotEmpty()
+                                    )
+                                )
+                                addItemTitle = ""
+                                addItemComment = ""
+                                // todo focus to item title
+                            }
+                        )
+
+                        SwipeableAndReorderableItemList(
+                            modifier = Modifier.offset {
+                                IntOffset(x = 0, y = themeSpaces.Small.toPx().roundToInt() * -1)
+                            },
+                            onClickOnItem = {
+                                viewModel.switchItemStatus(it)
+                            },
+                            items = displayedItems,
+                            onItemSwipedToStart = {
+                                viewModel.removeItem(it)
+                            },
+                            onShowOrHideComment = {
+                                viewModel.switchItemCommentShown(it)
+                            },
+                            onListReordered = {
+                                viewModel.onSelectedListReordered(it)
+                            },
+                            refreshing = refreshing,
+                            onRefresh = {
+                                viewModel.refresh()
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -177,13 +303,20 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         }
 
 
+        binding.headerComposed.set {
+            OneListHeader()
+        }
+
         binding.listsRecyclerViewComposed.set {
             val allLists = viewModel.allLists.collectAsStateWithLifecycle().value
             val selectedList = viewModel.selectedList.collectAsStateWithLifecycle().value
             ListsFlowRow(lists = allLists, selectedList = selectedList,
-                onClick = { viewModel.selectList(allLists.indexOf(it)) },
+                onClick = { viewModel.selectList(it) },
                 onLongClick = {
-                    viewModel.selectList(allLists.indexOf(it))
+                    viewModel.selectList(it)
+                },
+                onListReordered = {
+                    viewModel.reorderLists(it)
                 })
         }
 
@@ -219,7 +352,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         binding.itemsRecyclerViewComposed.set {
             val displayedItems = viewModel.displayedItems.collectAsStateWithLifecycle().value
             val themeSpaces = MaterialTheme.space
-            SwipeableReorderableItemList(
+            val refreshing = viewModel.uiState.collectAsStateWithLifecycle().value.isRefreshing
+            SwipeableAndReorderableItemList(
                 modifier = Modifier.offset {
                     IntOffset(x = 0, y = themeSpaces.Small.toPx().roundToInt() * -1)
                 },
@@ -235,6 +369,10 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                 },
                 onListReordered = {
                     viewModel.onSelectedListReordered(it)
+                },
+                refreshing = refreshing,
+                onRefresh = {
+                    viewModel.refresh()
                 }
             )
         }
@@ -387,7 +525,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
 
     override fun onStart() {
         super.onStart()
-        viewModel.refreshAllLists()
+        viewModel.refresh()
     }
 
 
@@ -415,7 +553,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                 }
             }
             arguments?.clear()
-            viewModel.refreshAllLists()
+            viewModel.refresh()
         }
 
     }
@@ -588,17 +726,17 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
     }
 
     override fun onSwitchItemStatus(item: Item) {
-       /* viewModel.switchItemStatus(item) { oldPosition, newPosition ->
-            itemsAdapter.notifyItemChanged(oldPosition)
-            itemsAdapter.notifyItemMoved(oldPosition, newPosition)
+        /* viewModel.switchItemStatus(item) { oldPosition, newPosition ->
+             itemsAdapter.notifyItemChanged(oldPosition)
+             itemsAdapter.notifyItemMoved(oldPosition, newPosition)
 
-            val scrolledToTop =
-                (binding.itemsRecyclerView.layoutManager as LinearLayoutManager)
-                    .findFirstVisibleItemPosition() == 0
-            if (scrolledToTop || oldPosition == 0) binding.itemsRecyclerView
-                .scrollToPosition(0)
-        }
-        */
+             val scrolledToTop =
+                 (binding.itemsRecyclerView.layoutManager as LinearLayoutManager)
+                     .findFirstVisibleItemPosition() == 0
+             if (scrolledToTop || oldPosition == 0) binding.itemsRecyclerView
+                 .scrollToPosition(0)
+         }
+         */
 
         // todo scrolls
     }

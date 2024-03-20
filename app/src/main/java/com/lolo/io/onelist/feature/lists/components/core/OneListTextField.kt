@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -33,12 +34,12 @@ import com.lolo.io.onelist.core.design.space
 internal fun OneListTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     placeholder: String = "",
     singleLine: Boolean = false,
+    onKeyboardDoneInput: () -> Unit = {},
     leadingIcon: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    focusedTrailingIconColor: Color = MaterialTheme.colorScheme.outline,
-    modifier: Modifier = Modifier
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
 
     val borderShape = MaterialTheme.shapes.medium
@@ -49,17 +50,22 @@ internal fun OneListTextField(
     BasicTextField(
         modifier = modifier
             .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, borderShape)
-            .heightIn(36.dp, if(lineCount <= 1) 36.dp else Dp.Unspecified),
+            .heightIn(36.dp, if (lineCount <= 1) 36.dp else Dp.Unspecified),
         value = value,
         onValueChange = onValueChange,
         textStyle = MaterialTheme.typography.bodyLarge,
         interactionSource = interactionSource,
         singleLine = singleLine,
-        maxLines = if(singleLineFix) 1 else Int.MAX_VALUE,
+        maxLines = if (singleLineFix) 1 else Int.MAX_VALUE,
         onTextLayout = {
             lineCount = it.lineCount
-            singleLineFix = if(!singleLine) { it.lineCount <= 1 } else singleLine
-        }
+            singleLineFix = if (!singleLine) {
+                it.lineCount <= 1
+            } else singleLine
+        },
+        keyboardActions = KeyboardActions(
+            onDone = { onKeyboardDoneInput() }
+        ),
 
         ) { innerTextField ->
         TextFieldDefaults.DecorationBox(
@@ -79,7 +85,7 @@ internal fun OneListTextField(
                 cursorColor = MaterialTheme.colorScheme.onBackground,
                 focusedLeadingIconColor = MaterialTheme.colorScheme.outline,
                 unfocusedLeadingIconColor = MaterialTheme.colorScheme.outline,
-                focusedTrailingIconColor = focusedTrailingIconColor,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.outline,
                 unfocusedTrailingIconColor = MaterialTheme.colorScheme.outline,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
@@ -88,7 +94,7 @@ internal fun OneListTextField(
                     backgroundColor = Color.Transparent
                 ),
             ),
-            placeholder = {  Text(text = placeholder, color = MaterialTheme.colorScheme.outline) }
+            placeholder = { Text(text = placeholder, color = MaterialTheme.colorScheme.outline) }
         )
     }
 }

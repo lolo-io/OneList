@@ -1,12 +1,17 @@
 package com.lolo.io.onelist.feature.lists.components.core
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -18,6 +23,7 @@ fun <T> DraggableFlowRow(
     onDragStart: (item: T) -> Unit = {},
     onDragEnd: () -> Unit = {},
     onDragCancel: () -> Unit = {},
+    onListReordered: (List<T>) -> Unit = {},
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     maxItemsInEachRow: Int = Int.MAX_VALUE,
@@ -25,37 +31,46 @@ fun <T> DraggableFlowRow(
 ) {
 
     val draggableListState = rememberDraggableListState(
-        items,
-        DraggableListState.Orientation.VERTICAL,
+        items = items,
+        orientation = DraggableListState.Orientation.VERTICAL,
+        onListReordered = onListReordered
+
     )
 
-    FlowRow(
-        modifier = modifier.draggableItemList(
-            draggableListState = draggableListState,
-            onDragStart = onDragStart,
-            onDragEnd = onDragEnd,
-            onDragCancel = onDragCancel
-        ),
-        horizontalArrangement = horizontalArrangement,
-        verticalArrangement = verticalArrangement,
-        maxItemsInEachRow = maxItemsInEachRow
+    Box(
+        modifier = Modifier.fillMaxWidth(),
     ) {
-        draggableListState.draggableItems.map { draggableItem ->
-            key(itemKeys(draggableItem.item)) {
-                Box(
-                    modifier = Modifier.draggableItem(draggableListState, draggableItem)
-                ) {
-                    drawItem(draggableItem.item, draggableItem == draggableListState.draggedItem)
+        FlowRow(
+            modifier = modifier.draggableItemList(
+                draggableListState = draggableListState,
+                onDragStart = onDragStart,
+                onDragEnd = onDragEnd,
+                onDragCancel = onDragCancel
+            ).fillMaxWidth(),
+            horizontalArrangement = horizontalArrangement,
+            verticalArrangement = verticalArrangement,
+            maxItemsInEachRow = maxItemsInEachRow
+        ) {
+            draggableListState.draggableItems.map { draggableItem ->
+                key(itemKeys(draggableItem.item)) {
+                    Box(
+                        modifier = Modifier.draggableItem(draggableListState, draggableItem)
+                    ) {
+                        drawItem(
+                            draggableItem.item,
+                            draggableItem == draggableListState.draggedItem
+                        )
+                    }
                 }
             }
         }
-    }
 
-    draggableListState.draggedItem?.let { draggedItem ->
-        Box(
-            modifier = Modifier.draggedItem(draggableListState, draggedItem)
-        ) {
-            drawDragItem(draggedItem.item)
+        draggableListState.draggedItem?.let { draggedItem ->
+            Box(
+                modifier = Modifier.draggedItem(draggableListState, draggedItem)
+            ) {
+                drawDragItem(draggedItem.item)
+            }
         }
     }
 }

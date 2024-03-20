@@ -21,7 +21,7 @@ class MoveList(private val repository: OneListRepository) {
         }
         tempAllList.forEachIndexed { i, list -> list.position = i + 1 }
 
-        repository.saveAllLists(tempAllList.sortedBy { it.position })
-        repository.selectList(toPosition)
+     //   repository.saveAllLists(tempAllList.sortedBy { it.position })
+     //   repository.selectList(toPosition)
     }
 }
