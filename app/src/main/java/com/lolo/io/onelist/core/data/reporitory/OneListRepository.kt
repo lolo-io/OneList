@@ -17,13 +17,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import updateOne
 import java.io.FileNotFoundException
-import kotlin.coroutines.coroutineContext
 
 
 class OneListRepository(
@@ -84,20 +82,34 @@ class OneListRepository(
     }
 
     suspend fun createList(itemList: ItemList) {
-        itemList.position = _allListsWithErrors.value.lists.size
+        itemList.position = _allListsWithErrors.value.lists.size - 1
         _allListsWithErrors.value =
             AllListsWithErrors(_allListsWithErrors.value.lists + upsertList(itemList))
         preferences.selectedListIndex = _allListsWithErrors.value.lists.size - 1
     }
 
-    suspend fun editList(itemList: ItemList) {
+
+    // does upsert in dao, and if has backup uri -> save list file; can create a file
+    // and also update alllists flow
+    suspend fun saveListToDb(itemList: ItemList) {
         upsertList(itemList).let {
             _allListsWithErrors.value = AllListsWithErrors(
                 _allListsWithErrors.value.lists.updateOne(itemList) { it.id == itemList.id })
         }
     }
 
+
+    // does upsert in dao, and if has backup uri -> save list file; can create a file
     private suspend fun upsertList(list: ItemList): ItemList {
+
+        val upsertInDao: suspend (list: ItemList) -> Unit = { insertList ->
+            withContext(Dispatchers.IO) {
+                dao.upsert(insertList.toItemListEntity()).takeIf { it > 0 }?.let {
+                    insertList.id = it
+                }
+            }
+        }
+
         return withContext(Dispatchers.IO) {
             upsertInDao(list)
             if (preferences.backupUri != null) {
@@ -115,14 +127,6 @@ class OneListRepository(
     }
 
 
-    private suspend fun upsertInDao(list: ItemList) {
-        withContext(Dispatchers.IO) {
-            dao.upsert(list.toItemListEntity()).takeIf { it > 0 }?.let {
-                list.id = it
-            }
-        }
-    }
-
     @Throws
     suspend fun deleteList(
         itemList: ItemList,
@@ -139,11 +143,10 @@ class OneListRepository(
                 .filter { it.id != itemList.id })
                 .also {
                     val position = _allListsWithErrors.value.lists.indexOf(itemList)
-                    if (position < it.lists.size) {
-                        selectList(position)
-                    } else if (position > 0) {
-                        selectList(position - 1)
-                    }
+
+                    val nextSelected = _allListsWithErrors.value.lists.getOrNull(position)
+                        ?: _allListsWithErrors.value.lists[position - 1]
+                    selectList(nextSelected)
                 }
 
         if (deleteBackupFile) {
@@ -154,7 +157,7 @@ class OneListRepository(
     suspend fun importList(uri: Uri): ItemList {
         val list = fileAccess.createListFromUri(uri,
             onListCreated = {
-                upsertList(
+                saveListToDb(
                     it.copy(
                         id = 0L,
                         position = _allListsWithErrors.value.lists.size
@@ -166,10 +169,8 @@ class OneListRepository(
         return list
     }
 
-    fun selectList(position: Int) {
-        preferences.selectedListIndex =
-            position
-        preferences.selectedListIndex = position
+    fun selectList(list: ItemList) {
+        preferences.selectedListIndex = _allListsWithErrors.value.lists.indexOf(list)
     }
 
     suspend fun saveAllLists(lists: List<ItemList>) {
@@ -178,7 +179,7 @@ class OneListRepository(
             // update async to improve list move performance.
             CoroutineScope(Dispatchers.IO).launch {
                 lists.forEach {
-                    upsertInDao(it)
+                    upsertList(it)
                 }
             }
         }

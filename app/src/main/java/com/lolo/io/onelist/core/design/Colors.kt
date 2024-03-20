@@ -30,7 +30,7 @@ fun lightColorScheme(): ColorScheme = materialLightColorScheme(
 //    surfaceTint = primary,
 //    inverseSurface = ColorLightTokens.InverseSurface,
 //    inverseOnSurface = ColorLightTokens.InverseOnSurface,
-//    error = ColorLightTokens.Error,
+    error = Palette.ONELIST_RED, // todo darker
 //    onError = ColorLightTokens.OnError,
 //    errorContainer = ColorLightTokens.ErrorContainer,
 //    onErrorContainer = ColorLightTokens.OnErrorContainer,
@@ -62,7 +62,14 @@ data class AppColors(
     val itemDone: Color,
 
     val swipeDeleteBackground: Color,
-    val swipeEditBackground: Color
+    val swipeEditBackground: Color,
+
+    val settingsIcon: Color,
+    val shareListIcon: Color,
+    val addListIcon: Color,
+    val editListIcon: Color,
+    val deleteListIcon: Color,
+
 )
 
 
@@ -84,5 +91,10 @@ fun appColors() = AppColors(
     itemDone = MaterialTheme.colorScheme.outline,
     swipeDeleteBackground = MaterialTheme.colorScheme.secondary,
     swipeEditBackground = MaterialTheme.colorScheme.outlineVariant,
+    settingsIcon = MaterialTheme.colorScheme.outline,
+    shareListIcon = MaterialTheme.colorScheme.onBackground,
+    addListIcon = MaterialTheme.colorScheme.onBackground,
+    editListIcon = MaterialTheme.colorScheme.outline,
+    deleteListIcon = MaterialTheme.colorScheme.error
 )
 

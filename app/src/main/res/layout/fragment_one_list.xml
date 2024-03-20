@@ -20,17 +20,18 @@
         app:cardElevation="3dp">
 
         <RelativeLayout
-            android:background="?android:attr/colorBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
+            android:background="?android:attr/colorBackground"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:paddingStart="15dp"
             android:paddingLeft="15dp"
             android:paddingEnd="15dp"
             android:paddingRight="15dp"
-            android:paddingBottom="10dp">
+            android:paddingBottom="10dp"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:id="@+id/titleLayout"
@@ -43,10 +44,10 @@
                     android:id="@+id/icon"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
+                    android:layout_centerVertical="true"
                     android:scaleType="center"
                     android:scaleX="1.1"
                     android:scaleY="1.1"
-                    android:layout_centerVertical="true"
                     android:src="@drawable/logo_inv"
                     tools:ignore="ContentDescription" />
 
@@ -57,8 +58,8 @@
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/icon"
                     android:text="@string/app_name"
-                    android:textColor="?android:attr/colorForeground"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="?android:attr/colorForeground" />
 
                 <ImageView
                     android:id="@+id/menu_settings"
@@ -66,8 +67,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/title"
-                    android:contentDescription="@string/settings"
                     android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/settings"
                     android:padding="12dp"
                     app:srcCompat="@drawable/ic_settings_accent_24dp" />
 
@@ -85,12 +86,12 @@
                         android:id="@+id/buttonRemoveList"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:alpha="0"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/delete_list"
                         android:padding="12dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_delete_forever_primary_24dp" />
 
                     <ImageButton
@@ -98,42 +99,41 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/buttonRemoveList"
                         android:alpha="0"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/edit_list"
                         android:padding="12dp"
+                        app:layout_constraintEnd_toStartOf="@id/buttonRemoveList"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_mode_edit_accent_24dp" />
 
                     <ImageButton
                         android:id="@+id/buttonAddList"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:contentDescription="@string/add_list"
                         android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/add_list"
                         android:padding="10dp"
-                        app:tint="?android:attr/colorForeground"
-                        app:srcCompat="@drawable/ic_add_27" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_add_27"
+                        app:tint="?android:attr/colorForeground" />
 
                     <ImageButton
                         android:id="@+id/buttonShareList"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/buttonAddList"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        app:tint="?android:attr/colorForeground"
                         android:contentDescription="@string/add_list"
                         android:padding="14dp"
-                        app:srcCompat="@drawable/ic_share_20" />
+                        app:layout_constraintEnd_toStartOf="@id/buttonAddList"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_share_20"
+                        app:tint="?android:attr/colorForeground" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </RelativeLayout>
-
 
 
             <RelativeLayout
@@ -143,20 +143,34 @@
                 android:clipChildren="false"
                 android:clipToPadding="false">
 
-                <androidx.compose.ui.platform.ComposeView
-                    android:id="@+id/listsRecyclerViewComposed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/listsRecyclerView"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never" />
+                    android:overScrollMode="never"
+                    android:visibility="gone" />
 
             </RelativeLayout>
         </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="12dp">
+
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/headerComposed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/listsRecyclerViewComposed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <RelativeLayout
@@ -173,14 +187,14 @@
             android:id="@+id/itemsRecyclerViewComposed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/addItem"/>
+            android:layout_below="@id/addItem" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:visibility="gone"
             android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/addItem">
+            android:layout_below="@id/addItem"
+            android:visibility="gone">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/itemsRecyclerView"
@@ -196,7 +210,6 @@
 
 
         <RelativeLayout
-            android:visibility="gone"
             android:id="@+id/addItemLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -207,7 +220,8 @@
             android:background="?android:attr/colorBackground"
             android:paddingLeft="15dp"
             android:paddingTop="10dp"
-            android:paddingRight="15dp">
+            android:paddingRight="15dp"
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/addItemEditText"
@@ -218,8 +232,8 @@
                 android:background="@drawable/rounded_edit_text"
                 android:drawableStart="@drawable/ic_add_24dp"
                 android:drawableLeft="@drawable/ic_add_24dp"
-                android:drawableTint="?attr/colorAccent"
                 android:drawablePadding="5dp"
+                android:drawableTint="?attr/colorAccent"
                 android:elevation="1dp"
                 android:focusableInTouchMode="true"
                 android:hint="@string/add"

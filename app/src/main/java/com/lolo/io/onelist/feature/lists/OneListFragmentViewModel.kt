@@ -16,7 +16,6 @@ import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.ui.util.UIString
 import com.lolo.io.onelist.feature.lists.tuto.FirstLaunchLists
 import com.lolo.io.onelist.feature.lists.utils.toStringForShare
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,37 +35,37 @@ class OneListFragmentViewModel(
     private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
 
-    private val allListsResources = MutableStateFlow(AllListsWithErrors())
 
-    private var getAllListsJob: Job? = null
+    private val allListsWithErrors = MutableStateFlow(AllListsWithErrors())
 
-    val allLists = allListsResources.map {
-        _errorMessage.value = getErrorMessageWhenLoadingLists(it.errors)
+    val allLists = allListsWithErrors.map {
         it.lists
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), listOf())
+
+
+    private val _displayedItems = MutableStateFlow(listOf<Item>())
+    val displayedItems
+        get() = _displayedItems.asStateFlow()
 
 
     private val selectedListIndex =
         preferences.selectedListIndexStateFlow
 
-    private val _forceRefreshTrigger = MutableStateFlow(0)
-    val forceRefreshTrigger = _forceRefreshTrigger.asStateFlow()
+    var selectedList = combine(allLists, selectedListIndex) { pAllLists, pIndex ->
+        (pAllLists.getOrNull(pIndex) ?: ItemList()).also {
+            _displayedItems.value = it.items
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ItemList())
 
-    private val _errorMessage = MutableStateFlow<UIString?>(null)
-    val errorMessage = _errorMessage.asStateFlow()
 
+
+    val errorMessage = allListsWithErrors.map {
+        getErrorMessageWhenLoadingLists(it.errors)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), null)
 
     private val _showWhatsNew = MutableStateFlow(false)
     val showWhatsNew = _showWhatsNew.asStateFlow()
 
-    var selectedList = combine(allLists, selectedListIndex) { pAllLists, pIndex ->
-        pAllLists.getOrNull(pIndex) ?: ItemList()
-
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ItemList())
-
-    val _displayedItems = MutableStateFlow(selectedList.value.items)
-    val displayedItems
-        get() = _displayedItems.asStateFlow()
 
 
     suspend fun init() {
@@ -91,15 +90,6 @@ class OneListFragmentViewModel(
         }
     }
 
-    fun refreshAllLists() {
-        updateUiState { copy(isRefreshing = true) }
-        viewModelScope.launch {
-            getAllLists()
-
-            _forceRefreshTrigger.value++
-        }
-    }
-
     suspend fun removeList(
         itemList: ItemList,
         deleteBackupFile: Boolean,
@@ -107,12 +97,6 @@ class OneListFragmentViewModel(
     ) {
         useCases.removeList(itemList, deleteBackupFile, onFileDeleted)
     }
-
-    fun selectList(position: Int) {
-        preferences.selectedListIndex = position
-        _displayedItems.value = selectedList.value.items
-    }
-
 
 
     fun editItem(index: Int, item: Item) {
@@ -137,17 +121,6 @@ class OneListFragmentViewModel(
         context.startActivity(shareIntent)
     }
 
-    private fun getAllLists() {
-        getAllListsJob?.cancel()
-        viewModelScope.launch {
-            updateUiState { copy(isRefreshing = true) }
-            useCases.getAllLists().onEach {
-                allListsResources.value = it
-                updateUiState { copy(isRefreshing = false) }
-            }.launchIn(this)
-        }
-    }
-
     private fun getErrorMessageWhenLoadingLists(errors: List<ErrorLoadingList>): UIString? {
         return if (errors.isNotEmpty()) {
             UIString
@@ -166,36 +139,13 @@ class OneListFragmentViewModel(
     }
 
     fun resetError() {
-        allListsResources.value = allListsResources.value.copy(errors = listOf())
+        allListsWithErrors.value = allListsWithErrors.value.copy(errors = listOf())
     }
 
 
     fun whatsNewShown() {
         _showWhatsNew.value = false
     }
-
-    fun moveList(fromPosition: Int, toPosition: Int) {
-        viewModelScope.launch {
-            useCases.moveList(fromPosition, toPosition, allLists.value)
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /***
@@ -206,6 +156,34 @@ class OneListFragmentViewModel(
      *
      */
 
+
+    private suspend fun getAllLists() {
+        updateUiState { copy(isRefreshing = true) }
+        useCases.getAllLists().onEach {
+            allListsWithErrors.value = it
+            updateUiState { copy(isRefreshing = false) }
+        }.launchIn(viewModelScope)
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            getAllLists()
+        }
+    }
+
+    // LISTS
+
+    fun selectList(itemList: ItemList) {
+        useCases.selectList(itemList)
+    }
+
+    fun reorderLists(lists: List<ItemList>) {
+        viewModelScope.launch {
+            useCases.reorderLists(lists, selectedList.value)
+        }
+    }
+
+    // ITEMS
 
     suspend fun importList(uri: Uri): ItemList {
         return useCases.importList(uri)
@@ -276,6 +254,7 @@ class OneListFragmentViewModel(
             )
         }
     }
+
     fun setAddItemComment(text: String) {
         updateUiState {
             copy(
@@ -286,4 +265,26 @@ class OneListFragmentViewModel(
     }
 
 
+    fun moveList(fromPosition: Int, toPosition: Int) {
+        viewModelScope.launch {
+            useCases.moveList(fromPosition, toPosition, allLists.value)
+        }
+    }
+
+    fun selectList(position: Int) {
+        preferences.selectedListIndex = position
+        _displayedItems.value = selectedList.value.items
+    }
+
+    fun refreshAllLists() {
+        updateUiState { copy(isRefreshing = true) }
+        viewModelScope.launch {
+            getAllLists()
+            _forceRefreshTrigger.value++
+        }
+    }
+
+
+    private val _forceRefreshTrigger = MutableStateFlow(0)
+    val forceRefreshTrigger = _forceRefreshTrigger.asStateFlow()
 }

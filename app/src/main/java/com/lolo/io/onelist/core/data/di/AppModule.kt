@@ -19,6 +19,8 @@ import com.lolo.io.onelist.core.domain.use_cases.RemoveItemFromList
 import com.lolo.io.onelist.core.domain.use_cases.RemoveList
 import com.lolo.io.onelist.core.domain.use_cases.SetBackupUri
 import com.lolo.io.onelist.core.domain.use_cases.SetItemOfList
+import com.lolo.io.onelist.core.domain.use_cases.ReorderLists
+import com.lolo.io.onelist.core.domain.use_cases.SelectList
 import com.lolo.io.onelist.core.domain.use_cases.ShowWhatsNew
 import com.lolo.io.onelist.core.domain.use_cases.SwitchItemCommentShown
 import com.lolo.io.onelist.core.domain.use_cases.SwitchItemStatus
@@ -59,7 +61,9 @@ val appModule = module {
             removeItemFromList = RemoveItemFromList(saveListToDb),
             switchItemStatus = SwitchItemStatus(saveListToDb),
             setItemsOfList = SetItemOfList(saveListToDb),
-            switchItemCommentShown = SwitchItemCommentShown(saveListToDb)
+            switchItemCommentShown = SwitchItemCommentShown(saveListToDb),
+            reorderLists = ReorderLists(get()),
+            selectList = SelectList(get())
         )
     }
 

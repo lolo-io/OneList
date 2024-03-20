@@ -2,6 +2,7 @@ package com.lolo.io.onelist.feature.lists.components.list_chips
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,10 +16,14 @@ fun ListsFlowRow(
     lists: List<ItemList>,
     selectedList: ItemList,
     onClick: (ItemList) -> Unit,
-    onLongClick: (ItemList) -> Unit = {}
+    onLongClick: (ItemList) -> Unit = {},
+    onListReordered: (List<ItemList>) -> Unit = {},
+    modifier : Modifier = Modifier,
 ) {
     val haptic = LocalHapticFeedback.current
+
     DraggableFlowRow(
+        modifier = modifier,
         items = lists,
         itemKeys = { it.id },
         drawItem = { list, isDragged ->
@@ -36,6 +41,7 @@ fun ListsFlowRow(
             onLongClick(it)
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         },
+        onListReordered = onListReordered,
         horizontalArrangement = Arrangement.Center,
     )
 }

@@ -25,14 +25,16 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun SwipeableReorderableItemList(
+fun SwipeableAndReorderableItemList(
     items: List<Item>,
     onItemSwipedToStart: (Item) -> Unit = {},
     onClickOnItem: (Item) -> Unit = {},
     state: SwipableListState<Item> = rememberSwipeableListState<Item>(),
     modifier: Modifier = Modifier,
-    onListReordered: (List<Item>) -> Unit,
-    onShowOrHideComment: (Item) -> Unit
+    onListReordered: (List<Item>) -> Unit = {},
+    onShowOrHideComment: (Item) -> Unit = {},
+    refreshing: Boolean = false,
+    onRefresh: () -> Unit = {},
 ) {
 
     val draggableListState = rememberDraggableListState(
@@ -46,7 +48,6 @@ fun SwipeableReorderableItemList(
 
     DraggableAndSwipeableList(
         modifier = modifier,
-        items = items,
         itemKeys = { it.id },
         draggableListState = draggableListState,
         drawItem = { draggableItem ->
@@ -75,6 +76,9 @@ fun SwipeableReorderableItemList(
                 ItemRow(draggedItem.item)
             }
         },
+        refreshing = refreshing,
+        onRefresh = onRefresh,
+
         state = state,
     )
 }
@@ -105,15 +109,10 @@ private fun Preview_SwipeableItemList() = ComposePreview {
     }
 
     Column {
-        SwipeableReorderableItemList(
+        SwipeableAndReorderableItemList(
             items = items,
             state = itemListSwipeState,
-            onListReordered = {
-
-            },
-        ) {
-
-        }
+        )
 
         Button(
             modifier = Modifier.padding(MaterialTheme.space.Normal),

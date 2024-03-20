@@ -6,6 +6,7 @@ data class OneListUseCases(
     val moveList: MoveList,
     val clearList: ClearList,
     val setItemsOfList: SetItemOfList,
+    val reorderLists: ReorderLists,
     val addItemToList: AddItemToList,
     val removeItemFromList: RemoveItemFromList,
     val switchItemStatus: SwitchItemStatus,
@@ -17,4 +18,5 @@ data class OneListUseCases(
     val handleFirstLaunch: HandleFirstLaunch,
     val syncAllLists: SyncAllLists,
     val showWhatsNew: ShowWhatsNew,
+    val selectList: SelectList
 )

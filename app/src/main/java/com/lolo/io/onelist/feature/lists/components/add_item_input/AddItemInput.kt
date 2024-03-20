@@ -16,12 +16,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,9 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.design.app
 import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
@@ -68,7 +73,8 @@ internal fun AddItemInput(
 
 
         OneListTextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             value = value,
             placeholder = "Add",
             onValueChange = onValueChange,
@@ -76,21 +82,23 @@ internal fun AddItemInput(
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             },
+            onKeyboardDoneInput = onSubmit,
             trailingIcon = {
                 if (value.isNotEmpty()) {
-
-
                     if (animatedSubmitAlpha > 0) {
                         IconButton(
                             modifier = Modifier.alpha(animatedSubmitAlpha),
                             onClick = onSubmit
                         ) {
-                            Icon(imageVector = Icons.Default.Check, contentDescription = null)
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 }
             },
-            focusedTrailingIconColor = MaterialTheme.colorScheme.primary
         )
         AnimatedVisibility(
             visible = showCommentInput
@@ -114,7 +122,11 @@ internal fun AddItemInput(
                     placeholder = "Comment",
                     onValueChange = onCommentValueChange,
                     leadingIcon = {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                        Icon(
+                            modifier = Modifier.rotate(90f),
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = null
+                        )
                     },
                     trailingIcon = {
                         if (animatedClearCommentAlpha > 0f) {
@@ -134,8 +146,9 @@ internal fun AddItemInput(
             }
         }
 
+
         var arrowRotation by remember {
-            mutableStateOf(180f)
+            mutableFloatStateOf(180f)
         }
 
         TextButton(
@@ -165,6 +178,7 @@ internal fun AddItemInput(
                 imageVector = Icons.Default.KeyboardArrowUp, contentDescription = "Add Comment"
             )
         }
+
     }
 
 }
