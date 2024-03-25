@@ -41,6 +41,7 @@ internal fun SwipeableRowScope.SwipeableItem(
     modifier: Modifier = Modifier,
     onShowOrHideComment : () -> Unit = {},
     onSwipedToStart: () -> Unit = {},
+    onIsSwiping: (Boolean) -> Unit = {},
     onClick: () -> Unit = {},
 ) {
     val onSwipedToEnd = {
@@ -55,8 +56,8 @@ internal fun SwipeableRowScope.SwipeableItem(
 
     SwipeableRow(
         modifier = modifier,
-        swipeState = swipeState,
         onClick = onClick,
+        onIsSwiping = onIsSwiping,
         backgroundStartToEnd = {
             Box(
                 Modifier

@@ -8,6 +8,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +46,8 @@ fun SwipeableAndReorderableItemList(
         onListReordered = onListReordered
     )
 
+    var isSwiping by  remember { mutableStateOf(false) }
+
     LaunchedEffect(items) {
         draggableListState.setItems(items)
     }
@@ -49,9 +55,13 @@ fun SwipeableAndReorderableItemList(
     DraggableAndSwipeableList(
         modifier = modifier,
         itemKeys = { it.id },
+        isSwiping = isSwiping,
         draggableListState = draggableListState,
         drawItem = { draggableItem ->
             SwipeableItem(
+                onIsSwiping = {
+                    isSwiping = !it
+                },
                 modifier = Modifier
                     .draggableItem(draggableListState, draggableItem)
                     .then(

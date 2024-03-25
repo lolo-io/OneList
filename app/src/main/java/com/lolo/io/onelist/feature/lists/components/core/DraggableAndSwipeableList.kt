@@ -1,36 +1,33 @@
 package com.lolo.io.onelist.feature.lists.components.core
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import android.util.Log
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
+import androidx.compose.ui.zIndex
 
 class SwipableListState<T>(
     val itemsStates: SnapshotStateMap<T, SwipeState> = SnapshotStateMap()
@@ -54,16 +51,17 @@ fun <T> rememberSwipeableListState(): SwipableListState<T> {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun <T> DraggableAndSwipeableList(
     itemKeys: (item: T) -> Any,
     draggableListState: DraggableListState<T>,
     drawItem: @Composable() (SwipeableRowScope.(DraggableItem<T>) -> Unit),
-    drawDraggedItem: @Composable() (SwipeableRowScope.(DraggableItem<T>) -> Unit),
+    drawDraggedItem: @Composable() (DraggableItem<T>) -> Unit,
     state: SwipableListState<T>,
     modifier: Modifier = Modifier,
     refreshing: Boolean = false,
+    isSwiping: Boolean = false,
     onRefresh: () -> Unit = {}
 ) {
 
@@ -88,11 +86,14 @@ fun <T> DraggableAndSwipeableList(
             .nestedScroll(pullRefreshState.nestedScrollConnection)
     ) {
         val haptic = LocalHapticFeedback.current
+        val scrollState = rememberScrollState()
 
-        LazyColumn(
+        Column(
             modifier = modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
                 .draggableItemList(
+                    enableDrag = !isSwiping,
                     draggableListState = draggableListState,
                     onDragStart = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -101,17 +102,16 @@ fun <T> DraggableAndSwipeableList(
 
             ) {
 
-
-            items(
-                items = draggableListState.draggableItems,
-                key = { itemKeys(it.item) }) { draggableItem ->
-                val scope = swipeableRowScope(
-                    swipeState = state.itemsStates.get(draggableItem.item) ?: SwipeState.NONE,
-                    setSwipeState = {
-                        state.setItemSwipe(draggableItem.item, it)
-                    }
-                )
-                drawItem(scope, draggableItem)
+            draggableListState.draggableItems.map { draggableItem ->
+                key(itemKeys(draggableItem.item)) {
+                    val scope = swipeableRowScope(
+                        swipeState = state.itemsStates.get(draggableItem.item) ?: SwipeState.NONE,
+                        setSwipeState = {
+                            state.setItemSwipe(draggableItem.item, it)
+                        }
+                    )
+                    drawItem(scope, draggableItem)
+                }
             }
         }
 
@@ -119,30 +119,33 @@ fun <T> DraggableAndSwipeableList(
             Box(
                 modifier = Modifier.draggedItemVertical(draggableListState, draggedItem)
             ) {
-                val scope = swipeableRowScope(
-                    swipeState = state.itemsStates.get(draggedItem.item) ?: SwipeState.NONE,
-                    setSwipeState = {
-                        state.setItemSwipe(draggedItem.item, it)
-                    }
-                )
-                drawDraggedItem(scope, draggedItem)
+
+                drawDraggedItem(draggedItem)
             }
         }
 
 
         if (pullRefreshState.verticalOffset > 0) {
-            PullToRefreshContainer(
-                pullRefreshState,
-                modifier.align(Alignment.TopCenter),
-                indicator = {
-                    CircularProgressIndicator(
-                        modifier = Modifier.padding(8.dp),
-                    )
-                })
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .alpha(pullRefreshState.progress - 0.5f)) {
+                PullToRefreshContainer(
+                    pullRefreshState,
+                    modifier
+                        .align(Alignment.TopCenter)
+                        .offset(y = (-30).dp)
+                        .zIndex(999f),
 
+                    indicator = {
+                        CircularProgressIndicator(
+                            modifier = Modifier.padding(8.dp),
+                        )
+                    })
+
+            }
         }
-
     }
+
 
 }
 
