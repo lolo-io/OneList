@@ -6,6 +6,7 @@ import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.CombinedModifier
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
@@ -123,72 +125,79 @@ fun <T> rememberDraggableListState(
 @Composable
 fun <T> Modifier.draggableItemList(
     draggableListState: DraggableListState<T>,
+    enableDrag: Boolean = true,
     onDragStart: (item: T) -> Unit = {},
     onDragEnd: () -> Unit = {},
     onDragCancel: () -> Unit = {},
 ): Modifier {
+    return this.pointerInput(enableDrag) {
 
-    return this.pointerInput(Unit) {
-        detectDragGesturesAfterLongPress(
-            onDragStart = { offset ->
+        if (enableDrag) {
+            detectDragGesturesAfterLongPress(
+                onDragStart = { offset ->
 
-                draggableListState.draggableItems
-                    .find { it.bounds.contains(offset) }
-                    ?.let {
-                        onDragStart(it.item)
-                        draggableListState.draggedItem = it
-                        draggableListState.dragOffset = it.center
-                    }
-            },
-            onDrag = { change, dragAmmount ->
-                change.consume()
-                draggableListState.dragOffset += Offset(dragAmmount.x, dragAmmount.y)
+                    draggableListState.draggableItems
+                        .find { it.bounds.contains(offset) }
+                        ?.let {
+                            onDragStart(it.item)
+                            draggableListState.draggedItem = it
+                            draggableListState.dragOffset = it.center
+                        }
+                },
+                onDrag = { change, dragAmmount ->
+                    change.consume()
+                    draggableListState.dragOffset += Offset(dragAmmount.x, dragAmmount.y)
 
-                draggableListState.draggedItem?.let { draggedItem ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        draggableListState.draggableItems
-                            .forEach {
-                                when {
-                                    it.startHitBox.contains(draggableListState.dragOffset)
-                                            && it.item != draggedItem.item
-                                            && draggableListState.draggableItems.indexOf(it) < draggableListState.draggableItems.indexOf(draggedItem)
-                                    -> {
-                                        draggableListState.draggableItems =
-                                            draggableListState.draggableItems.moveItemToLeftOf(
-                                                draggedItem,
-                                                it
-                                            )
-                                        draggableListState.onListReordered(draggableListState.draggableItems.map { it.item })
+                    draggableListState.draggedItem?.let { draggedItem ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            draggableListState.draggableItems
+                                .forEach {
+                                    when {
+                                        it.startHitBox.contains(draggableListState.dragOffset)
+                                                && it.item != draggedItem.item
+                                                && draggableListState.draggableItems.indexOf(it) < draggableListState.draggableItems.indexOf(
+                                            draggedItem
+                                        )
+                                        -> {
+                                            draggableListState.draggableItems =
+                                                draggableListState.draggableItems.moveItemToLeftOf(
+                                                    draggedItem,
+                                                    it
+                                                )
+                                            draggableListState.onListReordered(draggableListState.draggableItems.map { it.item })
+                                        }
+
+
+                                        it.endHitBox.contains(draggableListState.dragOffset) && it.item != draggedItem.item
+                                                && draggableListState.draggableItems.indexOf(it) > draggableListState.draggableItems.indexOf(
+                                            draggedItem
+                                        )
+                                        -> {
+                                            draggableListState.draggableItems =
+                                                draggableListState.draggableItems.moveItemToRightOf(
+                                                    draggedItem,
+                                                    it
+                                                )
+                                            draggableListState.onListReordered(draggableListState.draggableItems.map { it.item })
+                                        }
+
                                     }
-
-
-                                    it.endHitBox.contains(draggableListState.dragOffset) && it.item != draggedItem.item
-                                            && draggableListState.draggableItems.indexOf(it) > draggableListState.draggableItems.indexOf(draggedItem)
-                                    -> {
-                                        draggableListState.draggableItems =
-                                            draggableListState.draggableItems.moveItemToRightOf(
-                                                draggedItem,
-                                                it
-                                            )
-                                        draggableListState.onListReordered(draggableListState.draggableItems.map { it.item })
-                                    }
-
                                 }
-                            }
+                        }
                     }
-                }
-            },
+                },
 
-            onDragEnd = {
-                onDragEnd()
-                draggableListState.draggedItem = null
-                draggableListState.dragOffset = Offset.Zero
-            }, onDragCancel = {
-                onDragCancel()
-                draggableListState.draggedItem = null
-                draggableListState.dragOffset = Offset.Zero
-            }
-        )
+                onDragEnd = {
+                    onDragEnd()
+                    draggableListState.draggedItem = null
+                    draggableListState.dragOffset = Offset.Zero
+                }, onDragCancel = {
+                    onDragCancel()
+                    draggableListState.draggedItem = null
+                    draggableListState.dragOffset = Offset.Zero
+                }
+            )
+        }
     }
 }
 
@@ -234,11 +243,25 @@ fun <T> Modifier.draggableItem(
     draggableListState: DraggableListState<T>,
     draggableItem: DraggableItem<T>
 ): Modifier {
-    return this
-        .animatePlacement()
+    return this.animatePlacement()
         .onGloballyPositioned {
             draggableItem.setBounds(it.boundsInParent(), draggableListState.orientation)
         }
+}
+
+
+fun Modifier.ifThen(condition: Boolean, modifier: Modifier): Modifier {
+    if (condition) {
+        return this then modifier
+    }
+    return this
+}
+
+fun Modifier.ifNotNullThen(value: Any?, modifier: Modifier): Modifier {
+    if (value != null) {
+        return this then modifier
+    }
+    return this
 }
 
 fun Modifier.animatePlacement(): Modifier = composed {
@@ -260,7 +283,7 @@ fun Modifier.animatePlacement(): Modifier = composed {
                 .also { animatable = it }
             if (anim.targetValue != targetOffset) {
                 scope.launch {
-                    anim.animateTo(targetOffset, spring(stiffness = Spring.StiffnessMediumLow))
+                    anim.animateTo(targetOffset, tween(350))
                 }
             }
             // Offset the child in the opposite direction to the targetOffset, and slowly catch
