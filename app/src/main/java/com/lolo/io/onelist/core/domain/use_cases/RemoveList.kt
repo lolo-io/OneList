@@ -9,7 +9,8 @@ class RemoveList(private val repository: OneListRepository) {
     @Throws
     suspend operator fun invoke(itemList: ItemList,
                                 deleteBackupFile: Boolean,
-                                onFieDeleted: () -> Unit) {
-        repository.deleteList(itemList, deleteBackupFile, onFieDeleted)
+                                onFileDeleted: () -> Unit){
+
+        repository.deleteList(itemList, deleteBackupFile, onFileDeleted)
     }
 }

@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MotionEvent
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.anggrayudi.storage.SimpleStorageHelper
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.ui.Config

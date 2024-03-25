@@ -16,7 +16,6 @@ import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.ui.util.UIString
 import com.lolo.io.onelist.feature.lists.tuto.FirstLaunchLists
 import com.lolo.io.onelist.feature.lists.utils.toStringForShare
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,37 +35,44 @@ class OneListFragmentViewModel(
     private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
 
-    private val allListsResources = MutableStateFlow(AllListsWithErrors())
 
-    private var getAllListsJob: Job? = null
+    private val allListsWithErrors = MutableStateFlow(AllListsWithErrors())
 
-    val allLists = allListsResources.map {
-        _errorMessage.value = getErrorMessageWhenLoadingLists(it.errors)
+    val allLists = allListsWithErrors.map {
         it.lists
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), listOf())
+
+
+    private val _displayedItems = MutableStateFlow(listOf<Item>())
+    val displayedItems
+        get() = _displayedItems.asStateFlow()
 
 
     private val selectedListIndex =
         preferences.selectedListIndexStateFlow
 
-    private val _forceRefreshTrigger = MutableStateFlow(0)
-    val forceRefreshTrigger = _forceRefreshTrigger.asStateFlow()
+    var selectedList = combine(allLists, selectedListIndex) { pAllLists, pIndex ->
+        (pAllLists.getOrNull(pIndex) ?: ItemList()).also {
+            _displayedItems.value = it.items
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ItemList())
 
-    private val _errorMessage = MutableStateFlow<UIString?>(null)
-    val errorMessage = _errorMessage.asStateFlow()
 
+
+    val errorMessage = allListsWithErrors.map {
+        getErrorMessageWhenLoadingLists(it.errors)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), null)
 
     private val _showWhatsNew = MutableStateFlow(false)
     val showWhatsNew = _showWhatsNew.asStateFlow()
 
-    var selectedList = combine(allLists, selectedListIndex) { pAllLists, pIndex ->
-        pAllLists.getOrNull(pIndex) ?: ItemList()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ItemList())
+
 
     suspend fun init() {
         if (useCases.handleFirstLaunch(firstLaunchLists.firstLaunchLists())) {
             refreshAllLists()
         }
+
         setAppVersion()
     }
 
@@ -80,16 +86,7 @@ class OneListFragmentViewModel(
 
     fun editList(itemList: ItemList) {
         viewModelScope.launch {
-            useCases.editList(itemList)
-        }
-    }
-
-    fun refreshAllLists() {
-        updateUiState { copy(isRefreshing = true) }
-        viewModelScope.launch {
-            getAllLists()
-
-            _forceRefreshTrigger.value++
+            useCases.saveListToDb(itemList)
         }
     }
 
@@ -101,91 +98,9 @@ class OneListFragmentViewModel(
         useCases.removeList(itemList, deleteBackupFile, onFileDeleted)
     }
 
-    fun selectList(position: Int) {
-        preferences.selectedListIndex = position
-    }
-
-    suspend fun importList(uri: Uri): ItemList {
-        return useCases.importList(uri)
-    }
-
-    fun moveList(fromPosition: Int, toPosition: Int) {
-        viewModelScope.launch {
-            useCases.moveList(fromPosition, toPosition, allLists.value)
-        }
-    }
-
-    fun clearComment() {
-        updateUiState { copy(addCommentText = "") }
-    }
-
-    fun switchItemStatus(item: Item, onNewPositions: (old: Int, new: Int) -> Unit) {
-        item.done = !item.done
-        val oldPosition = selectedList.value.items.indexOf(item)
-        val newPosition = when (item.done) {
-            true -> selectedList.value.items.size - 1
-            else -> 0
-        }
-        val tempList = selectedList.value.copy()
-        tempList.items.removeAt(oldPosition)
-        tempList.items.add(newPosition, item)
-
-        onNewPositions(oldPosition, newPosition)
-
-        editList(tempList)
-    }
-
-    fun showOrHideComment(item: Item) {
-        item.commentDisplayed = !item.commentDisplayed
-        editList(selectedList.value.copy())
-    }
-
-    fun addItem(item: Item) {
-        selectedList.value.items.add(0, item.apply {
-            comment = _uiState.value.addCommentText
-        })
-        updateUiState { copy(addCommentText = "") }
-        editList(selectedList.value.copy())
-    }
-
-    fun setAddItemComment(text: String) {
-        updateUiState {
-            copy(
-                addCommentText = text,
-                showButtonClearComment = text.isNotEmpty()
-            )
-        }
-    }
-
-    fun setAddItemText(text: String) {
-        updateUiState {
-            copy(
-                addCommentText = "",
-                showValidate = text.isNotEmpty(),
-                showAddCommentArrow = text.isNotEmpty()
-            )
-        }
-    }
-
-    fun removeItem(item: Item) {
-        selectedList.value.items.remove(item)
-        editList(selectedList.value.copy())
-    }
-
-    fun clearSelectedList() {
-        selectedList.value.items.clear()
-        editList(selectedList.value.copy())
-    }
 
     fun editItem(index: Int, item: Item) {
-        selectedList.value.items[index] = item
-        editList(selectedList.value.copy())
-    }
-
-    fun moveItem(fromPosition: Int, toPosition: Int) {
-        val fromItem = selectedList.value.items[fromPosition]
-        selectedList.value.items.removeAt(fromPosition)
-        selectedList.value.items.add(toPosition, fromItem)
+        //    selectedList.value.items[index] = item
         editList(selectedList.value.copy())
     }
 
@@ -206,17 +121,6 @@ class OneListFragmentViewModel(
         context.startActivity(shareIntent)
     }
 
-    private fun getAllLists() {
-        getAllListsJob?.cancel()
-        viewModelScope.launch {
-            updateUiState { copy(isRefreshing = true) }
-            useCases.getAllLists().onEach {
-                allListsResources.value = it
-                updateUiState { copy(isRefreshing = false) }
-            }.launchIn(this)
-        }
-    }
-
     private fun getErrorMessageWhenLoadingLists(errors: List<ErrorLoadingList>): UIString? {
         return if (errors.isNotEmpty()) {
             UIString
@@ -235,11 +139,152 @@ class OneListFragmentViewModel(
     }
 
     fun resetError() {
-        allListsResources.value = allListsResources.value.copy(errors = listOf())
+        allListsWithErrors.value = allListsWithErrors.value.copy(errors = listOf())
     }
 
 
     fun whatsNewShown() {
         _showWhatsNew.value = false
     }
+
+
+    /***
+     *
+     *
+     *    ALMOST CLEAN
+     *
+     *
+     */
+
+
+    private suspend fun getAllLists() {
+        updateUiState { copy(isRefreshing = true) }
+        useCases.getAllLists().onEach {
+            allListsWithErrors.value = it
+            updateUiState { copy(isRefreshing = false) }
+        }.launchIn(viewModelScope)
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            getAllLists()
+        }
+    }
+
+    // LISTS
+
+    fun selectList(itemList: ItemList) {
+        useCases.selectList(itemList)
+    }
+
+    fun reorderLists(lists: List<ItemList>) {
+        viewModelScope.launch {
+            useCases.reorderLists(lists, selectedList.value)
+        }
+    }
+
+    // ITEMS
+
+    suspend fun importList(uri: Uri): ItemList {
+        return useCases.importList(uri)
+    }
+
+
+    fun switchItemStatus(item: Item) {
+        viewModelScope.launch {
+            _displayedItems.value = useCases.switchItemStatus(selectedList.value, item).items
+        }
+    }
+
+    fun switchItemCommentShown(item: Item) {
+        viewModelScope.launch {
+            _displayedItems.value = useCases.switchItemCommentShown(selectedList.value, item).items
+        }
+    }
+
+    fun addItem(item: Item) {
+        viewModelScope.launch {
+            _displayedItems.value = useCases.addItemToList(selectedList.value, item).items
+        }
+    }
+
+    fun removeItem(item: Item) {
+        viewModelScope.launch {
+            _displayedItems.value = useCases.removeItemFromList(selectedList.value, item).items
+        }
+    }
+
+    fun clearSelectedList() {
+        viewModelScope.launch {
+            _displayedItems.value = useCases.clearList(selectedList.value).items
+        }
+    }
+
+    fun onSelectedListReordered(items: List<Item>) {
+        viewModelScope.launch {
+            useCases.setItemsOfList(selectedList.value, items)
+        }
+    }
+
+    /***
+     *
+     *
+     *    TRASH
+     *
+     *
+     */
+
+    fun clearComment() {
+        updateUiState { copy(addCommentText = "") }
+    }
+
+    fun moveItem(fromPosition: Int, toPosition: Int) {
+        val fromItem = selectedList.value.items[fromPosition]
+        //    selectedList.value.items.removeAt(fromPosition)
+        //   selectedList.value.items.add(toPosition, fromItem)
+        editList(selectedList.value.copy())
+    }
+
+    fun setAddItemText(text: String) {
+        updateUiState {
+            copy(
+                addCommentText = "",
+                showValidate = text.isNotEmpty(),
+                showAddCommentArrow = text.isNotEmpty()
+            )
+        }
+    }
+
+    fun setAddItemComment(text: String) {
+        updateUiState {
+            copy(
+                addCommentText = text,
+                showButtonClearComment = text.isNotEmpty()
+            )
+        }
+    }
+
+
+    fun moveList(fromPosition: Int, toPosition: Int) {
+        viewModelScope.launch {
+            useCases.moveList(fromPosition, toPosition, allLists.value)
+        }
+    }
+
+    fun selectList(position: Int) {
+        preferences.selectedListIndex = position
+        _displayedItems.value = selectedList.value.items
+    }
+
+    fun refreshAllLists() {
+        updateUiState { copy(isRefreshing = true) }
+        viewModelScope.launch {
+            getAllLists()
+            _forceRefreshTrigger.value++
+        }
+    }
+
+
+    private val _forceRefreshTrigger = MutableStateFlow(0)
+    val forceRefreshTrigger = _forceRefreshTrigger.asStateFlow()
 }
