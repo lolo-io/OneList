@@ -1,6 +1,7 @@
 -dontwarn com.fasterxml.jackson.core.**
 -dontwarn com.google.common.annotations.**
 -dontwarn javax.ws.rs.**
+-dontwarn javax.annotation.**
 -dontwarn org.immutables.value.**
 
 # R8 GSON special rules :
