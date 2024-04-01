@@ -10,15 +10,16 @@ import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.model.previewMany
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.DraggableFlowRow
+import com.lolo.io.onelist.feature.lists.components.core.DraggableItem
 
 @Composable
 fun ListsFlowRow(
     lists: List<ItemList>,
     selectedList: ItemList,
+    modifier : Modifier = Modifier,
     onClick: (ItemList) -> Unit,
     onLongClick: (ItemList) -> Unit = {},
-    onListReordered: (List<ItemList>) -> Unit = {},
-    modifier : Modifier = Modifier,
+    onListReordered: (List<ItemList>, draggedItem: DraggableItem<ItemList>) -> Unit = {_,_ -> },
 ) {
     val haptic = LocalHapticFeedback.current
 

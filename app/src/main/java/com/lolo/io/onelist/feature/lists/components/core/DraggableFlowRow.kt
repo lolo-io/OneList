@@ -1,33 +1,29 @@
 package com.lolo.io.onelist.feature.lists.components.core
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun <T> DraggableFlowRow(
     items: List<T>,
     itemKeys: (item: T) -> Any,
+    modifier: Modifier = Modifier,
     drawItem: @Composable (item: T, isDragged: Boolean) -> Unit = { _, _ -> },
     drawDragItem: @Composable (item: T) -> Unit = {},
     onDragStart: (item: T) -> Unit = {},
     onDragEnd: () -> Unit = {},
     onDragCancel: () -> Unit = {},
-    onListReordered: (List<T>) -> Unit = {},
+    onListReordered: (List<T>, item: DraggableItem<T>) -> Unit = {_,_, -> },
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     maxItemsInEachRow: Int = Int.MAX_VALUE,
-    modifier: Modifier = Modifier,
 ) {
 
     val draggableListState = rememberDraggableListState(

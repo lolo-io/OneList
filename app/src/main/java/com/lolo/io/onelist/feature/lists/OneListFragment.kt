@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,6 +82,7 @@ import com.lolo.io.onelist.core.ui.util.isVisibleInvisible
 import com.lolo.io.onelist.core.ui.util.shake
 import com.lolo.io.onelist.databinding.FragmentOneListBinding
 import com.lolo.io.onelist.feature.lists.components.add_item_input.AddItemInput
+import com.lolo.io.onelist.feature.lists.components.core.rememberSwipeableListState
 import com.lolo.io.onelist.feature.lists.components.header.OneListHeader
 import com.lolo.io.onelist.feature.lists.components.list_chips.ListsFlowRow
 import com.lolo.io.onelist.feature.lists.components.items_lists.SwipeableAndReorderableItemList
@@ -180,9 +182,10 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                     var showSelectedListControls by remember { mutableStateOf(false) }
 
                     Column(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
                             .pointerInput(Unit) {
-                                detectTapGestures (onTap = {
+                                detectTapGestures(onTap = {
                                     showSelectedListControls = false
                                     keyboardController?.hide()
                                 })
@@ -207,11 +210,13 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                         Surface(
                             modifier = Modifier
                                 .padding(bottom = MaterialTheme.space.Small),
-                            shadowElevation = 8.dp) {
+                            shadowElevation = 8.dp
+                        ) {
                             Column(
                                 modifier = Modifier
                                     .padding(bottom = MaterialTheme.space.SmallUpper),
-                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
 
                                 OneListHeader(
                                     showSelectedListControls = showSelectedListControls
@@ -222,13 +227,14 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                                     lists = allLists, selectedList = selectedList,
                                     onClick = {
                                         showSelectedListControls = false
-                                        viewModel.selectList(it) },
+                                        viewModel.selectList(it)
+                                    },
                                     onLongClick = {
                                         viewModel.selectList(it)
                                         showSelectedListControls = true
                                     },
-                                    onListReordered = {
-                                        viewModel.reorderLists(it)
+                                    onListReordered = { list, _ ->
+                                        viewModel.reorderLists(list)
                                     })
 
                             }
@@ -258,6 +264,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                             }
                         )
 
+                        val listState = rememberSwipeableListState<Item>()
                         SwipeableAndReorderableItemList(
                             modifier = Modifier.offset {
                                 IntOffset(x = 0, y = themeSpaces.Small.toPx().roundToInt() * -1)
@@ -272,13 +279,14 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                             onShowOrHideComment = {
                                 viewModel.switchItemCommentShown(it)
                             },
-                            onListReordered = {
-                                viewModel.onSelectedListReordered(it)
+                            onListReordered = { list, _ ->
+                                viewModel.onSelectedListReordered(list)
                             },
                             refreshing = refreshing,
                             onRefresh = {
                                 viewModel.refresh()
-                            }
+                            },
+                            state = listState
                         )
                     }
                 }
@@ -315,8 +323,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                 onLongClick = {
                     viewModel.selectList(it)
                 },
-                onListReordered = {
-                    viewModel.reorderLists(it)
+                onListReordered = { list, _ ->
+                    viewModel.reorderLists(list)
                 })
         }
 
@@ -367,8 +375,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                 onShowOrHideComment = {
                     viewModel.switchItemCommentShown(it)
                 },
-                onListReordered = {
-                    viewModel.onSelectedListReordered(it)
+                onListReordered = { list, _ ->
+                    viewModel.onSelectedListReordered(list)
                 },
                 refreshing = refreshing,
                 onRefresh = {

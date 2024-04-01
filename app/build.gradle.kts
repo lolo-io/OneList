@@ -139,7 +139,8 @@ dependencies {
     implementation(libs.gson)
 
     // other libs
-    implementation(libs.whatsnew)
-    implementation(libs.storage)
-    implementation(libs.advrecyclerview)
+    implementation (libs.whatsnew)
+    implementation (libs.storage)
+    implementation (libs.advrecyclerview)
+    implementation(libs.reorderable)
 }

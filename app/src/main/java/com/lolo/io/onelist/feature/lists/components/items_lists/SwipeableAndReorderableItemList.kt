@@ -22,6 +22,7 @@ import com.lolo.io.onelist.core.model.preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipableListState
 import com.lolo.io.onelist.feature.lists.components.core.DraggableAndSwipeableList
+import com.lolo.io.onelist.feature.lists.components.core.DraggableItem
 import com.lolo.io.onelist.feature.lists.components.core.draggableItem
 import com.lolo.io.onelist.feature.lists.components.core.rememberDraggableListState
 import com.lolo.io.onelist.feature.lists.components.core.rememberSwipeableListState
@@ -31,26 +32,33 @@ import kotlinx.coroutines.delay
 @Composable
 fun SwipeableAndReorderableItemList(
     items: List<Item>,
+    modifier: Modifier = Modifier,
     onItemSwipedToStart: (Item) -> Unit = {},
     onClickOnItem: (Item) -> Unit = {},
-    state: SwipableListState<Item> = rememberSwipeableListState<Item>(),
-    modifier: Modifier = Modifier,
-    onListReordered: (List<Item>) -> Unit = {},
+    state: SwipableListState<Item> = rememberSwipeableListState(),
+    onListReordered: (List<Item>, draggedItem: DraggableItem<Item>) -> Unit = { _, _ -> },
     onShowOrHideComment: (Item) -> Unit = {},
     refreshing: Boolean = false,
     onRefresh: () -> Unit = {},
 ) {
 
+
     val draggableListState = rememberDraggableListState(
         items,
-        onListReordered = onListReordered
+        onListReordered = { list, draggedItem ->
+            onListReordered(list, draggedItem)
+            state.scrollTo(draggedItem.bounds)
+        }
     )
 
-    var isSwiping by  remember { mutableStateOf(false) }
+
+    var isSwiping by remember { mutableStateOf(false) }
+    var isDragging by remember { mutableStateOf(false) }
 
     LaunchedEffect(items) {
         draggableListState.setItems(items)
     }
+
 
     DraggableAndSwipeableList(
         modifier = modifier,
@@ -60,7 +68,7 @@ fun SwipeableAndReorderableItemList(
         drawItem = { draggableItem ->
             SwipeableItem(
                 onIsSwiping = {
-                    isSwiping = !it
+                    isSwiping = it
                 },
                 modifier = Modifier
                     .draggableItem(draggableListState, draggableItem)
@@ -74,12 +82,13 @@ fun SwipeableAndReorderableItemList(
                     onItemSwipedToStart(draggableItem.item)
                 },
                 onClick = {
-                    onClickOnItem(draggableItem.item)
+                    if (!isDragging && !isSwiping) {
+                        onClickOnItem(draggableItem.item)
+                    }
                 },
                 onShowOrHideComment = {
                     onShowOrHideComment(draggableItem.item)
                 })
-
         },
         drawDraggedItem = { draggedItem ->
             Surface(shadowElevation = 24.dp) {
@@ -88,7 +97,9 @@ fun SwipeableAndReorderableItemList(
         },
         refreshing = refreshing,
         onRefresh = onRefresh,
-
+        onIsDragging = {
+            isDragging = it
+        },
         state = state,
     )
 }

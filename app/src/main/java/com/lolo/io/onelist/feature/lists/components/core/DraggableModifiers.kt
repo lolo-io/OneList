@@ -7,6 +7,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
@@ -71,7 +73,7 @@ class DraggableItem<T>(
 class DraggableListState<T>(
     private val data: MutableState<List<DraggableItem<T>>>,
     val orientation: Orientation = Orientation.VERTICAL,
-    val onListReordered: (List<T>) -> Unit
+    val onListReordered: (List<T>, draggedItem: DraggableItem<T>) -> Unit
 ) {
     enum class Orientation { HORIZONTAL, VERTICAL }
 
@@ -106,7 +108,7 @@ class DraggableListState<T>(
 fun <T> rememberDraggableListState(
     items: List<T>,
     orientation: DraggableListState.Orientation = DraggableListState.Orientation.VERTICAL,
-    onListReordered: (List<T>) -> Unit = {}
+    onListReordered: (List<T>, draggedItem: DraggableItem<T>) -> Unit = {_,_ -> }
 ): DraggableListState<T> {
     val draggableListState = remember {
         val data =
@@ -164,7 +166,7 @@ fun <T> Modifier.draggableItemList(
                                                     draggedItem,
                                                     it
                                                 )
-                                            draggableListState.onListReordered(draggableListState.draggableItems.map { it.item })
+                                            draggableListState.onListReordered(draggableListState.draggableItems.map { it.item }, it)
                                         }
 
 
@@ -178,7 +180,7 @@ fun <T> Modifier.draggableItemList(
                                                     draggedItem,
                                                     it
                                                 )
-                                            draggableListState.onListReordered(draggableListState.draggableItems.map { it.item })
+                                            draggableListState.onListReordered(draggableListState.draggableItems.map { it.item }, it)
                                         }
 
                                     }
@@ -224,11 +226,12 @@ fun <T> Modifier.draggedItem(
 @Composable
 fun <T> Modifier.draggedItemVertical(
     draggableListState: DraggableListState<T>,
-    draggedItem: DraggableItem<T>
+    draggedItem: DraggableItem<T>,
+    scrollOffset: Float
 ): Modifier {
     return this
         .graphicsLayer {
-            translationY = draggableListState.dragOffset.y
+            translationY = draggableListState.dragOffset.y - scrollOffset
         }
         .offset {
             IntOffset(

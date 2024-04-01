@@ -1,6 +1,8 @@
 package com.lolo.io.onelist.feature.lists.components.core
 
-import android.util.Log
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,9 +19,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -28,9 +30,14 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SwipableListState<T>(
-    val itemsStates: SnapshotStateMap<T, SwipeState> = SnapshotStateMap()
+    val itemsStates: SnapshotStateMap<T, SwipeState> = SnapshotStateMap(),
+    val scrollState: ScrollState,
+    private val coroutineScope: CoroutineScope
 ) {
     fun resetItemSwipe(item: T) {
         itemsStates += Pair(item, SwipeState.NONE)
@@ -39,19 +46,50 @@ class SwipableListState<T>(
     fun setItemSwipe(item: T, swipeState: SwipeState) {
         itemsStates += Pair(item, swipeState)
     }
+
+    fun scrollToBottom() {
+        coroutineScope.launch {
+            delay(200)
+            scrollState.animateScrollTo(scrollState.maxValue)
+        }
+    }
+
+    fun scrollToTop() {
+        coroutineScope.launch {
+            delay(200)
+            scrollState.animateScrollTo(0)
+        }
+    }
+
+    fun scrollTo(itemBounds: androidx.compose.ui.geometry.Rect) {
+        coroutineScope.launch {
+            while (itemBounds.bottom > scrollState.viewportSize / 1.5f + scrollState.value) {
+                scrollState.animateScrollBy(itemBounds.height)
+            }
+
+            while (itemBounds.top < scrollState.viewportSize / 3f) {
+                scrollState.animateScrollBy(-itemBounds.height)
+            }
+        }
+    }
 }
 
 @Composable
 fun <T> rememberSwipeableListState(): SwipableListState<T> {
+
     val itemsStates = remember {
         mutableStateMapOf<T, SwipeState>()
     }
 
-    return SwipableListState(itemsStates)
+    return SwipableListState(
+        itemsStates,
+        rememberScrollState(),
+        rememberCoroutineScope()
+    )
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> DraggableAndSwipeableList(
     itemKeys: (item: T) -> Any,
@@ -62,10 +100,12 @@ fun <T> DraggableAndSwipeableList(
     modifier: Modifier = Modifier,
     refreshing: Boolean = false,
     isSwiping: Boolean = false,
-    onRefresh: () -> Unit = {}
+    onRefresh: () -> Unit = {},
+    onIsDragging: (Boolean) -> Unit = {}
 ) {
 
     val pullRefreshState = rememberPullToRefreshState()
+
 
     if (pullRefreshState.isRefreshing) {
         LaunchedEffect(true) {
@@ -80,24 +120,34 @@ fun <T> DraggableAndSwipeableList(
             pullRefreshState.endRefresh()
     }
 
+
+    LaunchedEffect(draggableListState.draggedItem) {
+        val isDragging = if (draggableListState.draggedItem != null) true
+        else {
+            delay(2000)
+            false
+        }
+
+        onIsDragging(isDragging)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(pullRefreshState.nestedScrollConnection)
     ) {
         val haptic = LocalHapticFeedback.current
-        val scrollState = rememberScrollState()
 
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
+                .verticalScroll(state.scrollState)
                 .draggableItemList(
                     enableDrag = !isSwiping,
                     draggableListState = draggableListState,
                     onDragStart = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    }
+                    },
                 ),
 
             ) {
@@ -117,7 +167,10 @@ fun <T> DraggableAndSwipeableList(
 
         draggableListState.draggedItem?.let { draggedItem ->
             Box(
-                modifier = Modifier.draggedItemVertical(draggableListState, draggedItem)
+                modifier = Modifier.draggedItemVertical(
+                    draggableListState, draggedItem,
+                    scrollOffset = state.scrollState.value.toFloat()
+                )
             ) {
 
                 drawDraggedItem(draggedItem)
@@ -126,9 +179,11 @@ fun <T> DraggableAndSwipeableList(
 
 
         if (pullRefreshState.verticalOffset > 0) {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .alpha(pullRefreshState.progress - 0.5f)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .alpha(pullRefreshState.progress - 0.5f)
+            ) {
                 PullToRefreshContainer(
                     pullRefreshState,
                     modifier
