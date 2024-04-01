@@ -12,7 +12,6 @@ data class ItemEntity(
      val comment: String = "",
      val done: Boolean = false,
      val commentDisplayed: Boolean = false,
-     val stableId: Long = System.currentTimeMillis(),
 
     @PrimaryKey(autoGenerate = true)
      val id: Long = 0L,

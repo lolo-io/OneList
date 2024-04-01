@@ -191,7 +191,7 @@ class OneListFragmentViewModel(
 
     private fun setAppVersion() {
         if (preferences.version != BuildConfig.VERSION_NAME) {
-            _showWhatsNew.value = useCases.showWhatsNew()
+         //   _showWhatsNew.value = useCases.showWhatsNew() // no whatsNew for this version
             preferences.version = BuildConfig.VERSION_NAME
         }
     }

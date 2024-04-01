@@ -52,7 +52,6 @@ import com.lolo.io.onelist.core.ui.util.isVisibleInvisible
 import com.lolo.io.onelist.core.ui.util.shake
 import com.lolo.io.onelist.databinding.FragmentOneListBinding
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_CLEAR
-import com.lolo.io.onelist.feature.lists.dialogs.ACTION_DELETE
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_RM_FILE
 import com.lolo.io.onelist.feature.lists.dialogs.deleteListDialog
 import com.lolo.io.onelist.feature.lists.dialogs.editItemDialog
@@ -109,13 +108,11 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        if (updateHelper.hasToMigratePrefs(requireActivity())) {
-            updateHelper.applyUpdatePatches(requireActivity()) {
+        updateHelper.applyMigrationsIfNecessary(requireActivity()) {
                 launchOnUiThread {
                     listsAdapter.notifyDataSetChanged()
                     itemsAdapter.notifyDataSetChanged()
                 }
-            }
         }
 
         activity?.let {
