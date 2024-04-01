@@ -2,23 +2,21 @@ package com.lolo.io.onelist.core.data.migration
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.health.connect.datatypes.units.Length
-import android.util.Log
-import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.lolo.io.onelist.App
 import com.lolo.io.onelist.core.data.reporitory.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
-import com.lolo.io.onelist.core.database.dao.ItemListDao
 import com.lolo.io.onelist.core.model.ItemList
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
+import java.security.SecureRandom
+import kotlin.math.abs
+
 
 class UpdateHelper(
     private val preferences: SharedPreferencesHelper,
@@ -35,12 +33,42 @@ class UpdateHelper(
     private val oldDefaultPathPref = "defaultPath"
     private val oldThemePref: String = "theme"
 
-    fun hasToMigratePrefs(activity: FragmentActivity): Boolean {
+
+    fun applyMigrationsIfNecessary(activity: FragmentActivity, then: () -> Unit) {
+        if (hasToMigratePrefs(activity)) {
+            applyUpdatePatches(activity, then)
+        }
+        fixItemsWithSameIdsIfFond(then)
+
+    }
+
+
+    private fun fixItemsWithSameIdsIfFond(then: () -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val allLists = repository.getAllLists().first().lists
+            val secureRandom = SecureRandom()
+            val ids = allLists.flatMap { it.items }.map { it.id }
+            val distinctIds = ids.distinct()
+            if (ids.size > distinctIds.size) {
+                allLists.forEach {
+                    it.items.forEach {
+                        it.id = secureRandom.nextLong()
+                    }
+                }
+
+                repository.saveAllLists(allLists)
+
+                then()
+            }
+        }
+    }
+
+    private fun hasToMigratePrefs(activity: FragmentActivity): Boolean {
         val activityPreferences = activity.getPreferences(Context.MODE_PRIVATE)
         return activityPreferences.getString(oldVersionPref, null) != null
     }
 
-    fun applyUpdatePatches(activity: FragmentActivity, then: () -> Unit) {
+    private fun applyUpdatePatches(activity: FragmentActivity, then: () -> Unit) {
         val activityPreferences = activity.getPreferences(Context.MODE_PRIVATE)
         val editor = activityPreferences.edit()
 
@@ -55,9 +83,14 @@ class UpdateHelper(
         preferences.theme = activityPreferences.getString(oldThemePref, "auto") ?: "auto"
         editor.putString(oldThemePref, null)
 
+        val secureRandom = SecureRandom()
+
         val oldLists = getAllLists(activityPreferences)
         CoroutineScope(Dispatchers.IO).launch {
             oldLists.forEach {
+                it.items.forEach {
+                    it.id = abs(secureRandom.nextLong())
+                }
                 repository.createList(it.copy(id = 0))
             }
             then()

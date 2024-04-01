@@ -28,7 +28,7 @@ android {
         minSdk = 23
         targetSdk = 34
         versionCode = versionCodeCI ?: 19
-        versionName = "1.4.1"
+        versionName = "1.4.2"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -48,6 +48,10 @@ android {
             keyAlias = System.getenv("ONELIST_KEYSTORE_ALIAS")
             keyPassword = System.getenv("ONELIST_KEYSTORE_ALIAS_PASSWORD")
         }
+    }
+
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
     }
 
     buildTypes {
@@ -85,39 +89,39 @@ dependencies {
 
     // android
     implementation(libs.androidx.core.splashscreen)
-    implementation (libs.androidx.preference.ktx)
-    implementation (libs.androidx.lifecycle.extensions)
-    implementation (libs.androidx.legacy.support.v4)
-    implementation (libs.androidx.appcompat)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.appcompat)
 
     // android - design
-    implementation (libs.constraint.layout)
-    implementation (libs.androidx.recyclerview)
-    implementation (libs.flexbox)
-    implementation (libs.material)
-    implementation (libs.androidx.swiperefreshlayout)
+    implementation(libs.constraint.layout)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.flexbox)
+    implementation(libs.material)
+    implementation(libs.androidx.swiperefreshlayout)
 
     // kotlin
-    implementation (libs.kotlinx.coroutines.core)
-    implementation (libs.kotlin.stdlib.jdk7)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlin.stdlib.jdk7)
 
     // firebase
-    implementation (libs.firebase.crashlytics)
+    implementation(libs.firebase.crashlytics)
 
     // koin di
-    implementation (libs.koin.android)
-    implementation (libs.koin.androidx.navigation)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.navigation)
 
     // room
-    implementation (libs.androidx.room.runtime)
-    implementation (libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
     // json
-    implementation (libs.gson)
+    implementation(libs.gson)
 
     // other libs
-    implementation (libs.whatsnew)
-    implementation (libs.storage)
-    implementation (libs.advrecyclerview)
+    implementation(libs.whatsnew)
+    implementation(libs.storage)
+    implementation(libs.advrecyclerview)
 }
