@@ -16,11 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.design.Palette
 import com.lolo.io.onelist.core.design.app
@@ -29,35 +27,25 @@ import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
-import com.lolo.io.onelist.feature.lists.components.core.SwipeableRow
-import com.lolo.io.onelist.feature.lists.components.core.SwipeableRowScope
-import com.lolo.io.onelist.feature.lists.components.core.swipeableRowScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.SwipeableRow
 
 @Composable
-internal fun SwipeableRowScope.SwipeableItem(
+internal fun SwipeableItem(
     item: Item,
     modifier: Modifier = Modifier,
-    onShowOrHideComment : () -> Unit = {},
+    swipeState: SwipeState = SwipeState.NONE,
+    setSwipeState: (SwipeState) -> Unit = {},
     onSwipedToStart: () -> Unit = {},
+    onSwipedToEnd: () -> Unit = {},
     onIsSwiping: (Boolean) -> Unit = {},
-    onClick: () -> Unit = {},
+    drawItem: @Composable (Item) -> Unit = {}
 ) {
-    val onSwipedToEnd = {
-        // param.onSwiped()
-    }
-
-    val onSwipedToStart = {
-        onSwipedToStart()
-    }
-
-
 
     SwipeableRow(
         modifier = modifier,
-        onClick = onClick,
         onIsSwiping = onIsSwiping,
+        swipeState = swipeState,
+        setSwipeState = setSwipeState,
         backgroundStartToEnd = {
             Box(
                 Modifier
@@ -89,19 +77,13 @@ internal fun SwipeableRowScope.SwipeableItem(
             }
         },
         onSwipedToEnd = {
-            setSwipeState(SwipeState.END)
             onSwipedToEnd()
         },
         onSwipedToStart = {
-            setSwipeState(SwipeState.START)
             onSwipedToStart()
         }
     ) {
-
-        ItemRow(item,
-            onClickDisplayComment = {
-                onShowOrHideComment()
-            })
+        drawItem(item)
     }
 }
 
@@ -109,36 +91,31 @@ internal fun SwipeableRowScope.SwipeableItem(
 @Composable
 private fun Preview_SwipeableItem() = ComposePreview {
 
-    val coroutineScope = rememberCoroutineScope()
-
     var swipeState by remember {
         mutableStateOf(SwipeState.NONE)
     }
 
-
-    val PreviewSwipeableItem: @Composable SwipeableRowScope.() -> Unit = {
-        SwipeableItem(Item.preview)
-    }
-
     Column {
-        val scope = swipeableRowScope(
-            swipeState = swipeState,
-            setSwipeState = {
-                swipeState = it
-                coroutineScope.launch {
-                    delay(1000)
-                    swipeState = SwipeState.NONE
+            SwipeableItem(
+                Item.preview,
+                setSwipeState = {
+                    swipeState = it
+                },
+                drawItem = {
+                    ItemUI(Item.preview,
+                        onClickDisplayComment = {
+                            showPreviewDialog("onClickDisplayComment")
+                        }
+                    )
+                },
+            )
+            Button(
+                modifier = Modifier.padding(MaterialTheme.space.Normal),
+                onClick = {
+                   swipeState = SwipeState.NONE
                 }
+            ) {
+                Text(text = "Reset Swipe")
             }
-        )
-        PreviewSwipeableItem(scope)
-        Button(
-            modifier = Modifier.padding(MaterialTheme.space.Normal),
-            onClick = {
-                scope.setSwipeState(SwipeState.NONE) }
-        ) {
-            Text(text = "Reset Swipe")
         }
-    }
-
 }

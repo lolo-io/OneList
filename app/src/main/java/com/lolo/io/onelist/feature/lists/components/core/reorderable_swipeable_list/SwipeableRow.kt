@@ -1,141 +1,110 @@
-package com.lolo.io.onelist.feature.lists.components.core
+package com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import kotlin.math.roundToInt
 
-
-interface SwipeableRowScope {
-    val swipeState: SwipeState
-    val setSwipeState: (SwipeState) -> Unit
-}
-
-fun swipeableRowScope(
-    swipeState: SwipeState,
-    setSwipeState: (SwipeState) -> Unit
-) =
-    object : SwipeableRowScope {
-        override val swipeState: SwipeState
-            get() = swipeState
-        override val setSwipeState: (SwipeState) -> Unit
-            get() = setSwipeState
-
-    }
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwipeableRow(
     modifier: Modifier = Modifier,
+    swipeState: SwipeState = SwipeState.NONE,
+    setSwipeState: (SwipeState) -> Unit = {},
     backgroundStartToEnd: @Composable() (RowScope.() -> Unit),
     backgroundEndToStart: @Composable() (RowScope.() -> Unit),
     onSwipedToEnd: () -> Unit = {},
     onSwipedToStart: () -> Unit = {},
-    onClick: () -> Unit = {},
     onIsSwiping: (Boolean) -> Unit = {},
     content: @Composable() (() -> Unit),
 
     ) {
-    val corountineScope = rememberCoroutineScope()
-
     Row(
         modifier = modifier
             .fillMaxWidth()
     ) {
 
         var offset by remember { mutableFloatStateOf(0f) }
-        var start by remember { mutableFloatStateOf(0f) }
-        var end by remember { mutableFloatStateOf(0f) }
-        var isSwiping by remember { mutableStateOf(false) }
+        var targetAnchorState by remember { mutableStateOf(SwipeRowAnchorsState.Default) }
 
-        var swipeLeftJob by remember { mutableStateOf<Job?>(null) }
+        LaunchedEffect(swipeState) {
+            targetAnchorState = when (swipeState) {
+                SwipeState.START -> SwipeRowAnchorsState.Start
+                SwipeState.END -> SwipeRowAnchorsState.End
+                SwipeState.NONE -> SwipeRowAnchorsState.Default
+            }
+        }
 
         Box(
             modifier = Modifier
-                .onSizeChanged {
-                    start = -it.width.toFloat()
-                    end = it.width.toFloat()
-                }
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .swipeableRow(
-                    anchors = SwipeRowAnchors(
-                        start, 0f, end
-                    ),
+                    targetAnchorState = targetAnchorState,
+                    setTargetAnchorState = {
+                        targetAnchorState = it
+                    },
+
                     onOffset = {
                         offset = it
                     },
-                    onState = {
+                    onAnchorState = {
                         when (it) {
                             SwipeRowAnchorsState.Start -> {
-                                swipeLeftJob = corountineScope.launch {
-                                    delay(2250)
-                                    onSwipedToStart()
-                                }
+                                setSwipeState(SwipeState.START)
+                                onSwipedToStart()
                             }
 
                             SwipeRowAnchorsState.Default -> {
-                                swipeLeftJob?.cancel()
+                                setSwipeState(SwipeState.NONE)
                             }
 
                             SwipeRowAnchorsState.End -> {
+                                setSwipeState(SwipeState.END)
                                 onSwipedToEnd()
                             }
                         }
                     },
                     onIsSwiping = {
-                        isSwiping = it
                         onIsSwiping(it)
                     }
                 )
-                .clickable {
-                    corountineScope.launch {
-                        if (!isSwiping) {
-                            onClick()
-                        }
-                    }
-                }
         ) {
 
-            // BG
+            // Background
             Row(
                 modifier = Modifier
                     .matchParentSize()
             ) {
                 if (offset > 0f) {
                     backgroundStartToEnd()
-                } else {
+                } else if (offset < 0f) {
                     backgroundEndToStart()
                 }
             }
 
-            // Front
+            // Foreground
             Box(
                 Modifier
                     .offset {
@@ -147,8 +116,8 @@ fun SwipeableRow(
                     Modifier
                         .background(
                             shape = RoundedCornerShape(5f),
-                            color = Color.White
-                        ) // todo must set a color becaus otherwise when swiped it is filled by swipe color
+                            color = if (offset == 0f) Color.Transparent else Color.White
+                        ) // todo must set a color because otherwise when swiped it is filled by swipe color
                         .fillMaxWidth()
 
                 ) {
@@ -160,18 +129,9 @@ fun SwipeableRow(
     }
 }
 
-private val transparentBackground: @Composable RowScope.() -> Unit = {
-    Row(
-        Modifier
-            .background(Color.Transparent)
-            .fillMaxSize()
-    ) {}
-}
-
-
 @Preview
 @Composable
-private fun Preview_SwipableRow() = ComposePreview {
+private fun Preview_SwipeableRow() = ComposePreview {
 
 
     SwipeableRow(
@@ -190,7 +150,7 @@ private fun Preview_SwipableRow() = ComposePreview {
             ) {}
         },
         content = {
-            Text(text = "Hello Swiper")
+            Text(modifier = Modifier.padding(vertical = 4.dp), text = " Swipe Me")
         },
     )
 }

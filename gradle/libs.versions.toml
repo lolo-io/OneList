@@ -24,6 +24,7 @@ whatsnew = "0.1.7"
 ksp-plugin="1.9.20-1.0.14"
 composeBom="2024.02.02"
 reorderable = "1.3.3"
+lazylistHijacker = "1.1.0"
 
 # plugins versions
 android-application-plugin="8.3.0"
@@ -56,7 +57,13 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 material = { module = "com.google.android.material:material", version.ref = "material" }
 storage = { module = "com.anggrayudi:storage", version.ref = "storage" }
 whatsnew = { module = "io.github.tonnyl:whatsnew", version.ref = "whatsnew" }
+
+# small githubs projects : be careful about maintenance
+## reorderable lazy list
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
+## workaround for list scrolling when first visible item of lazy list is moved
+lazylist-hijacker = { module = "me.gingerninja.lazylist:hijacker", version.ref = "lazylistHijacker" }
+
 
 # compose bom & compose libs without ref:
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }

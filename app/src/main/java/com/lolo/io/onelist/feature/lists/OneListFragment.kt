@@ -19,15 +19,13 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.stopScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -82,10 +80,9 @@ import com.lolo.io.onelist.core.ui.util.isVisibleInvisible
 import com.lolo.io.onelist.core.ui.util.shake
 import com.lolo.io.onelist.databinding.FragmentOneListBinding
 import com.lolo.io.onelist.feature.lists.components.add_item_input.AddItemInput
-import com.lolo.io.onelist.feature.lists.components.core.rememberSwipeableListState
 import com.lolo.io.onelist.feature.lists.components.header.OneListHeader
 import com.lolo.io.onelist.feature.lists.components.list_chips.ListsFlowRow
-import com.lolo.io.onelist.feature.lists.components.items_lists.SwipeableAndReorderableItemList
+import com.lolo.io.onelist.feature.lists.components.items_lists.ReorderableAndSwipeableItemList
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_CLEAR
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_RM_FILE
 import com.lolo.io.onelist.feature.lists.dialogs.deleteListDialog
@@ -103,6 +100,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.gingerninja.lazylist.hijacker.rememberLazyListStateHijacker
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import kotlin.math.roundToInt
@@ -145,10 +143,10 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         super.onAttach(context)
 
         updateHelper.applyMigrationsIfNecessary(requireActivity()) {
-                launchOnUiThread {
-                    listsAdapter.notifyDataSetChanged()
-                    itemsAdapter.notifyDataSetChanged()
-                }
+            launchOnUiThread {
+                listsAdapter.notifyDataSetChanged()
+                itemsAdapter.notifyDataSetChanged()
+            }
         }
 
         activity?.let {
@@ -177,6 +175,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         return ComposeView(requireContext()).apply {
             setContent {
                 OneListTheme {
+
+                    val coroutineScope = rememberCoroutineScope()
 
                     val keyboardController = LocalSoftwareKeyboardController.current
                     var showSelectedListControls by remember { mutableStateOf(false) }
@@ -264,8 +264,8 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                             }
                         )
 
-                        val listState = rememberSwipeableListState<Item>()
-                        SwipeableAndReorderableItemList(
+                        val listState = rememberLazyListState()
+                        ReorderableAndSwipeableItemList(
                             modifier = Modifier.offset {
                                 IntOffset(x = 0, y = themeSpaces.Small.toPx().roundToInt() * -1)
                             },
@@ -274,19 +274,22 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                             },
                             items = displayedItems,
                             onItemSwipedToStart = {
-                                viewModel.removeItem(it)
+                                coroutineScope.launch {
+                                    delay(1500)
+                                    viewModel.removeItem(it)
+                                }
                             },
                             onShowOrHideComment = {
                                 viewModel.switchItemCommentShown(it)
                             },
-                            onListReordered = { list, _ ->
+                            onListReordered = { list ->
                                 viewModel.onSelectedListReordered(list)
                             },
-                            refreshing = refreshing,
+                            isRefreshing = refreshing,
                             onRefresh = {
                                 viewModel.refresh()
                             },
-                            state = listState
+                            listState = listState,
                         )
                     }
                 }
@@ -361,27 +364,27 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
             val displayedItems = viewModel.displayedItems.collectAsStateWithLifecycle().value
             val themeSpaces = MaterialTheme.space
             val refreshing = viewModel.uiState.collectAsStateWithLifecycle().value.isRefreshing
-            SwipeableAndReorderableItemList(
+            ReorderableAndSwipeableItemList(
+                items = displayedItems,
                 modifier = Modifier.offset {
                     IntOffset(x = 0, y = themeSpaces.Small.toPx().roundToInt() * -1)
+                },
+                onItemSwipedToStart = {
+                    viewModel.removeItem(it)
                 },
                 onClickOnItem = {
                     viewModel.switchItemStatus(it)
                 },
-                items = displayedItems,
-                onItemSwipedToStart = {
-                    viewModel.removeItem(it)
+                onListReordered = { list ->
+                    viewModel.onSelectedListReordered(list)
                 },
                 onShowOrHideComment = {
                     viewModel.switchItemCommentShown(it)
                 },
-                onListReordered = { list, _ ->
-                    viewModel.onSelectedListReordered(list)
-                },
-                refreshing = refreshing,
+                isRefreshing = refreshing,
                 onRefresh = {
                     viewModel.refresh()
-                }
+                },
             )
         }
 

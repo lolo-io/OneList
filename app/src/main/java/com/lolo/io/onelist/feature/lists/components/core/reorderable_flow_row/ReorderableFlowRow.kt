@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.feature.lists.components.core
+package com.lolo.io.onelist.feature.lists.components.core.reorderable_flow_row
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,15 +20,14 @@ fun <T> DraggableFlowRow(
     onDragStart: (item: T) -> Unit = {},
     onDragEnd: () -> Unit = {},
     onDragCancel: () -> Unit = {},
-    onListReordered: (List<T>, item: DraggableItem<T>) -> Unit = {_,_, -> },
+    onListReordered: (List<T>, item: ReorderableFlowRowItem<T>) -> Unit = { _, _, -> },
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     maxItemsInEachRow: Int = Int.MAX_VALUE,
 ) {
 
-    val draggableListState = rememberDraggableListState(
+    val draggableListState = rememberReorderableFlowRowState(
         items = items,
-        orientation = DraggableListState.Orientation.VERTICAL,
         onListReordered = onListReordered
 
     )
@@ -37,8 +36,8 @@ fun <T> DraggableFlowRow(
         modifier = Modifier.fillMaxWidth(),
     ) {
         FlowRow(
-            modifier = modifier.draggableItemList(
-                draggableListState = draggableListState,
+            modifier = modifier.reorderableFlowRow(
+                reorderableFlowLayoutState = draggableListState,
                 onDragStart = onDragStart,
                 onDragEnd = onDragEnd,
                 onDragCancel = onDragCancel
@@ -47,10 +46,10 @@ fun <T> DraggableFlowRow(
             verticalArrangement = verticalArrangement,
             maxItemsInEachRow = maxItemsInEachRow
         ) {
-            draggableListState.draggableItems.map { draggableItem ->
+            draggableListState.reorderableItems.map { draggableItem ->
                 key(itemKeys(draggableItem.item)) {
                     Box(
-                        modifier = Modifier.draggableItem(draggableListState, draggableItem)
+                        modifier = Modifier.reorderableItemInFlowRow(draggableItem)
                     ) {
                         drawItem(
                             draggableItem.item,
@@ -63,7 +62,7 @@ fun <T> DraggableFlowRow(
 
         draggableListState.draggedItem?.let { draggedItem ->
             Box(
-                modifier = Modifier.draggedItem(draggableListState, draggedItem)
+                modifier = Modifier.draggedItemInFlowRow(draggableListState, draggedItem)
             ) {
                 drawDragItem(draggedItem.item)
             }

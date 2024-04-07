@@ -1,13 +1,9 @@
-package com.lolo.io.onelist.feature.lists.components.core
+package com.lolo.io.onelist.feature.lists.components.core.reorderable_flow_row
 
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector2D
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
@@ -17,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.CombinedModifier
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
@@ -25,7 +20,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInParent
-import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
@@ -38,7 +32,7 @@ import moveItemToLeftOf
 import moveItemToRightOf
 import kotlin.math.roundToInt
 
-class DraggableItem<T>(
+class ReorderableFlowRowItem<T>(
     val item: T,
 ) {
     var bounds: Rect = Rect.Zero
@@ -51,35 +45,24 @@ class DraggableItem<T>(
         get() = bounds.center
 
     fun setBounds(
-        value: Rect, orientation: DraggableListState.Orientation =
-            DraggableListState.Orientation.VERTICAL
+        value: Rect
     ) {
         bounds = value
-        if (orientation == DraggableListState.Orientation.HORIZONTAL) {
-            startHitBox =
-                Rect(value.left, value.top, (value.left + value.width / 2.0f), value.bottom)
-            endHitBox =
-                Rect((value.right - value.width / 2.0f), value.top, value.right, value.bottom)
-        } else {
-            startHitBox =
-                Rect(value.left, value.top, value.right, (value.top + value.height / 2.0f))
-            endHitBox =
-                Rect(value.left, (value.bottom - value.height / 2.0f), value.right, value.bottom)
-        }
-
+        startHitBox =
+            Rect(value.left, value.top, (value.left + value.width / 2.0f), value.bottom)
+        endHitBox =
+            Rect((value.right - value.width / 2.0f), value.top, value.right, value.bottom)
     }
 }
 
-class DraggableListState<T>(
-    private val data: MutableState<List<DraggableItem<T>>>,
-    val orientation: Orientation = Orientation.VERTICAL,
-    val onListReordered: (List<T>, draggedItem: DraggableItem<T>) -> Unit
+class ReorderableFlowRowState<T>(
+    private val data: MutableState<List<ReorderableFlowRowItem<T>>>,
+    val onListReordered: (List<T>, draggedItem: ReorderableFlowRowItem<T>) -> Unit
 ) {
-    enum class Orientation { HORIZONTAL, VERTICAL }
 
-    private val _draggedItem: MutableState<DraggableItem<T>?> = mutableStateOf(null)
+    private val _draggedItem: MutableState<ReorderableFlowRowItem<T>?> = mutableStateOf(null)
     private val _dragOffset: MutableState<Offset> = mutableStateOf(Offset.Zero)
-    var draggableItems
+    var reorderableItems
         get() = data.value
         set(value) {
             data.value = value
@@ -96,28 +79,21 @@ class DraggableListState<T>(
         set(value) {
             _dragOffset.value = value
         }
-
-    fun setItems(items: List<T>) {
-        draggableItems = items.map {
-            DraggableItem(it)
-        }
-    }
 }
 
 @Composable
-fun <T> rememberDraggableListState(
+fun <T> rememberReorderableFlowRowState(
     items: List<T>,
-    orientation: DraggableListState.Orientation = DraggableListState.Orientation.VERTICAL,
-    onListReordered: (List<T>, draggedItem: DraggableItem<T>) -> Unit = {_,_ -> }
-): DraggableListState<T> {
+    onListReordered: (List<T>, draggedItem: ReorderableFlowRowItem<T>) -> Unit = { _, _ -> }
+): ReorderableFlowRowState<T> {
     val draggableListState = remember {
         val data =
             mutableStateOf(
                 items.map {
-                    DraggableItem(it)
+                    ReorderableFlowRowItem(it)
                 }
             )
-        DraggableListState(data, orientation, onListReordered)
+        ReorderableFlowRowState(data, onListReordered)
     }
 
     return draggableListState
@@ -125,62 +101,72 @@ fun <T> rememberDraggableListState(
 
 
 @Composable
-fun <T> Modifier.draggableItemList(
-    draggableListState: DraggableListState<T>,
-    enableDrag: Boolean = true,
+fun <T> Modifier.reorderableFlowRow(
+    reorderableFlowLayoutState: ReorderableFlowRowState<T>,
+    enable: Boolean = true,
     onDragStart: (item: T) -> Unit = {},
     onDragEnd: () -> Unit = {},
     onDragCancel: () -> Unit = {},
 ): Modifier {
-    return this.pointerInput(enableDrag) {
+    return this.pointerInput(enable) {
 
-        if (enableDrag) {
+        if (enable) {
             detectDragGesturesAfterLongPress(
                 onDragStart = { offset ->
 
-                    draggableListState.draggableItems
+                    reorderableFlowLayoutState.reorderableItems
                         .find { it.bounds.contains(offset) }
                         ?.let {
                             onDragStart(it.item)
-                            draggableListState.draggedItem = it
-                            draggableListState.dragOffset = it.center
+                            reorderableFlowLayoutState.draggedItem = it
+                            reorderableFlowLayoutState.dragOffset = it.center
                         }
                 },
-                onDrag = { change, dragAmmount ->
+                onDrag = { change, dragAmount ->
                     change.consume()
-                    draggableListState.dragOffset += Offset(dragAmmount.x, dragAmmount.y)
+                    reorderableFlowLayoutState.dragOffset += Offset(dragAmount.x, dragAmount.y)
 
-                    draggableListState.draggedItem?.let { draggedItem ->
+                    reorderableFlowLayoutState.draggedItem?.let { draggedItem ->
                         CoroutineScope(Dispatchers.IO).launch {
-                            draggableListState.draggableItems
+                            reorderableFlowLayoutState.reorderableItems
                                 .forEach {
                                     when {
-                                        it.startHitBox.contains(draggableListState.dragOffset)
+                                        it.startHitBox.contains(reorderableFlowLayoutState.dragOffset)
                                                 && it.item != draggedItem.item
-                                                && draggableListState.draggableItems.indexOf(it) < draggableListState.draggableItems.indexOf(
+                                                && reorderableFlowLayoutState.reorderableItems.indexOf(
+                                            it
+                                        ) < reorderableFlowLayoutState.reorderableItems.indexOf(
                                             draggedItem
                                         )
                                         -> {
-                                            draggableListState.draggableItems =
-                                                draggableListState.draggableItems.moveItemToLeftOf(
+                                            reorderableFlowLayoutState.reorderableItems =
+                                                reorderableFlowLayoutState.reorderableItems.moveItemToLeftOf(
                                                     draggedItem,
                                                     it
                                                 )
-                                            draggableListState.onListReordered(draggableListState.draggableItems.map { it.item }, it)
+                                            reorderableFlowLayoutState.onListReordered(
+                                                reorderableFlowLayoutState.reorderableItems.map { it.item },
+                                                it
+                                            )
                                         }
 
 
-                                        it.endHitBox.contains(draggableListState.dragOffset) && it.item != draggedItem.item
-                                                && draggableListState.draggableItems.indexOf(it) > draggableListState.draggableItems.indexOf(
+                                        it.endHitBox.contains(reorderableFlowLayoutState.dragOffset) && it.item != draggedItem.item
+                                                && reorderableFlowLayoutState.reorderableItems.indexOf(
+                                            it
+                                        ) > reorderableFlowLayoutState.reorderableItems.indexOf(
                                             draggedItem
                                         )
                                         -> {
-                                            draggableListState.draggableItems =
-                                                draggableListState.draggableItems.moveItemToRightOf(
+                                            reorderableFlowLayoutState.reorderableItems =
+                                                reorderableFlowLayoutState.reorderableItems.moveItemToRightOf(
                                                     draggedItem,
                                                     it
                                                 )
-                                            draggableListState.onListReordered(draggableListState.draggableItems.map { it.item }, it)
+                                            reorderableFlowLayoutState.onListReordered(
+                                                reorderableFlowLayoutState.reorderableItems.map { it.item },
+                                                it
+                                            )
                                         }
 
                                     }
@@ -191,12 +177,12 @@ fun <T> Modifier.draggableItemList(
 
                 onDragEnd = {
                     onDragEnd()
-                    draggableListState.draggedItem = null
-                    draggableListState.dragOffset = Offset.Zero
+                    reorderableFlowLayoutState.draggedItem = null
+                    reorderableFlowLayoutState.dragOffset = Offset.Zero
                 }, onDragCancel = {
                     onDragCancel()
-                    draggableListState.draggedItem = null
-                    draggableListState.dragOffset = Offset.Zero
+                    reorderableFlowLayoutState.draggedItem = null
+                    reorderableFlowLayoutState.dragOffset = Offset.Zero
                 }
             )
         }
@@ -205,9 +191,9 @@ fun <T> Modifier.draggableItemList(
 
 
 @Composable
-fun <T> Modifier.draggedItem(
-    draggableListState: DraggableListState<T>,
-    draggedItem: DraggableItem<T>
+fun <T> Modifier.draggedItemInFlowRow(
+    draggableListState: ReorderableFlowRowState<T>,
+    draggedItem: ReorderableFlowRowItem<T>
 ): Modifier {
     return this
         .graphicsLayer {
@@ -222,52 +208,18 @@ fun <T> Modifier.draggedItem(
         }
 }
 
-
 @Composable
-fun <T> Modifier.draggedItemVertical(
-    draggableListState: DraggableListState<T>,
-    draggedItem: DraggableItem<T>,
-    scrollOffset: Float
+fun <T> Modifier.reorderableItemInFlowRow(
+    draggableItem: ReorderableFlowRowItem<T>
 ): Modifier {
     return this
-        .graphicsLayer {
-            translationY = draggableListState.dragOffset.y - scrollOffset
-        }
-        .offset {
-            IntOffset(
-                0,
-                -draggedItem.bounds.height.roundToInt() / 2
-            )
-        }
-}
-
-@Composable
-fun <T> Modifier.draggableItem(
-    draggableListState: DraggableListState<T>,
-    draggableItem: DraggableItem<T>
-): Modifier {
-    return this.animatePlacement()
+        .animatePlacement()
         .onGloballyPositioned {
-            draggableItem.setBounds(it.boundsInParent(), draggableListState.orientation)
+            draggableItem.setBounds(it.boundsInParent())
         }
 }
 
-
-fun Modifier.ifThen(condition: Boolean, modifier: Modifier): Modifier {
-    if (condition) {
-        return this then modifier
-    }
-    return this
-}
-
-fun Modifier.ifNotNullThen(value: Any?, modifier: Modifier): Modifier {
-    if (value != null) {
-        return this then modifier
-    }
-    return this
-}
-
-fun Modifier.animatePlacement(): Modifier = composed {
+private fun Modifier.animatePlacement(): Modifier = composed {
     val scope = rememberCoroutineScope()
     var targetOffset by remember { mutableStateOf(IntOffset.Zero) }
     var animatable by remember {

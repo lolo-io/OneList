@@ -9,8 +9,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.model.previewMany
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
-import com.lolo.io.onelist.feature.lists.components.core.DraggableFlowRow
-import com.lolo.io.onelist.feature.lists.components.core.DraggableItem
+import com.lolo.io.onelist.feature.lists.components.core.reorderable_flow_row.DraggableFlowRow
+import com.lolo.io.onelist.feature.lists.components.core.reorderable_flow_row.ReorderableFlowRowItem
 
 @Composable
 fun ListsFlowRow(
@@ -19,7 +19,7 @@ fun ListsFlowRow(
     modifier : Modifier = Modifier,
     onClick: (ItemList) -> Unit,
     onLongClick: (ItemList) -> Unit = {},
-    onListReordered: (List<ItemList>, draggedItem: DraggableItem<ItemList>) -> Unit = {_,_ -> },
+    onListReordered: (List<ItemList>, draggedItem: ReorderableFlowRowItem<ItemList>) -> Unit = { _, _ -> },
 ) {
     val haptic = LocalHapticFeedback.current
 

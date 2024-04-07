@@ -143,4 +143,5 @@ dependencies {
     implementation (libs.storage)
     implementation (libs.advrecyclerview)
     implementation(libs.reorderable)
+    implementation(libs.lazylist.hijacker)
 }

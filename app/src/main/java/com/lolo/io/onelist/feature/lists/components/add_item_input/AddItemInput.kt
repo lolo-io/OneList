@@ -31,12 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.lolo.io.onelist.core.design.app
 import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
@@ -45,12 +43,14 @@ import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
 internal fun AddItemInput(
     value: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     commentValue: String = "",
     onCommentValueChange: (String) -> Unit = {},
     onSubmit: () -> Unit = {},
-    modifier: Modifier = Modifier,
-
     ) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -82,7 +82,13 @@ internal fun AddItemInput(
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             },
-            onKeyboardDoneInput = onSubmit,
+            onKeyboardDoneInput = {
+                if(value.isNotEmpty()) {
+                    onSubmit()
+                } else {
+                    keyboardController?.hide()
+                }
+            },
             trailingIcon = {
                 if (value.isNotEmpty()) {
                     if (animatedSubmitAlpha > 0) {
