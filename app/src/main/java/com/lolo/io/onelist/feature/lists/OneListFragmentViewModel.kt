@@ -80,8 +80,14 @@ class OneListFragmentViewModel(
         _uiState.value = block(_uiState.value).apply { }
     }
 
-    suspend fun createList(itemList: ItemList) {
+    suspend fun createListFragment(itemList: ItemList) {
         useCases.createList(itemList)
+    }
+
+    fun createList(itemList: ItemList) {
+        viewModelScope.launch {
+            useCases.createList(itemList)
+        }
     }
 
     fun editList(itemList: ItemList) {
@@ -212,6 +218,13 @@ class OneListFragmentViewModel(
         viewModelScope.launch {
             _displayedItems.value = useCases.removeItemFromList(selectedList.value, item).items
         }
+    }
+
+    fun editItem(item: Item) {
+        viewModelScope.launch {
+            _displayedItems.value = useCases.editItemOfList(selectedList.value, item).items
+        }
+        editList(selectedList.value.copy())
     }
 
     fun clearSelectedList() {

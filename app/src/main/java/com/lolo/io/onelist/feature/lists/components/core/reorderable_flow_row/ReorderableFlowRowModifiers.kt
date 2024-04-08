@@ -86,7 +86,7 @@ fun <T> rememberReorderableFlowRowState(
     items: List<T>,
     onListReordered: (List<T>, draggedItem: ReorderableFlowRowItem<T>) -> Unit = { _, _ -> }
 ): ReorderableFlowRowState<T> {
-    val draggableListState = remember {
+    val draggableListState = remember(items) {
         val data =
             mutableStateOf(
                 items.map {

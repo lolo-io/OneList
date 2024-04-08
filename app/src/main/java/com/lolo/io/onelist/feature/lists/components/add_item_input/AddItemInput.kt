@@ -1,5 +1,6 @@
 package com.lolo.io.onelist.feature.lists.components.add_item_input
 
+import android.view.SoundEffectConstants
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -22,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +35,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.design.space
@@ -47,9 +51,10 @@ internal fun AddItemInput(
     commentValue: String = "",
     onCommentValueChange: (String) -> Unit = {},
     onSubmit: () -> Unit = {},
-    ) {
+) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
+    val view = LocalView.current
 
     Column(
         modifier = modifier,
@@ -83,18 +88,22 @@ internal fun AddItemInput(
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             },
             onKeyboardDoneInput = {
-                if(value.isNotEmpty()) {
+                if (value.isNotEmpty()) {
                     onSubmit()
                 } else {
                     keyboardController?.hide()
                 }
+                view.playSoundEffect(SoundEffectConstants.CLICK)
             },
             trailingIcon = {
                 if (value.isNotEmpty()) {
                     if (animatedSubmitAlpha > 0) {
                         IconButton(
                             modifier = Modifier.alpha(animatedSubmitAlpha),
-                            onClick = onSubmit
+                            onClick = {
+                                onSubmit()
+                                view.playSoundEffect(SoundEffectConstants.CLICK)
+                            }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Check,
@@ -126,7 +135,9 @@ internal fun AddItemInput(
                         .padding(top = MaterialTheme.space.Tiny),
                     value = commentValue,
                     placeholder = "Comment",
-                    onValueChange = onCommentValueChange,
+                    onValueChange = {
+                        onCommentValueChange(it)
+                    },
                     leadingIcon = {
                         Icon(
                             modifier = Modifier.rotate(90f),
@@ -140,6 +151,7 @@ internal fun AddItemInput(
                                 modifier = Modifier.alpha(animatedClearCommentAlpha),
                                 onClick = {
                                     onCommentValueChange("")
+                                    view.playSoundEffect(SoundEffectConstants.CLICK)
                                 }) {
                                 Icon(
                                     imageVector = Icons.Default.Clear,
@@ -157,14 +169,28 @@ internal fun AddItemInput(
             mutableFloatStateOf(180f)
         }
 
+        val showCommentArrow by remember(value) {
+            derivedStateOf { value.isNotEmpty() }
+        }
+
+        val animatedArrowVisibility by animateFloatAsState(
+            targetValue = if(showCommentArrow) 1f else 0f,
+            animationSpec = tween(
+                durationMillis = iconsAnimationDuration,
+                easing = FastOutSlowInEasing
+            ), label = ""
+        )
+
         TextButton(
             modifier = Modifier
                 .size(36.dp)
-                .padding(MaterialTheme.space.Tiny),
+                .padding(MaterialTheme.space.Tiny)
+                .alpha(animatedArrowVisibility),
             onClick = {
                 arrowRotation += 180f
                 if (arrowRotation == 340f) arrowRotation = 180f
                 showCommentInput = !showCommentInput
+                view.playSoundEffect(SoundEffectConstants.CLICK)
             },
             contentPadding = PaddingValues(0.dp)
         ) {

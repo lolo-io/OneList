@@ -13,16 +13,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.design.space
+import com.lolo.io.onelist.core.ui.util.ifThen
 
 /*
     Have to use BasicTextField with DecorationBox just because default compose TextField
@@ -37,6 +42,7 @@ internal fun OneListTextField(
     modifier: Modifier = Modifier,
     placeholder: String = "",
     singleLine: Boolean = false,
+    showBorder: Boolean = true,
     onKeyboardDoneInput: () -> Unit = {},
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null
@@ -44,15 +50,31 @@ internal fun OneListTextField(
 
     val borderShape = MaterialTheme.shapes.medium
     val interactionSource = remember { MutableInteractionSource() }
-    var lineCount by remember { mutableStateOf(0) }
+    var lineCount by remember { mutableIntStateOf(0) }
     var singleLineFix by remember { mutableStateOf(false) }
+
+
+    var internalTextFieldValue by remember(value) {
+        mutableStateOf(
+            TextFieldValue(value, selection = TextRange(Int.MAX_VALUE))
+        )
+    }
+
+    LaunchedEffect(internalTextFieldValue.text) {
+        onValueChange(internalTextFieldValue.text)
+    }
+
 
     BasicTextField(
         modifier = modifier
-            .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, borderShape)
+            .ifThen(showBorder) {
+                border(width = 1.dp, color = MaterialTheme.colorScheme.outline, borderShape)
+            }
             .heightIn(36.dp, if (lineCount <= 1) 36.dp else Dp.Unspecified),
-        value = value,
-        onValueChange = onValueChange,
+        value = internalTextFieldValue,
+        onValueChange = {
+            internalTextFieldValue = it
+        },
         textStyle = MaterialTheme.typography.bodyLarge,
         interactionSource = interactionSource,
         singleLine = singleLine,
@@ -69,7 +91,7 @@ internal fun OneListTextField(
 
         ) { innerTextField ->
         TextFieldDefaults.DecorationBox(
-            value = value,
+            value = internalTextFieldValue.text,
             contentPadding = PaddingValues(MaterialTheme.space.Tiny),
             innerTextField = innerTextField,
             enabled = true,

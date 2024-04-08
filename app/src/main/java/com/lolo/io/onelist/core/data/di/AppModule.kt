@@ -9,6 +9,7 @@ import com.lolo.io.onelist.core.database.dao.ItemListDao
 import com.lolo.io.onelist.core.domain.use_cases.AddItemToList
 import com.lolo.io.onelist.core.domain.use_cases.ClearList
 import com.lolo.io.onelist.core.domain.use_cases.CreateList
+import com.lolo.io.onelist.core.domain.use_cases.EditItemOfList
 import com.lolo.io.onelist.core.domain.use_cases.SaveListToDb
 import com.lolo.io.onelist.core.domain.use_cases.GetAllLists
 import com.lolo.io.onelist.core.domain.use_cases.HandleFirstLaunch
@@ -57,6 +58,7 @@ val appModule = module {
             syncAllLists = SyncAllLists(get()),
             showWhatsNew = ShowWhatsNew(get()),
             addItemToList = AddItemToList(saveListToDb),
+            editItemOfList = EditItemOfList(saveListToDb),
             clearList = ClearList(saveListToDb),
             removeItemFromList = RemoveItemFromList(saveListToDb),
             switchItemStatus = SwitchItemStatus(saveListToDb),

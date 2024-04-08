@@ -1,5 +1,6 @@
 package com.lolo.io.onelist.feature.lists.components.header
 
+import android.view.SoundEffectConstants
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +47,8 @@ internal fun OneListHeader(
     actions: OneListHeaderActions = OneListHeaderActions(),
     showSelectedListControls: Boolean = false,
 ) {
+    val view = LocalView.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,7 +68,10 @@ internal fun OneListHeader(
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            IconButton(onClick = { actions.onClickSettings() }) {
+            IconButton(onClick = {
+                actions.onClickSettings()
+                view.playSoundEffect(SoundEffectConstants.CLICK)
+            }) {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
@@ -102,6 +109,7 @@ internal fun OneListHeader(
                 } else {
                     actions.onClickShareList()
                 }
+                view.playSoundEffect(SoundEffectConstants.CLICK)
             }) {
                 Icon(
                     modifier = Modifier.alpha(targetRotationDefaultsControls.value),
@@ -124,6 +132,7 @@ internal fun OneListHeader(
                 } else {
                     actions.onClickCreateList()
                 }
+                view.playSoundEffect(SoundEffectConstants.CLICK)
             }) {
                 Icon(
                     modifier = Modifier

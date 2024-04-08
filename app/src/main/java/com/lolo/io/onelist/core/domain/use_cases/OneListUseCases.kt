@@ -8,6 +8,7 @@ data class OneListUseCases(
     val setItemsOfList: SetItemOfList,
     val reorderLists: ReorderLists,
     val addItemToList: AddItemToList,
+    val editItemOfList: EditItemOfList,
     val removeItemFromList: RemoveItemFromList,
     val switchItemStatus: SwitchItemStatus,
     val switchItemCommentShown: SwitchItemCommentShown,

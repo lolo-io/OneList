@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.SoundEffectConstants
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -19,13 +20,11 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.stopScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -33,12 +32,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -80,9 +81,16 @@ import com.lolo.io.onelist.core.ui.util.isVisibleInvisible
 import com.lolo.io.onelist.core.ui.util.shake
 import com.lolo.io.onelist.databinding.FragmentOneListBinding
 import com.lolo.io.onelist.feature.lists.components.add_item_input.AddItemInput
+import com.lolo.io.onelist.feature.lists.components.dialogs.CreateListDialog
+import com.lolo.io.onelist.feature.lists.components.dialogs.components.DialogContainer
+import com.lolo.io.onelist.feature.lists.components.dialogs.EditItemDialog
+import com.lolo.io.onelist.feature.lists.components.dialogs.EditListDialog
+import com.lolo.io.onelist.feature.lists.components.dialogs.model.DialogShown
 import com.lolo.io.onelist.feature.lists.components.header.OneListHeader
-import com.lolo.io.onelist.feature.lists.components.list_chips.ListsFlowRow
+import com.lolo.io.onelist.feature.lists.components.header.OneListHeaderActions
 import com.lolo.io.onelist.feature.lists.components.items_lists.ReorderableAndSwipeableItemList
+import com.lolo.io.onelist.feature.lists.components.items_lists.rememberSwipeableLazyListState
+import com.lolo.io.onelist.feature.lists.components.list_chips.ListsFlowRow
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_CLEAR
 import com.lolo.io.onelist.feature.lists.dialogs.ACTION_RM_FILE
 import com.lolo.io.onelist.feature.lists.dialogs.deleteListDialog
@@ -100,7 +108,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.gingerninja.lazylist.hijacker.rememberLazyListStateHijacker
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import kotlin.math.roundToInt
@@ -176,10 +183,20 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
             setContent {
                 OneListTheme {
 
+                    val view = LocalView.current
                     val coroutineScope = rememberCoroutineScope()
 
                     val keyboardController = LocalSoftwareKeyboardController.current
                     var showSelectedListControls by remember { mutableStateOf(false) }
+
+                    var showDialog by rememberSaveable { mutableStateOf(DialogShown.None) }
+                    var editedItem by remember { mutableStateOf<Item?>(null) }
+
+                    val selectedList =
+                        viewModel.selectedList.collectAsStateWithLifecycle().value
+
+                    val swipeableListState = rememberSwipeableLazyListState()
+
 
                     Column(
                         modifier = Modifier
@@ -194,11 +211,10 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                     ) {
 
                         val allLists = viewModel.allLists.collectAsStateWithLifecycle().value
-                        val selectedList =
-                            viewModel.selectedList.collectAsStateWithLifecycle().value
 
-                        var addItemTitle by remember { mutableStateOf("") }
-                        var addItemComment by remember { mutableStateOf("") }
+
+                        var addItemTitle by rememberSaveable { mutableStateOf("") }
+                        var addItemComment by rememberSaveable { mutableStateOf("") }
 
                         val displayedItems =
                             viewModel.displayedItems.collectAsStateWithLifecycle().value
@@ -219,12 +235,21 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                             ) {
 
                                 OneListHeader(
-                                    showSelectedListControls = showSelectedListControls
+                                    showSelectedListControls = showSelectedListControls,
+                                    actions = OneListHeaderActions(
+                                        onClickCreateList = {
+                                            showDialog = DialogShown.CreateListDialog
+                                        },
+                                        onClickShareList = {
+                                            showDialog = DialogShown.EditListDialog
+                                        }
+                                    )
                                 )
 
                                 ListsFlowRow(
                                     modifier = Modifier.padding(horizontal = MaterialTheme.space.Small),
-                                    lists = allLists, selectedList = selectedList,
+                                    lists = allLists,
+                                    selectedList = selectedList,
                                     onClick = {
                                         showSelectedListControls = false
                                         viewModel.selectList(it)
@@ -260,17 +285,20 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                                 )
                                 addItemTitle = ""
                                 addItemComment = ""
-                                // todo focus to item title
+                                coroutineScope.launch {
+                                    swipeableListState.listState.animateScrollToItem(0)
+                                }
                             }
                         )
 
-                        val listState = rememberLazyListState()
+
                         ReorderableAndSwipeableItemList(
                             modifier = Modifier.offset {
-                                IntOffset(x = 0, y = themeSpaces.Small.toPx().roundToInt() * -1)
+                                IntOffset(x = 0, y = themeSpaces.Tiny.toPx().roundToInt() * -1)
                             },
                             onClickOnItem = {
                                 viewModel.switchItemStatus(it)
+                                view.playSoundEffect(SoundEffectConstants.CLICK)
                             },
                             items = displayedItems,
                             onItemSwipedToStart = {
@@ -279,8 +307,13 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                                     viewModel.removeItem(it)
                                 }
                             },
+                            onItemSwipedToEnd = {
+                                showDialog = DialogShown.EditItemDialog
+                                editedItem = it
+                            },
                             onShowOrHideComment = {
                                 viewModel.switchItemCommentShown(it)
+                                view.playSoundEffect(SoundEffectConstants.CLICK)
                             },
                             onListReordered = { list ->
                                 viewModel.onSelectedListReordered(list)
@@ -289,8 +322,54 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                             onRefresh = {
                                 viewModel.refresh()
                             },
-                            listState = listState,
+                            swipeableListState = swipeableListState,
                         )
+                    }
+
+
+                    DialogContainer(
+                        shown = showDialog != DialogShown.None,
+                        dismiss = {
+                            showDialog = DialogShown.None
+                            editedItem?.let {
+                                swipeableListState.resetSwipeState(it)
+                                editedItem = null
+                            }
+                        }) {
+
+                        when (showDialog) {
+                            DialogShown.CreateListDialog -> {
+                                CreateListDialog(
+                                    onSubmit = {
+                                        viewModel.createList(ItemList(title = it))
+                                        dismiss()
+                                    }
+                                )
+                            }
+
+                            DialogShown.EditListDialog -> {
+                                EditListDialog(selectedList,
+                                    onSubmit = {
+                                        viewModel.editList(selectedList.copy(title = it))
+                                        dismiss()
+                                    })
+                            }
+
+                            DialogShown.EditItemDialog -> {
+                                editedItem?.let { itemToEdit ->
+                                    EditItemDialog(
+                                        itemToEdit,
+                                        onSubmit = {
+                                            viewModel.editItem(it)
+                                            dismiss()
+                                        },
+                                    )
+                                }
+
+                            }
+
+                            DialogShown.None -> {}
+                        }
                     }
                 }
             }
@@ -380,6 +459,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                 },
                 onShowOrHideComment = {
                     viewModel.switchItemCommentShown(it)
+
                 },
                 isRefreshing = refreshing,
                 onRefresh = {
@@ -619,7 +699,7 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
     // Lists handlers
     private suspend fun createList(itemList: ItemList) {
         listsAdapter.notifyItemInserted(viewModel.allLists.value.size)
-        viewModel.createList(itemList)
+        viewModel.createListFragment(itemList)
         binding.addItemEditText.requestFocus()
     }
 

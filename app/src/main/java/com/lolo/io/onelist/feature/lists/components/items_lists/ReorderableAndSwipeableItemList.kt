@@ -31,18 +31,43 @@ import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_l
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+
+class SwipeableLazyListState(
+    val listState: LazyListState
+) {
+    private val swipeStates: HashMap<Long, SwipeState> = hashMapOf()
+    fun setSwipeState(item: Item, state: SwipeState) {
+        swipeStates[item.id] = state
+    }
+    fun resetSwipeState(item: Item) {
+        swipeStates[item.id] = SwipeState.NONE
+    }
+    fun getSwipeState(item: Item) : SwipeState {
+        return swipeStates[item.id] ?: SwipeState.NONE
+    }
+}
+
+@Composable
+fun rememberSwipeableLazyListState(): SwipeableLazyListState  {
+    val listState = rememberLazyListState()
+    return remember { // todo add Saved to hold swipe after configuration change
+        SwipeableLazyListState(listState)
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReorderableAndSwipeableItemList(
     items: List<Item>,
     modifier: Modifier = Modifier,
     onItemSwipedToStart: (Item) -> Unit = {},
+    onItemSwipedToEnd: (Item) -> Unit = {},
     onClickOnItem: (Item) -> Unit = {},
     onListReordered: (List<Item>) -> Unit = { },
     onShowOrHideComment: (Item) -> Unit = {},
     isRefreshing: Boolean = false,
     onRefresh: () -> Unit = {},
-    listState: LazyListState = rememberLazyListState(),
+    swipeableListState: SwipeableLazyListState = rememberSwipeableLazyListState(),
 ) {
 
     val pullRefreshState = rememberPullToRefreshState()
@@ -66,10 +91,10 @@ fun ReorderableAndSwipeableItemList(
             .fillMaxSize()
             .nestedScroll(pullRefreshState.nestedScrollConnection)
     ) {
-        rememberLazyListStateHijacker(listState = listState, enabled = !isReordering)
+        rememberLazyListStateHijacker(listState = swipeableListState.listState, enabled = !isReordering)
         ReorderableList(
             modifier = modifier,
-            listState = listState,
+            listState = swipeableListState.listState,
             items = items,
             itemKey = { it.id },
             canReorder = { item1, item2 -> item1.done == item2.done },
@@ -81,14 +106,11 @@ fun ReorderableAndSwipeableItemList(
             },
             drawRow = { item ->
 
-                var swipeState by remember {
-                    mutableStateOf(SwipeState.NONE)
-                }
                 SwipeableItem(
                     item = item,
-                    swipeState = swipeState,
+                    swipeState = swipeableListState.getSwipeState(item),
                     setSwipeState = {
-                        swipeState = it
+                        swipeableListState.setSwipeState(item, it)
                     },
                     onIsSwiping = {
                         isSwiping = it
@@ -97,6 +119,7 @@ fun ReorderableAndSwipeableItemList(
                         onItemSwipedToStart(item)
                     },
                     onSwipedToEnd = {
+                        onItemSwipedToEnd(item)
                     }
                 ) {
                     ItemUI(
