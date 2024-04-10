@@ -129,6 +129,7 @@ dependencies {
     // koin di
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.navigation)
+    implementation(libs.koin.androidx.compose)
 
     // room
     implementation(libs.androidx.room.runtime)

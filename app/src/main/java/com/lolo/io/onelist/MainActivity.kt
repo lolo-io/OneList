@@ -11,8 +11,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.anggrayudi.storage.SimpleStorageHelper
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
+import com.lolo.io.onelist.core.design.OneListTheme
 import com.lolo.io.onelist.core.ui.Config
-import com.lolo.io.onelist.feature.lists.OneListFragment
+import com.lolo.io.onelist.feature.lists.ListsScreen
 import com.lolo.io.onelist.feature.lists.utils.StorageHelperHolder
 import org.koin.android.ext.android.inject
 
@@ -26,11 +27,16 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder  {
         setTheme(R.style.AppTheme)
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        setContent {
+            OneListTheme {
+                ListsScreen()
+            }
+        }
 
         Config.init(applicationContext)
 
-        val fragment = OneListFragment().apply {
+       /* val fragment = OneListFragment().apply {
             arguments = Bundle().apply {
                 if (intent.action == "android.intent.action.VIEW") {
                     putString(
@@ -49,7 +55,7 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder  {
                 R.anim.zoom_out
             )
             .replace(R.id.fragmentContainer, fragment, "OneListFragment")
-            .commit()
+            .commit()*/
 
     }
 

@@ -81,6 +81,5 @@ val appModule = module {
         val database = get<OneListDatabase>()
         database.itemListDao
     }
-
 }
 
