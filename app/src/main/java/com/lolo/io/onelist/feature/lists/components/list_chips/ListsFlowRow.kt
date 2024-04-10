@@ -2,6 +2,11 @@ package com.lolo.io.onelist.feature.lists.components.list_chips
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -11,6 +16,11 @@ import com.lolo.io.onelist.core.model.previewMany
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_flow_row.DraggableFlowRow
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_flow_row.ReorderableFlowRowItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListsFlowRow(
@@ -22,6 +32,11 @@ fun ListsFlowRow(
     onListReordered: (List<ItemList>, draggedItem: ReorderableFlowRowItem<ItemList>) -> Unit = { _, _ -> },
 ) {
     val haptic = LocalHapticFeedback.current
+    var isDragging by remember { mutableStateOf(false) }
+    var debounceClickLongClick by remember { mutableStateOf<Job?>(null) }
+    val bgScope = remember {
+        CoroutineScope(Dispatchers.Default)
+    }
 
     DraggableFlowRow(
         modifier = modifier,
@@ -33,7 +48,11 @@ fun ListsFlowRow(
                 list == selectedList -> ListChipState.SELECTED
                 else -> ListChipState.DEFAULT
             }
-            ListChip(label = list.title, state, onClick = { onClick(list) })
+            ListChip(label = list.title, state,
+                onClick = {
+                if(!isDragging && debounceClickLongClick?.isActive != true) {
+                    onClick(list)
+                } })
         },
         drawDragItem = {
             ListChip(label = it.title, ListChipState.DRAGGED)
@@ -41,6 +60,15 @@ fun ListsFlowRow(
         onDragStart = {
             onLongClick(it)
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            isDragging = true
+        },
+        onDragEnd = {
+            isDragging = false
+            debounceClickLongClick = bgScope.launch { delay(300) }
+        },
+        onDragCancel = {
+            isDragging = false
+            debounceClickLongClick = bgScope.launch { delay(300) }
         },
         onListReordered = onListReordered,
         horizontalArrangement = Arrangement.Center,

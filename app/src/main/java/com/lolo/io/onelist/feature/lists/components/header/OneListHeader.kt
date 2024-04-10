@@ -52,7 +52,7 @@ internal fun OneListHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = MaterialTheme.space.Normal)
+            .padding(start = MaterialTheme.space.Big, end = MaterialTheme.space.Small)
             .padding(vertical = MaterialTheme.space.Tiny),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween

@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -85,6 +86,7 @@ import com.lolo.io.onelist.feature.lists.components.dialogs.CreateListDialog
 import com.lolo.io.onelist.feature.lists.components.dialogs.components.DialogContainer
 import com.lolo.io.onelist.feature.lists.components.dialogs.EditItemDialog
 import com.lolo.io.onelist.feature.lists.components.dialogs.EditListDialog
+import com.lolo.io.onelist.feature.lists.components.dialogs.DeleteListDialog
 import com.lolo.io.onelist.feature.lists.components.dialogs.model.DialogShown
 import com.lolo.io.onelist.feature.lists.components.header.OneListHeader
 import com.lolo.io.onelist.feature.lists.components.header.OneListHeaderActions
@@ -101,6 +103,7 @@ import com.lolo.io.onelist.feature.lists.lists_adapters.ItemsAdapter
 import com.lolo.io.onelist.feature.lists.lists_adapters.ItemsCallbacks
 import com.lolo.io.onelist.feature.lists.lists_adapters.ListsAdapter
 import com.lolo.io.onelist.feature.lists.lists_adapters.ListsCallbacks
+import com.lolo.io.onelist.feature.lists.utils.shareList
 import com.lolo.io.onelist.feature.settings.SettingsFragment
 import com.lolo.io.onelist.feature.settings.showReleaseNote
 import ifNotEmpty
@@ -240,8 +243,20 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                                         onClickCreateList = {
                                             showDialog = DialogShown.CreateListDialog
                                         },
-                                        onClickShareList = {
+                                        onClickEditList = {
+                                            showSelectedListControls = false
                                             showDialog = DialogShown.EditListDialog
+                                        },
+                                        onClickDeleteList = {
+                                            showSelectedListControls = false
+                                            showDialog = DialogShown.DeleteListDialog
+                                        },
+                                        onClickShareList = {
+                                            coroutineScope.launch {
+                                                delay(200)
+                                                shareList(context, selectedList)
+                                            }
+                                            view.playSoundEffect(SoundEffectConstants.CLICK)
                                         }
                                     )
                                 )
@@ -366,6 +381,30 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
                                     )
                                 }
 
+                            }
+
+                            DialogShown.DeleteListDialog -> {
+                                DeleteListDialog(
+                                    list = selectedList,
+                                    onDeleteList = {
+                                        viewModel.deleteList(
+                                            selectedList,
+                                            true,
+                                            onFileDeleted = {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.file_deleted),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            })
+                                        view.playSoundEffect(SoundEffectConstants.CLICK)
+                                        dismiss()
+                                    },
+                                    onJustClearList = {
+                                        viewModel.clearSelectedList()
+                                        view.playSoundEffect(SoundEffectConstants.CLICK)
+                                        dismiss()
+                                    })
                             }
 
                             DialogShown.None -> {}
@@ -574,7 +613,6 @@ class OneListFragment : Fragment(), ListsCallbacks, ItemsCallbacks,
         }
         binding.buttonAddComment.setOnClickListener { switchCommentSection() }
         binding.buttonClearComment.setOnClickListener { viewModel.clearComment() }
-        binding.buttonShareList.setOnClickListener { viewModel.shareSelectedList(this.requireContext()) }
 
 
         binding.menuSettings.setOnClickListener { v ->

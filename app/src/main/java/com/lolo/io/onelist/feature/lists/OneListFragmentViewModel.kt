@@ -15,7 +15,6 @@ import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.ui.util.UIString
 import com.lolo.io.onelist.feature.lists.tuto.FirstLaunchLists
-import com.lolo.io.onelist.feature.lists.utils.toStringForShare
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -117,16 +116,6 @@ class OneListFragmentViewModel(
         }
     }
 
-    fun shareSelectedList(context: Context) {
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, selectedList.value.toStringForShare(context))
-            type = "text/plain"
-        }
-        val shareIntent = Intent.createChooser(sendIntent, null)
-        context.startActivity(shareIntent)
-    }
-
     private fun getErrorMessageWhenLoadingLists(errors: List<ErrorLoadingList>): UIString? {
         return if (errors.isNotEmpty()) {
             UIString
@@ -189,11 +178,22 @@ class OneListFragmentViewModel(
         }
     }
 
-    // ITEMS
-
     suspend fun importList(uri: Uri): ItemList {
         return useCases.importList(uri)
     }
+
+
+    fun deleteList(
+        itemList: ItemList,
+        deleteBackupFile: Boolean,
+        onFileDeleted: () -> Unit
+    ) {
+        viewModelScope.launch {
+            useCases.removeList(itemList, deleteBackupFile, onFileDeleted)
+        }
+    }
+
+    // ITEMS
 
 
     fun switchItemStatus(item: Item) {

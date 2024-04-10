@@ -4,6 +4,7 @@ import android.view.SoundEffectConstants
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -19,33 +20,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.design.space
 
 @Composable
-fun ColumnScope.DialogButtons(
+fun DialogButtons(
     onPositiveClicked: () -> Unit,
-    onNegativeClicked: () -> Unit
+    onNegativeClicked: () -> Unit,
 ) {
 
     val view = LocalView.current
 
-    Row(
-        modifier = Modifier
-            .padding(
-                horizontal = MaterialTheme.space.Small,
-                vertical = MaterialTheme.space.Tiny
-            )
-            .align(Alignment.End)
-    ) {
-        IconButton(onClick = {
-            onNegativeClicked()
-            view.playSoundEffect(SoundEffectConstants.CLICK)
-        }) {
-            Icon(imageVector = Icons.Default.Close, contentDescription = "Cancel")
-        }
-        IconButton(onClick = {
-            onPositiveClicked()
-            view.playSoundEffect(SoundEffectConstants.CLICK)
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
 
-        }) {
-            Icon(imageVector = Icons.Default.Check, contentDescription = "Save")
+        Row(
+            modifier = Modifier
+                .padding(
+                    horizontal = MaterialTheme.space.Small,
+                    vertical = MaterialTheme.space.Tiny
+                )
+                .align(Alignment.End)
+        ) {
+            IconButton(onClick = {
+                onNegativeClicked()
+                view.playSoundEffect(SoundEffectConstants.CLICK)
+            }) {
+                Icon(imageVector = Icons.Default.Close, contentDescription = "Cancel")
+            }
+            IconButton(onClick = {
+                onPositiveClicked()
+                view.playSoundEffect(SoundEffectConstants.CLICK)
+
+            }) {
+                Icon(imageVector = Icons.Default.Check, contentDescription = "Save")
+            }
         }
     }
 }

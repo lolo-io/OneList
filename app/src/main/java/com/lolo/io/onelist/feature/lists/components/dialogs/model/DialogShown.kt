@@ -4,6 +4,7 @@ enum class DialogShown {
     CreateListDialog,
     EditListDialog,
     EditItemDialog,
+    DeleteListDialog,
     None;
 }
 

@@ -138,16 +138,16 @@ class OneListRepository(
             dao.delete(itemList.toItemListEntity())
         }
 
+        val position = _allListsWithErrors.value.lists.indexOf(itemList)
+
+
         _allListsWithErrors.value =
             AllListsWithErrors(_allListsWithErrors.value.lists
                 .filter { it.id != itemList.id })
-                .also {
-                    val position = _allListsWithErrors.value.lists.indexOf(itemList)
 
-                    val nextSelected = _allListsWithErrors.value.lists.getOrNull(position)
-                        ?: _allListsWithErrors.value.lists[position - 1]
-                    selectList(nextSelected)
-                }
+        val nextSelected = _allListsWithErrors.value.lists.getOrNull(position)
+            ?: _allListsWithErrors.value.lists[position - 1]
+        selectList(nextSelected)
 
         if (deleteBackupFile) {
             fileAccess.deleteListBackupFile(itemList, onFileDeleted)

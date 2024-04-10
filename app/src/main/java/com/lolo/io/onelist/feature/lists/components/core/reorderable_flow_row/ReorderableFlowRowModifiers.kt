@@ -108,7 +108,7 @@ fun <T> Modifier.reorderableFlowRow(
     onDragEnd: () -> Unit = {},
     onDragCancel: () -> Unit = {},
 ): Modifier {
-    return this.pointerInput(enable) {
+    return this.pointerInput(enable, reorderableFlowLayoutState) {
 
         if (enable) {
             detectDragGesturesAfterLongPress(
