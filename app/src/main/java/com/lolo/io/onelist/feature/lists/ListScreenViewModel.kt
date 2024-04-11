@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class OneListScreenViewModel(
+class ListScreenViewModel(
     private val firstLaunchLists: FirstLaunchLists,
     private val useCases: OneListUseCases,
     private val preferences: SharedPreferencesHelper

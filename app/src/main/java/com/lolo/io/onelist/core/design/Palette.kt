@@ -3,6 +3,7 @@ package com.lolo.io.onelist.core.design
 import androidx.compose.ui.graphics.Color
 
 object Palette {
+    val ONELIST_RED_DARK = Color(0xFF7f0000)
     val ONELIST_RED = Color(0xFFB71C1C)
     val ONELIST_RED_LIGHT = Color(0xffc54949)
     val ONELIST_RED_VERY_LIGHT = Color(0xFFfbe5e5)

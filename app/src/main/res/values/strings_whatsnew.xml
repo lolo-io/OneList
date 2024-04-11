@@ -2,7 +2,7 @@
 <resources>
     <string name="onelist_updated">Breaking Change !</string>
     <string name="external_folder_title">The way you save your lists on your device has changed.</string>
-    <string name="external_folder_content">\n\nIf you used the feature to backup your lists locally before, go to settings, check \"Backup lists on device\", and select or create a folder where your lists will be saved.
+    <string name="external_folder_content">If you used the feature to backup your lists locally before, go to settings, check \"Backup lists on device\", and select or create a folder where your lists will be saved.
         \n\nIf you used this feature before, your previous list files won\'t be updated anymore, be sure you make this operation in order to have your lists backed up again. This will create new backup files.
         \n\nIf you didn\'t use this feature before, you can ignore this message.
         \n\n

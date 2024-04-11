@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.feature.settings
+package com.lolo.io.onelist.feature.settings.fragment
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -23,6 +23,7 @@ import com.anggrayudi.storage.file.toTreeDocumentFile
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.databinding.FragmentSettingsBinding
 import com.lolo.io.onelist.feature.lists.utils.StorageHelperHolder
+import com.lolo.io.onelist.feature.settings.showReleaseNote
 import isNotNullOrEmpty
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -36,6 +37,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding: FragmentSettingsBinding
         get() = _binding!!
+
+    var onClickOnShowReleaseNote : () -> Unit = {}
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -171,7 +174,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 viewModel.onPreferUseFiles()
             }
 
-            "releaseNote" -> showReleaseNote(requireActivity())
+            "releaseNote" -> {
+                onClickOnShowReleaseNote()
+            }
         }
         return true
     }

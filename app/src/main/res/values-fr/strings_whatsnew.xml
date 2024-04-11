@@ -2,7 +2,7 @@
 <resources>
     <string name="onelist_updated">Changement Majeur !</string>
     <string name="external_folder_title">La façon dont vous enregistrez vos listes sur votre appareil a changé.</string>
-    <string name="external_folder_content">\n\nSi vous utilisiez la fonctionnalité de sauvegarde locale de vos listes, allez dans les paramètres, cochez "Sauvegarder les listes sur l'appareil", et sélectionnez ou créez un dossier où vos listes seront enregistrées.
+    <string name="external_folder_content">Si vous utilisiez la fonctionnalité de sauvegarde locale de vos listes, allez dans les paramètres, cochez "Sauvegarder les listes sur l'appareil", et sélectionnez ou créez un dossier où vos listes seront enregistrées.
 \n\nSi vous utilisiez cette fonctionnalité, vos fichiers de listes précédents ne seront plus mis à jour. Assurez-vous de réaliser cette opération afin de sauvegarder à nouveau vos listes. Cela crééra de nouveaux fichiers de sauvegarde.
 \n\nSi vous n\'utilisiez pas cette fonctionnalité, vous pouvez ignorer ce message.
 \n\nL\'importation des listes a également été déplacée dans les paramètres.</string>

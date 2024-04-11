@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.feature.settings
+package com.lolo.io.onelist.feature.settings.fragment
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel

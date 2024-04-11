@@ -54,8 +54,8 @@ import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
 @Composable
-internal fun ListsScreen() {
-    val viewModel = koinInject<OneListScreenViewModel>()
+internal fun ListsScreen(navigateToSettings: () -> Unit) {
+    val viewModel = koinInject<ListScreenViewModel>()
 
     val allLists = viewModel.allLists.collectAsStateWithLifecycle().value
     val selectedList = viewModel.selectedList.collectAsStateWithLifecycle().value
@@ -96,6 +96,7 @@ internal fun ListsScreen() {
         displayedItems = displayedItems,
         refreshing = refreshing,
         actions = listScreenActions,
+        navigateToSettings = navigateToSettings
     )
 }
 
@@ -105,7 +106,8 @@ private fun ListsScreenUI(
     selectedList: ItemList,
     displayedItems: List<Item>,
     refreshing: Boolean,
-    actions: ListScreenActions
+    actions: ListScreenActions,
+    navigateToSettings: () -> Unit
 ) {
     val view = LocalView.current
     val context = LocalContext.current
@@ -154,7 +156,10 @@ private fun ListsScreenUI(
                             shareList(context, selectedList)
                         }
                         view.playSoundEffect(SoundEffectConstants.CLICK)
-                    })
+                    },
+                        onClickSettings = {
+                            navigateToSettings()
+                        })
                 )
 
                 ListsFlowRow(modifier = Modifier.padding(horizontal = MaterialTheme.space.Small),
@@ -344,5 +349,6 @@ private fun Preview_ListsScreen() = ComposePreview {
         displayedItems = displayedItems,
         refreshing = refreshing,
         actions = listScreenActions,
+        navigateToSettings = { showPreviewDialog() },
     )
 }

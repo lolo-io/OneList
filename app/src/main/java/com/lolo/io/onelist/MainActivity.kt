@@ -7,17 +7,16 @@ import android.view.MotionEvent
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import com.anggrayudi.storage.SimpleStorageHelper
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.design.OneListTheme
 import com.lolo.io.onelist.core.ui.Config
-import com.lolo.io.onelist.feature.lists.ListsScreen
+import com.lolo.io.onelist.feature.lists.navigation.LISTS_SCREEN_ROUTE
 import com.lolo.io.onelist.feature.lists.utils.StorageHelperHolder
+import com.lolo.io.onelist.navigation.OneListNavHost
 import org.koin.android.ext.android.inject
 
-class MainActivity : AppCompatActivity(), StorageHelperHolder  {
+class MainActivity : AppCompatActivity(), StorageHelperHolder {
 
     override val storageHelper = SimpleStorageHelper(this)
 
@@ -26,36 +25,39 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder  {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
 
+        Config.init(applicationContext)
+
         super.onCreate(savedInstanceState)
 
         setContent {
             OneListTheme {
-                ListsScreen()
+                OneListNavHost(
+                    startDestination = LISTS_SCREEN_ROUTE
+                )
             }
         }
 
-        Config.init(applicationContext)
 
-       /* val fragment = OneListFragment().apply {
-            arguments = Bundle().apply {
-                if (intent.action == "android.intent.action.VIEW") {
-                    putString(
-                        OneListFragment.ARG_EXT_FILE_URI,
-                        intent.data.toString()
-                    )
-                }
-            }
-        }
+        /* val fragment = OneListFragment().apply {
+             arguments = Bundle().apply {
+                 if (intent.action == "android.intent.action.VIEW") {
+                     putString(
+                         OneListFragment.ARG_EXT_FILE_URI,
+                         intent.data.toString()
+                     )
+                 }
+             }
+         }
 
-        savedInstanceState ?: supportFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.zoom_in,
-                R.anim.zoom_out,
-                R.anim.zoom_in,
-                R.anim.zoom_out
-            )
-            .replace(R.id.fragmentContainer, fragment, "OneListFragment")
-            .commit()*/
+         savedInstanceState ?: supportFragmentManager.beginTransaction()
+             .setCustomAnimations(
+                 R.anim.zoom_in,
+                 R.anim.zoom_out,
+                 R.anim.zoom_in,
+                 R.anim.zoom_out
+             )
+             .replace(R.id.fragmentContainer, fragment, "OneListFragment")
+             .commit()*/
 
     }
 

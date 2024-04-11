@@ -115,13 +115,15 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation (libs.androidx.compose.ui.viewbinding) // To inflate SettingsFragment
+    implementation (libs.androidx.navigation.compose)
     // compose: android studio preview support
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
     // compose: ui tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation (libs.androidx.lifecycle.runtime.compose)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // firebase
     implementation(libs.firebase.crashlytics)

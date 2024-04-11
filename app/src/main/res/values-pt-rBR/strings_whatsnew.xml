@@ -2,7 +2,7 @@
 <resources>
     <string name="onelist_updated">Mudança Importante!</string>
     <string name="external_folder_title">A maneira como você salva suas listas em seu dispositivo mudou.</string>
-    <string name="external_folder_content">\n\nSe você utilizava a funcionalidade de backup local de suas listas, vá para as configurações, marque "Fazer backup de listas no dispositivo" e selecione ou crie uma pasta onde suas listas serão salvas.
+    <string name="external_folder_content">Se você utilizava a funcionalidade de backup local de suas listas, vá para as configurações, marque "Fazer backup de listas no dispositivo" e selecione ou crie uma pasta onde suas listas serão salvas.
 \n\nSe você utilizava essa funcionalidade, seus arquivos de listas anteriores não serão mais atualizados. Certifique-se de realizar esta operação para ter suas listas novamente salvas. Isso criará novos arquivos de backup.
 \n\nSe você não utilizou essa funcionalidade anteriormente, pode ignorar esta mensagem.
 \n\nA importação de listas também foi movida para as configurações.</string>
