@@ -23,5 +23,8 @@ abstract class OneListDatabase: RoomDatabase() {
     abstract val itemListDao: ItemListDao
 
     @DeleteColumn("item", "stableId")
+    @DeleteColumn("itemList", "path")
     class Migration1To2 : AutoMigrationSpec
+
+
 }

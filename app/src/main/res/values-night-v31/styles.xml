@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppThemeLauncherV31Night" parent="AppThemeLauncherV21Night">
-        <item name="android:windowSplashScreenBackground">@color/colorBackground</item>
+        <item name="android:windowSplashScreenBackground">@color/settingsBackgroundColor</item>
         <item name="android:windowBackground">@color/pure_white</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
     </style>

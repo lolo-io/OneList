@@ -40,6 +40,7 @@ data class AppColors(
 
     // Add Item
     val addItemCheck: Color,
+    val addItemCommentArrow: Color,
 
     // Dialogs
     val dialogBackgroud: Color,
@@ -111,6 +112,7 @@ fun appColors(
 
     // Add Item
     addItemCheck = MaterialTheme.colorScheme.primary,
+    addItemCommentArrow = MaterialTheme.colorScheme.outline,
 
     // Whats New
     whatsNewTitle = MaterialTheme.colorScheme.tertiary,

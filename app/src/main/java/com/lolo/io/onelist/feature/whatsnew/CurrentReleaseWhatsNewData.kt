@@ -8,7 +8,7 @@ internal fun currentReleaseWhatsNewData(context: Context) = WhatsNewData(
     items = listOf(
         WhatsNewItem.WhatsNewTitleItem(
             title = context.getString(R.string.external_folder_title),
-            iconRes = R.drawable.ic_save_whatsnew_24dp,
+            iconRes = R.drawable.ic_settings_save_24dp,
         ),
 
         WhatsNewItem.WhatsNewTextItem(

@@ -8,7 +8,7 @@
             android:defaultValue="auto"
             android:entries="@array/theme_labels"
             android:entryValues="@array/theme_values"
-            android:icon="@drawable/ic_color_lens_accent_24dp"
+            android:icon="@drawable/ic_settings_color_palette_24dp"
             android:key="theme"
             android:summary="Auto"
             android:title="Theme"
@@ -19,18 +19,18 @@
         android:title="Backup">
 
         <SwitchPreference
-            android:icon="@drawable/ic_save_accent_24dp"
+            android:icon="@drawable/ic_settings_save_24dp"
             android:key="storage"
             android:summary=""
             android:title="@string/settings_backup_title" />
         <Preference
-            android:icon="@drawable/ic_add_circle_outline_accent_24dp"
+            android:icon="@drawable/ic_settings_add_circle_outline_24dp"
             android:key="import"
             android:summary="@string/settings_import_summary"
             android:title="@string/settings_import_title" />
 
         <SwitchPreference
-            android:icon="@drawable/ic_file_accent"
+            android:icon="@drawable/ic_settings_file_accent"
             android:key="preferUseFiles"
             android:summary="@string/setting_prefer_backup_files_summary"
             android:title="@string/settings_prefer_backup_files_title" />

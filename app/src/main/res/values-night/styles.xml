@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppThemeNight" parent="CommonAppTheme">
-        <item name="colorPrimaryDark">@color/colorBackground</item>
+        <item name="colorPrimaryDark">@color/settingsBackgroundColor</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 

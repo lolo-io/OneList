@@ -23,7 +23,6 @@ import com.anggrayudi.storage.file.toTreeDocumentFile
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.databinding.FragmentSettingsBinding
 import com.lolo.io.onelist.feature.lists.utils.StorageHelperHolder
-import com.lolo.io.onelist.feature.settings.showReleaseNote
 import isNotNullOrEmpty
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -189,17 +188,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         if (viewModel.syncFolderNotAccessible) {
             this.preferenceScreen.get<Preference>("storage")?.icon =
-                ContextCompat.getDrawable(requireContext(), R.drawable.ic_error_triangle)
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_settings_error_triangle)
             this.preferenceScreen.get<Preference>("storage")
                 ?.summary = this.preferenceScreen.get<Preference>("storage")
                 ?.summary.toString() + "\n\n" + getString(R.string.settings_error_try_switch_option)
 
             this.preferenceScreen.get<PreferenceCategory>("cat_backup")?.icon =
-                ContextCompat.getDrawable(requireContext(), R.drawable.ic_error_triangle)
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_settings_error_triangle)
 
         } else {
             this.preferenceScreen.get<Preference>("storage")?.icon =
-                ContextCompat.getDrawable(requireContext(), R.drawable.ic_save_accent_24dp)
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_settings_save_24dp)
 
             this.preferenceScreen.get<PreferenceCategory>("cat_backup")?.icon = null
         }

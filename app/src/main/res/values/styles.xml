@@ -18,7 +18,7 @@
         <item name="android:layout">
             @layout/fragment_settings
         </item>
-        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:textColor">@color/settingsTextColor</item>
     </style>
 
 

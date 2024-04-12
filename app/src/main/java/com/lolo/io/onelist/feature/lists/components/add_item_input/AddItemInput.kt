@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
@@ -207,7 +208,9 @@ internal fun AddItemInput(
                     .size(width = 24.dp, height = (24 * 0.6).dp)
                     .rotate(animatedArrowRotation),
                 contentScale = ContentScale.FillBounds,
-                imageVector = Icons.Default.KeyboardArrowUp, contentDescription = "Add Comment"
+                imageVector = Icons.Default.KeyboardArrowUp,
+                contentDescription = "Add Comment",
+                colorFilter = ColorFilter.tint(MaterialTheme.appColors.addItemCommentArrow)
             )
         }
 

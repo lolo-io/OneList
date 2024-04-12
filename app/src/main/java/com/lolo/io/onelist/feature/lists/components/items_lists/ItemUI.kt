@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -81,9 +82,10 @@ fun ItemUI(
                                 )
                                 .alignBy { it.measuredHeight }
                         ) {
+                            Icons.Default.CheckCircle
                             Icon(
                                 modifier = Modifier.size(MaterialTheme.space.Small),
-                                painter = painterResource(R.drawable.ic_circle),
+                                painter = painterResource(R.drawable.ic_bullet_24dp),
                                 contentDescription = null,
                                 tint = when (item.done) {
                                     false -> MaterialTheme.appColors.itemBullet
