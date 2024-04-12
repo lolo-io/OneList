@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.design.colors.appColors
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import kotlin.math.roundToInt
@@ -116,8 +118,9 @@ fun SwipeableRow(
                     Modifier
                         .background(
                             shape = RoundedCornerShape(5f),
-                            color = if (offset == 0f) Color.Transparent else Color.White
-                        ) // todo must set a color because otherwise when swiped it is filled by swipe color
+                            color = if (offset == 0f) Color.Transparent
+                            else MaterialTheme.appColors.itemRowForeground
+                        )
                         .fillMaxWidth()
 
                 ) {

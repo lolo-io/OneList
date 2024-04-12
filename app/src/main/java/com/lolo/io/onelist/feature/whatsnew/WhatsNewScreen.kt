@@ -1,7 +1,6 @@
 package com.lolo.io.onelist.feature.whatsnew
 
 import android.view.SoundEffectConstants
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,9 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.R
+import com.lolo.io.onelist.core.design.colors.appColors
 import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 
@@ -47,11 +48,12 @@ internal fun WhatsNewScreen(
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.space.Small)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_inv),
-                        contentDescription = null
+                    Icon(
+                        modifier = Modifier.size(48.dp),
+                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        tint = MaterialTheme.appColors.oneListTopLogo
                     )
                     Text(
                         text = stringResource(id = R.string.app_name),
@@ -63,7 +65,7 @@ internal fun WhatsNewScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = data.title,
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = MaterialTheme.appColors.whatsNewTitle,
                 )
 
                 data.items.forEach { item ->
@@ -78,14 +80,14 @@ internal fun WhatsNewScreen(
                                         Icon(
                                             modifier = Modifier.size(MaterialTheme.space.Big),
                                             imageVector = item.imageVector,
-                                            tint = MaterialTheme.colorScheme.primary,
+                                            tint = MaterialTheme.appColors.whatsNewItemIcon,
                                             contentDescription = null,
                                         )
                                     } else if (item.iconRes != null) {
                                         Icon(
                                             modifier = Modifier.size(MaterialTheme.space.Big),
                                             painter = painterResource(id = item.iconRes),
-                                            tint = MaterialTheme.colorScheme.tertiary,
+                                            tint = MaterialTheme.appColors.whatsNewItemIcon,
                                             contentDescription = null
                                         )
                                     }
@@ -133,7 +135,6 @@ internal fun WhatsNewScreen(
             }) {
                 Text(
                     text = stringResource(id = R.string.continue_button),
-                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }

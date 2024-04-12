@@ -1,5 +1,6 @@
 package com.lolo.io.onelist.feature.lists
 
+import android.content.res.Configuration
 import android.view.SoundEffectConstants
 import android.widget.Toast
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -131,6 +133,7 @@ private fun ListsScreenUI(
                 })
             }, horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
 
         Surface(
             modifier = Modifier.padding(bottom = MaterialTheme.space.Small), shadowElevation = 8.dp
@@ -305,6 +308,7 @@ private fun ListsScreenUI(
 
 }
 
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
 private fun Preview_ListsScreen() = ComposePreview {

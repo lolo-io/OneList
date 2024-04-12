@@ -3,11 +3,9 @@ package com.lolo.io.onelist.feature.lists.components.core
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,12 +18,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.design.colors.appColors
 import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.ui.util.ifThen
 
@@ -68,14 +67,20 @@ internal fun OneListTextField(
     BasicTextField(
         modifier = modifier
             .ifThen(showBorder) {
-                border(width = 1.dp, color = MaterialTheme.colorScheme.outline, borderShape)
+                border(
+                    width = 1.dp,
+                    color = MaterialTheme.appColors.textFieldBorder,
+                    borderShape
+                )
             }
             .heightIn(36.dp, if (lineCount <= 1) 36.dp else Dp.Unspecified),
         value = internalTextFieldValue,
         onValueChange = {
             internalTextFieldValue = it
         },
-        textStyle = MaterialTheme.typography.bodyLarge,
+        textStyle = MaterialTheme.typography.bodyLarge.copy(
+            color = MaterialTheme.appColors.textFieldText
+        ),
         interactionSource = interactionSource,
         singleLine = singleLine,
         maxLines = if (singleLineFix) 1 else Int.MAX_VALUE,
@@ -85,11 +90,12 @@ internal fun OneListTextField(
                 it.lineCount <= 1
             } else singleLine
         },
+
         keyboardActions = KeyboardActions(
             onDone = { onKeyboardDoneInput() }
         ),
-
-        ) { innerTextField ->
+        cursorBrush = SolidColor(MaterialTheme.appColors.textFieldCursor),
+    ) { innerTextField ->
         TextFieldDefaults.DecorationBox(
             value = internalTextFieldValue.text,
             contentPadding = PaddingValues(MaterialTheme.space.Tiny),
@@ -102,21 +108,18 @@ internal fun OneListTextField(
             trailingIcon = trailingIcon,
             shape = borderShape,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.background,// Default : SurfaceVariant,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,// todo maybe not pure white Default : SurfaceVariant,
-                cursorColor = MaterialTheme.colorScheme.onBackground,
-                focusedLeadingIconColor = MaterialTheme.colorScheme.outline,
-                unfocusedLeadingIconColor = MaterialTheme.colorScheme.outline,
-                focusedTrailingIconColor = MaterialTheme.colorScheme.outline,
-                unfocusedTrailingIconColor = MaterialTheme.colorScheme.outline,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                selectionColors = TextSelectionColors(
-                    handleColor = MaterialTheme.colorScheme.secondary,
-                    backgroundColor = Color.Transparent
-                ),
+                focusedContainerColor = MaterialTheme.appColors.textFieldColors.focusedContainerColor,
+                unfocusedContainerColor = MaterialTheme.appColors.textFieldColors.unfocusedContainerColor,
+                cursorColor = MaterialTheme.appColors.textFieldColors.cursorColor,
+                focusedLeadingIconColor = MaterialTheme.appColors.textFieldColors.focusedLeadingIconColor,
+                unfocusedLeadingIconColor = MaterialTheme.appColors.textFieldColors.unfocusedLeadingIconColor,
+                focusedTrailingIconColor = MaterialTheme.appColors.textFieldColors.focusedTrailingIconColor,
+                unfocusedTrailingIconColor = MaterialTheme.appColors.textFieldColors.unfocusedTrailingIconColor,
+                focusedIndicatorColor = MaterialTheme.appColors.textFieldColors.focusedIndicatorColor,
+                unfocusedIndicatorColor = MaterialTheme.appColors.textFieldColors.focusedIndicatorColor,
+                selectionColors = MaterialTheme.appColors.textFieldColors.textSelectionColors
             ),
-            placeholder = { Text(text = placeholder, color = MaterialTheme.colorScheme.outline) }
+            placeholder = { Text(text = placeholder, color = MaterialTheme.appColors.textFieldPlaceholder) }
         )
     }
 }

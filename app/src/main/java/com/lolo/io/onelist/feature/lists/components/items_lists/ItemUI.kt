@@ -1,10 +1,10 @@
 package com.lolo.io.onelist.feature.lists.components.items_lists
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,12 +29,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.core.design.app
+import com.lolo.io.onelist.core.design.colors.appColors
 import com.lolo.io.onelist.core.design.dimen
 import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.model.Item
@@ -84,8 +86,8 @@ fun ItemUI(
                                 painter = painterResource(R.drawable.ic_circle),
                                 contentDescription = null,
                                 tint = when (item.done) {
-                                    false -> MaterialTheme.colorScheme.app.itemBullet
-                                    true -> MaterialTheme.colorScheme.app.itemDone
+                                    false -> MaterialTheme.appColors.itemBullet
+                                    true -> MaterialTheme.appColors.itemDone
                                 }
                             )
                         }
@@ -95,6 +97,10 @@ fun ItemUI(
                             style = when (item.done) {
                                 false -> MaterialTheme.typography.app.itemTitle
                                 true -> MaterialTheme.typography.app.itemTitleDone
+                            },
+                            color = when (item.done) {
+                                false -> Color.Unspecified // Use Default
+                                true -> MaterialTheme.appColors.itemDone
                             },
                             modifier = Modifier
                                 .weight(1f)
@@ -108,7 +114,7 @@ fun ItemUI(
 
 
                         if (item.comment.isNotEmpty()) {
-                            Box {
+                            Box(modifier = Modifier.align(Alignment.Top).padding(top = MaterialTheme.space.Tiny)) {
                                 val animatedArrowRotation by animateFloatAsState(
                                     targetValue = if (item.commentDisplayed) 0f else 180f,
                                     animationSpec = tween(
@@ -124,6 +130,7 @@ fun ItemUI(
                                             .size(width = 24.dp, height = (24 * 0.6).dp)
                                             .rotate(animatedArrowRotation),
                                         contentScale = ContentScale.FillBounds,
+                                        colorFilter = ColorFilter.tint(MaterialTheme.appColors.itemArrow),
                                         imageVector = Icons.Default.KeyboardArrowUp,
                                         contentDescription = "Add Comment"
                                     )
@@ -140,6 +147,7 @@ fun ItemUI(
                         false -> MaterialTheme.typography.app.itemComment
                         true -> MaterialTheme.typography.app.itemCommentDone
                     },
+                    color = MaterialTheme.appColors.itemComment,
                     modifier = Modifier
                         .padding(
                             start = MaterialTheme.space.xBig,
@@ -180,6 +188,7 @@ private fun Preview_ItemRowDone() = ComposePreview {
     )
 }
 
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
 private fun Preview_ItemRowDoneWithComment() = ComposePreview {

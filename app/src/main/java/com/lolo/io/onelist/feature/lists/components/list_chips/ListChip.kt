@@ -1,5 +1,6 @@
 package com.lolo.io.onelist.feature.lists.components.list_chips
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FilterChip
@@ -13,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.design.OneListTheme
-import com.lolo.io.onelist.core.design.app
+import com.lolo.io.onelist.core.design.colors.appColors
 
 enum class ListChipState {
     DEFAULT, SELECTED, DRAGGED, SHADOW
@@ -39,30 +40,30 @@ fun ListChip(
         label = { Text(label) },
         colors = FilterChipDefaults.filterChipColors(
             containerColor = Color.Transparent,
-            labelColor = MaterialTheme.colorScheme.app.listChipDefaultText,
+            labelColor = MaterialTheme.appColors.listChipDefaultText,
             selectedContainerColor = when (state) {
-                ListChipState.SELECTED, ListChipState.DRAGGED -> MaterialTheme.colorScheme.app.listChipSelectedContainer
+                ListChipState.SELECTED, ListChipState.DRAGGED -> MaterialTheme.appColors.listChipSelectedContainer
                 else -> Color.Transparent
             },
             selectedLabelColor = when (state) {
-                ListChipState.SELECTED, ListChipState.DRAGGED -> MaterialTheme.colorScheme.app.listChipSelectedText
-                ListChipState.SHADOW -> MaterialTheme.colorScheme.app.listChipShadowText
+                ListChipState.SELECTED, ListChipState.DRAGGED -> MaterialTheme.appColors.listChipSelectedText
+                ListChipState.SHADOW -> MaterialTheme.appColors.listChipShadowText
                 else -> Color.Unspecified
             },
         ),
         border = FilterChipDefaults.filterChipBorder(
             enabled = true,
             selected = asSelected,
-            borderColor = MaterialTheme.colorScheme.app.listChipDefaultBorder,
+            borderColor = MaterialTheme.appColors.listChipDefaultBorder,
             borderWidth = 1.dp,
             selectedBorderWidth = when (state) {
                 ListChipState.SHADOW -> 0.2.dp
                 else -> 1.dp
             },
             selectedBorderColor = when (state) {
-                ListChipState.SELECTED, ListChipState.DRAGGED -> MaterialTheme.colorScheme.app.listSelectedBorder
+                ListChipState.SELECTED, ListChipState.DRAGGED -> MaterialTheme.appColors.listSelectedBorder
 
-                ListChipState.SHADOW -> MaterialTheme.colorScheme.app.listChipShadowBorder
+                ListChipState.SHADOW -> MaterialTheme.appColors.listChipShadowBorder
                 else -> Color.Unspecified
             },
         )
@@ -89,7 +90,9 @@ private fun Preview_Dragged() = OneListTheme {
 }
 
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Preview_Shadow() = OneListTheme {
     ListChip("List Chip", state = ListChipState.SHADOW)
 }
+

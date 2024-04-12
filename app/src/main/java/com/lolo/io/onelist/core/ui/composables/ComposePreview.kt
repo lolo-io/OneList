@@ -2,6 +2,7 @@ package com.lolo.io.onelist.core.ui.composables
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,7 +54,9 @@ fun ComposePreview(content: @Composable ComposePreviewScope.() -> Unit) {
     }
 
     OneListTheme {
-        content(composePreviewScope(showPreviewDialog = showPreviewDialogFun))
+        Surface {
+            content(composePreviewScope(showPreviewDialog = showPreviewDialogFun))
+        }
     }
 }
 

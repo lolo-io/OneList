@@ -10,11 +10,11 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
+import com.lolo.io.onelist.core.design.colors.appColors
 
 @Composable
 fun typography(colorScheme: ColorScheme) = Typography(
     bodyLarge = TextStyle(
-        color = colorScheme.onBackground,
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
@@ -40,7 +40,7 @@ fun typography(colorScheme: ColorScheme) = Typography(
 
 
 val Typography.app: AppTypography
-    @Composable get() = appTypography(MaterialTheme.colorScheme)
+    @Composable get() = appTypography()
 
 
 data class AppTypography (
@@ -52,10 +52,9 @@ data class AppTypography (
 )
 
 @Composable
-fun appTypography(colorScheme: ColorScheme): AppTypography {
+fun appTypography(): AppTypography {
 
     val itemComment = TextStyle(
-        color = colorScheme.app.itemComment,
         fontFamily = FontFamily.Default,
         fontStyle = FontStyle.Italic,
         fontSize = 12.sp,
@@ -67,7 +66,6 @@ fun appTypography(colorScheme: ColorScheme): AppTypography {
         itemTitle = MaterialTheme.typography.bodyLarge,
         itemComment = itemComment,
         itemTitleDone = MaterialTheme.typography.bodyLarge.copy(
-            color = colorScheme.app.itemDone,
             textDecoration = TextDecoration.LineThrough
         ),
         itemCommentDone = itemComment.copy(

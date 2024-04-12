@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.lolo.io.onelist.core.design.colors.appColors
 import com.lolo.io.onelist.core.design.space
 
 
@@ -35,11 +36,11 @@ fun DialogContainer(
                         .fillMaxWidth()
                         .background(
                             shape = MaterialTheme.shapes.medium,
-                            color = MaterialTheme.colorScheme.surface
+                            color = MaterialTheme.appColors.dialogBackgroud,
                         )
                         .border(
                             width = 1.dp,
-                            MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.appColors.dialogBorder,
                             shape = MaterialTheme.shapes.medium,
                         )
                 ) {

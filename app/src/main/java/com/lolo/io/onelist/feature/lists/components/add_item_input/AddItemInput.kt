@@ -36,9 +36,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.design.colors.appColors
 import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
@@ -108,7 +108,7 @@ internal fun AddItemInput(
                             Icon(
                                 imageVector = Icons.Default.Check,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = MaterialTheme.appColors.addItemCheck
                             )
                         }
                     }

@@ -10,8 +10,8 @@ object Palette {
     val PURE_WHITE = Color(0xFFFFFFFF)
     val PURE_BLACK = Color(0xFF000000)
     val GRAY = Color(0xFF888888)
-
     val GRAY_LIGHT = Color(0xFFcdcdcd)
+    val GRAY_VERY_LIGHT = Color(0xFFeeeeee)
 
     val Transparent = Color.Transparent
 }

@@ -4,11 +4,11 @@ import android.view.SoundEffectConstants
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -28,8 +28,9 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.R
-import com.lolo.io.onelist.core.design.app
+import com.lolo.io.onelist.core.design.colors.appColors
 import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 
@@ -52,7 +53,7 @@ internal fun OneListHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = MaterialTheme.space.Big, end = MaterialTheme.space.Small)
+            .padding(horizontal = MaterialTheme.space.Small)
             .padding(vertical = MaterialTheme.space.Tiny),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -60,9 +61,13 @@ internal fun OneListHeader(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.space.Small)
         ) {
-            Image(painter = painterResource(id = R.drawable.logo_inv), contentDescription = null)
+            Icon(
+                modifier = Modifier.size(48.dp),
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                tint = MaterialTheme.appColors.oneListTopLogo
+            )
             Text(
                 text = stringResource(id = R.string.app_name),
                 style = MaterialTheme.typography.bodyLarge
@@ -75,7 +80,7 @@ internal fun OneListHeader(
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
-                    tint = MaterialTheme.colorScheme.app.settingsIcon
+                    tint = MaterialTheme.appColors.settingsIcon
                 )
             }
         }
@@ -114,14 +119,12 @@ internal fun OneListHeader(
                 Icon(
                     modifier = Modifier.alpha(targetRotationDefaultsControls.value),
                     imageVector = Icons.Default.Share, contentDescription = "Share List",
-                    tint = MaterialTheme.colorScheme.app.shareListIcon
-
                 )
 
                 Icon(
                     modifier = Modifier.alpha(targetRotationListsControls.value),
                     imageVector = Icons.Default.Edit, contentDescription = "Edit List",
-                    tint = MaterialTheme.colorScheme.app.editListIcon
+                    tint = MaterialTheme.appColors.editListIcon
                 )
 
             }
@@ -139,13 +142,12 @@ internal fun OneListHeader(
                         .alpha(targetRotationDefaultsControls.value)
                         .scale(1.2f),
                     imageVector = Icons.Default.Add, contentDescription = "Create List",
-                    tint = MaterialTheme.colorScheme.app.addListIcon
                 )
 
                 Icon(
                     modifier = Modifier.alpha(targetRotationListsControls.value),
                     imageVector = Icons.Default.Delete, contentDescription = "Delete List",
-                    tint = MaterialTheme.colorScheme.app.deleteListIcon
+                    tint = MaterialTheme.appColors.deleteListIcon
                 )
             }
         }

@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.R
+import com.lolo.io.onelist.core.design.colors.appColors
 import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.model.preview
@@ -62,7 +63,7 @@ internal fun DialogScope.DeleteListDialog(
             Icon(
                 imageVector = Icons.Default.Warning,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.error
+                tint = MaterialTheme.appColors.dialogDeleteWarning
             )
 
             Text(
@@ -91,7 +92,7 @@ internal fun DialogScope.DeleteListDialog(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.large)
                     .clickable(
-                        indication = rememberRipple(color = MaterialTheme.colorScheme.primary),
+                        indication = rememberRipple(color = MaterialTheme.appColors.dialogDeleteCheckBoxRipple),
                         interactionSource = remember { MutableInteractionSource() },
                         onClick = {
                             deleteFile = !deleteFile
@@ -107,7 +108,8 @@ internal fun DialogScope.DeleteListDialog(
                 Text(
                     text = stringResource(id = R.string.also_delete_file),
                     style = MaterialTheme.typography.labelLarge,
-                    fontStyle = FontStyle.Italic
+                    fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.appColors.dialogDeleteDeleteFile
                 )
                 Checkbox(checked = deleteFile, onCheckedChange = null)
             }
@@ -124,7 +126,7 @@ internal fun DialogScope.DeleteListDialog(
             TextButton(
                 onClick = onJustClearList,
                 colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.outline
+                    contentColor = MaterialTheme.appColors.dialogDeleteJutsClearList
                 )
             ) {
                 Icon(

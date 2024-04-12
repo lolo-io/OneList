@@ -106,11 +106,9 @@ fun <T> ReorderableList(
                                         view.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
                                     }
                                 },
-                            )
-                            .background(Color.White),
+                            ),
                     ) {
                         drawRow(item)
-
                     }
                 }
             }

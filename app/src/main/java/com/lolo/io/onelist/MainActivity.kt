@@ -7,6 +7,9 @@ import android.view.MotionEvent
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import com.anggrayudi.storage.SimpleStorageHelper
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.design.OneListTheme
@@ -31,9 +34,11 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder {
 
         setContent {
             OneListTheme {
-                OneListNavHost(
-                    startDestination = LISTS_SCREEN_ROUTE
-                )
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    OneListNavHost(
+                        startDestination = LISTS_SCREEN_ROUTE
+                    )
+                }
             }
         }
 

@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.design.Palette
-import com.lolo.io.onelist.core.design.app
+import com.lolo.io.onelist.core.design.colors.appColors
 import com.lolo.io.onelist.core.design.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.preview
@@ -49,7 +49,7 @@ internal fun SwipeableItem(
         backgroundStartToEnd = {
             Box(
                 Modifier
-                    .background(MaterialTheme.colorScheme.app.swipeEditBackground)
+                    .background(MaterialTheme.appColors.swipeEditBackground)
                     .fillMaxSize()
                     .padding(start = MaterialTheme.space.Normal),
                 contentAlignment = Alignment.CenterStart
@@ -64,7 +64,7 @@ internal fun SwipeableItem(
         backgroundEndToStart = {
             Box(
                 Modifier
-                    .background(MaterialTheme.colorScheme.app.swipeDeleteBackground)
+                    .background(MaterialTheme.appColors.swipeDeleteBackground)
                     .padding(end = MaterialTheme.space.Normal)
                     .fillMaxSize(),
                 contentAlignment = Alignment.CenterEnd
