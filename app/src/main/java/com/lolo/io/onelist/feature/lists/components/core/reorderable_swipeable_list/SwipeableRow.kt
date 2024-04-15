@@ -38,6 +38,7 @@ fun SwipeableRow(
     backgroundEndToStart: @Composable() (RowScope.() -> Unit),
     onSwipedToEnd: () -> Unit = {},
     onSwipedToStart: () -> Unit = {},
+    onSwipedBackToCenter: () -> Unit = {},
     onIsSwiping: (Boolean) -> Unit = {},
     content: @Composable() (() -> Unit),
 
@@ -80,6 +81,7 @@ fun SwipeableRow(
 
                             SwipeRowAnchorsState.Default -> {
                                 setSwipeState(SwipeState.NONE)
+                                onSwipedBackToCenter()
                             }
 
                             SwipeRowAnchorsState.End -> {

@@ -37,6 +37,7 @@ internal fun SwipeableItem(
     setSwipeState: (SwipeState) -> Unit = {},
     onSwipedToStart: () -> Unit = {},
     onSwipedToEnd: () -> Unit = {},
+    onSwipedBackToCenter: () -> Unit = {},
     onIsSwiping: (Boolean) -> Unit = {},
     drawItem: @Composable (Item) -> Unit = {}
 ) {
@@ -81,6 +82,9 @@ internal fun SwipeableItem(
         },
         onSwipedToStart = {
             onSwipedToStart()
+        },
+        onSwipedBackToCenter= {
+            onSwipedBackToCenter()
         }
     ) {
         drawItem(item)

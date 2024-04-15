@@ -61,6 +61,7 @@ data class AppColors(
     val textFieldCursor: Color,
     val textFieldText: Color,
     val textFieldPlaceholder: Color,
+    val textFieldBackgroundNoBorder: Color,
     val textFieldColors: TextFieldColors,
 )
 
@@ -123,6 +124,7 @@ fun appColors(
     textFieldCursor = MaterialTheme.colorScheme.outline,
     textFieldText = MaterialTheme.colorScheme.onSurface,
     textFieldPlaceholder = MaterialTheme.colorScheme.outline,
+    textFieldBackgroundNoBorder = Color.Transparent,
     textFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.background,
         unfocusedContainerColor = MaterialTheme.colorScheme.background,

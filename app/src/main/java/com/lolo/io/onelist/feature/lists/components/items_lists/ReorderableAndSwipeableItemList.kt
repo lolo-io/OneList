@@ -62,6 +62,7 @@ fun ReorderableAndSwipeableItemList(
     modifier: Modifier = Modifier,
     onItemSwipedToStart: (Item) -> Unit = {},
     onItemSwipedToEnd: (Item) -> Unit = {},
+    onItemSwipedBackToCenter: (Item) -> Unit = {},
     onClickOnItem: (Item) -> Unit = {},
     onListReordered: (List<Item>) -> Unit = { },
     onShowOrHideComment: (Item) -> Unit = {},
@@ -120,6 +121,9 @@ fun ReorderableAndSwipeableItemList(
                     },
                     onSwipedToEnd = {
                         onItemSwipedToEnd(item)
+                    },
+                    onSwipedBackToCenter = {
+                        onItemSwipedBackToCenter(item)
                     }
                 ) {
                     ItemUI(

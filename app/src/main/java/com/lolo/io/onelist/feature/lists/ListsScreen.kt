@@ -50,6 +50,9 @@ import com.lolo.io.onelist.feature.lists.components.items_lists.ReorderableAndSw
 import com.lolo.io.onelist.feature.lists.components.items_lists.rememberSwipeableLazyListState
 import com.lolo.io.onelist.feature.lists.components.list_chips.ListsFlowRow
 import com.lolo.io.onelist.feature.lists.utils.shareList
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -177,7 +180,7 @@ private fun ListsScreenUI(
                         showSelectedListControls = true
                     },
                     onListReordered = { list ->
-                       actions.reorderLists(list)
+                        actions.reorderLists(list)
                     })
 
             }
@@ -213,6 +216,10 @@ private fun ListsScreenUI(
 
         val themeSpaces = MaterialTheme.space
 
+        var deleteItemJobs = remember {
+            mutableMapOf<Long, Job?>()
+        }
+
         ReorderableAndSwipeableItemList(
             modifier = Modifier.offset {
                 IntOffset(x = 0, y = themeSpaces.Tiny.toPx().roundToInt() * -1)
@@ -223,14 +230,18 @@ private fun ListsScreenUI(
             },
             items = displayedItems,
             onItemSwipedToStart = {
-                coroutineScope.launch {
-                    delay(1500)
+                deleteItemJobs[it.id] = coroutineScope.launch {
+                    delay(2000)
                     actions.removeItem(it)
                 }
             },
             onItemSwipedToEnd = {
                 showDialog = DialogShown.EditItemDialog
                 editedItem = it
+            },
+            onItemSwipedBackToCenter = {
+                deleteItemJobs[it.id]?.cancel(CancellationException("Canceled by user"))
+                deleteItemJobs -= it.id
             },
             onShowOrHideComment = {
                 actions.switchItemCommentShown(it)

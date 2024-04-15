@@ -108,8 +108,12 @@ internal fun OneListTextField(
             trailingIcon = trailingIcon,
             shape = borderShape,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.appColors.textFieldColors.focusedContainerColor,
-                unfocusedContainerColor = MaterialTheme.appColors.textFieldColors.unfocusedContainerColor,
+                focusedContainerColor = if (showBorder) MaterialTheme.appColors.textFieldColors.focusedContainerColor
+                else
+                    MaterialTheme.appColors.textFieldBackgroundNoBorder,
+                unfocusedContainerColor = if (showBorder) MaterialTheme.appColors.textFieldColors.unfocusedContainerColor
+                else
+                    MaterialTheme.appColors.textFieldBackgroundNoBorder,
                 cursorColor = MaterialTheme.appColors.textFieldColors.cursorColor,
                 focusedLeadingIconColor = MaterialTheme.appColors.textFieldColors.focusedLeadingIconColor,
                 unfocusedLeadingIconColor = MaterialTheme.appColors.textFieldColors.unfocusedLeadingIconColor,
@@ -119,7 +123,12 @@ internal fun OneListTextField(
                 unfocusedIndicatorColor = MaterialTheme.appColors.textFieldColors.focusedIndicatorColor,
                 selectionColors = MaterialTheme.appColors.textFieldColors.textSelectionColors
             ),
-            placeholder = { Text(text = placeholder, color = MaterialTheme.appColors.textFieldPlaceholder) }
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    color = MaterialTheme.appColors.textFieldPlaceholder
+                )
+            }
         )
     }
 }
