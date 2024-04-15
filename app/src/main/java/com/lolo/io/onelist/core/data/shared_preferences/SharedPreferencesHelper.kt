@@ -24,6 +24,7 @@ class SharedPreferencesHelper(
         const val THEME_AUTO = "auto"
         const val THEME_LIGHT = "light"
         const val THEME_DARK = "dark"
+        const val THEME_DYNAMIC = "dynamic"
     }
 
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(app)

@@ -6,9 +6,12 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +33,7 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder {
     private val preferences by inject<SharedPreferencesHelper>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme)
         Config.init(applicationContext)
@@ -38,12 +42,19 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder {
             importListFromIntent(intent)
         }
 
+
+
+        val sharedPreferencesHelper by inject<SharedPreferencesHelper>()
         setContent {
-            OneListTheme {
+            OneListTheme(
+                sharedPreferencesHelper.theme == SharedPreferencesHelper.THEME_DYNAMIC
+            ) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    OneListNavHost(
-                        startDestination = LISTS_SCREEN_ROUTE
-                    )
+                    Surface(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
+                        OneListNavHost(
+                            startDestination = LISTS_SCREEN_ROUTE
+                        )
+                    }
                 }
             }
         }

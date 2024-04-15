@@ -4,10 +4,12 @@
         <item>auto</item>
         <item>light</item>
         <item>dark</item>
+        <item>dynamic</item>
     </string-array>
     <string-array name="theme_labels">
         <item>Auto (Android OS)</item>
         <item>Light</item>
         <item>Dark</item>
+        <item>Dynamic (Based on your wallpaper)</item>
     </string-array>
 </resources>

@@ -116,8 +116,8 @@ fun appColors(
     addItemCommentArrow = MaterialTheme.colorScheme.outline,
 
     // Whats New
-    whatsNewTitle = MaterialTheme.colorScheme.tertiary,
-    whatsNewItemIcon = MaterialTheme.colorScheme.primary,
+    whatsNewTitle = MaterialTheme.colorScheme.onSurface,
+    whatsNewItemIcon = MaterialTheme.colorScheme.onSurface,
 
     // TextField
     textFieldBorder = MaterialTheme.colorScheme.outline,
