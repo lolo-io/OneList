@@ -1,6 +1,7 @@
 package com.lolo.io.onelist.feature.settings.fragment
 
 import android.content.Context
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ import com.anggrayudi.storage.file.DocumentFileCompat
 import com.anggrayudi.storage.file.getAbsolutePath
 import com.anggrayudi.storage.file.toTreeDocumentFile
 import com.lolo.io.onelist.R
+import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.databinding.FragmentSettingsBinding
 import com.lolo.io.onelist.feature.lists.utils.StorageHelperHolder
 import isNotNullOrEmpty
@@ -29,20 +31,33 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private val viewModel by lazy { getViewModel<SettingsFragmentViewModel>() }
+    companion object {
+        const val SETTING_VERSION = "version"
+        const val SETTING_STORAGE = "storage"
 
+        const val SETTING_IMPORT = "import"
+        const val SETTING_BACKUP_ALL = "backup_all"
+        const val SETTING_RELEASE_NOTE = "releaseNote"
+
+        const val SETTING_CATEGORY_BACKUP = "cat_backup"
+
+
+    }
+
+    private val viewModel by lazy { getViewModel<SettingsFragmentViewModel>() }
     private var storageHolder: StorageHelperHolder? = null
+
+    private var onSharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding: FragmentSettingsBinding
         get() = _binding!!
 
-    var onClickOnShowReleaseNote : () -> Unit = {}
+    var onClickOnShowReleaseNote: () -> Unit = {}
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
         setBackupOptionsVisible(viewModel.backupDisplayPath.value != null)
-
     }
 
     override fun onAttach(context: Context) {
@@ -78,32 +93,40 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
 
-        this.preferenceScreen.get<Preference>("version")?.summary = viewModel.version
+        this.preferenceScreen.get<Preference>(SETTING_VERSION)?.summary = viewModel.version
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.backupDisplayPath.collect {
-                    (this@SettingsFragment.preferenceScreen.get<Preference>("storage") as? SwitchPreference)?.isChecked =
+                    (this@SettingsFragment.preferenceScreen.get<Preference>(SETTING_STORAGE)
+                            as? SwitchPreference)?.isChecked =
                         it != null
                     displayDefaultPath()
                     setBackupOptionsVisible(it.isNotNullOrEmpty())
-                    (this@SettingsFragment.preferenceScreen.get<Preference>("preferUseFiles") as? SwitchPreference)?.isChecked = viewModel.preferUseFiles
+                    (this@SettingsFragment.preferenceScreen
+                        .get<Preference>(SharedPreferencesHelper.PREFER_USE_FILES_PREF)
+                            as? SwitchPreference)?.isChecked =
+                        viewModel.preferUseFiles
                 }
             }
         }
 
-        preferenceManager.sharedPreferences?.registerOnSharedPreferenceChangeListener { _, key ->
-            when (key) {
-                "theme" -> activity?.recreate()
+        onSharedPreferenceChangeListener =
+            OnSharedPreferenceChangeListener { _, key ->
+                when (key) {
+                    SharedPreferencesHelper.THEME_PREF -> activity?.recreate()
+                }
             }
-        }
+
+        preferenceManager.sharedPreferences?.registerOnSharedPreferenceChangeListener(
+            onSharedPreferenceChangeListener
+        )
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
-            "storage" -> {
+            SETTING_STORAGE -> {
                 if ((preference as? SwitchPreference)?.isChecked == true) {
-
 
                     if (activity?.checkSelfPermission("READ_EXTERNAL_STORAGE") == PackageManager.PERMISSION_DENIED) {
                         activity?.requestPermissions(
@@ -126,14 +149,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             }
 
-            "import" -> {
+            SETTING_IMPORT -> {
                 storageHolder?.storageHelper?.openFilePicker()
                 storageHolder?.storageHelper?.onFileSelected = { _, files ->
                     lifecycleScope.launch {
                         try {
-                            val treeUriIfPossible = DocumentFileCompat.fromUri(requireContext(), files[0].uri)
-                                ?.toTreeDocumentFile(requireContext())?.uri
-                                ?: files[0].uri
+                            val treeUriIfPossible =
+                                DocumentFileCompat.fromUri(requireContext(), files[0].uri)
+                                    ?.toTreeDocumentFile(requireContext())?.uri
+                                    ?: files[0].uri
 
                             viewModel.importList(treeUriIfPossible)
 
@@ -152,7 +176,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             }
 
-            "backup_all" -> {
+            SETTING_BACKUP_ALL -> {
                 lifecycleScope.launch {
                     try {
                         viewModel.backupAllListsOnDevice()
@@ -169,11 +193,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             }
 
-            "preferUseFiles" -> {
+            SharedPreferencesHelper.PREFER_USE_FILES_PREF -> {
                 viewModel.onPreferUseFiles()
             }
 
-            "releaseNote" -> {
+            SETTING_RELEASE_NOTE -> {
                 onClickOnShowReleaseNote()
             }
         }
@@ -182,36 +206,40 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun displayDefaultPath() {
 
-        this.preferenceScreen.get<Preference>("storage")
+        this.preferenceScreen.get<Preference>(SETTING_STORAGE)
             ?.summary = viewModel.backupDisplayPath.value?.takeIf { it.isNotEmpty() }
             ?: getString(R.string.settings_backup_select)
 
         if (viewModel.syncFolderNotAccessible) {
-            this.preferenceScreen.get<Preference>("storage")?.icon =
+            this.preferenceScreen.get<Preference>(SETTING_STORAGE)?.icon =
                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_settings_error_triangle)
-            this.preferenceScreen.get<Preference>("storage")
-                ?.summary = this.preferenceScreen.get<Preference>("storage")
+            this.preferenceScreen.get<Preference>(SETTING_STORAGE)
+                ?.summary = this.preferenceScreen.get<Preference>(SETTING_STORAGE)
                 ?.summary.toString() + "\n\n" + getString(R.string.settings_error_try_switch_option)
 
-            this.preferenceScreen.get<PreferenceCategory>("cat_backup")?.icon =
+            this.preferenceScreen.get<PreferenceCategory>(SETTING_CATEGORY_BACKUP)?.icon =
                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_settings_error_triangle)
 
         } else {
-            this.preferenceScreen.get<Preference>("storage")?.icon =
+            this.preferenceScreen.get<Preference>(SETTING_STORAGE)?.icon =
                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_settings_save_24dp)
 
-            this.preferenceScreen.get<PreferenceCategory>("cat_backup")?.icon = null
+            this.preferenceScreen.get<PreferenceCategory>(SETTING_CATEGORY_BACKUP)?.icon = null
         }
     }
 
     private fun setBackupOptionsVisible(visible: Boolean) {
-        this.preferenceScreen.get<Preference>("preferUseFiles")?.isVisible = visible
-        this.preferenceScreen.get<Preference>("backup_all")?.isVisible = visible
+        this.preferenceScreen.get<Preference>(SharedPreferencesHelper.PREFER_USE_FILES_PREF)
+            ?.isVisible = visible
+        this.preferenceScreen.get<Preference>(SETTING_BACKUP_ALL)?.isVisible = visible
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        onSharedPreferenceChangeListener?.let {
+            preferenceManager.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(it)
+        }
     }
 }
 

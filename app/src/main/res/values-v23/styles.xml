@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppThemeV23" parent="AppThemeV21">
+    <style name="AppThemeV23" parent="CommonAppTheme">
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:navigationBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="AppThemeLauncherV23" parent="AppThemeLauncherV21">
+    <style name="AppThemeLauncherV23" parent="CommonAppThemeLauncher">
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>

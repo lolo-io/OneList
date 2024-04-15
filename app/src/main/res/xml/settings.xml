@@ -5,12 +5,10 @@
         android:key="cat_personalization"
         android:title="@string/personalization">
         <DropDownPreference
-            android:defaultValue="auto"
             android:entries="@array/theme_labels"
             android:entryValues="@array/theme_values"
             android:icon="@drawable/ic_settings_color_palette_24dp"
             android:key="theme"
-            android:summary="Auto"
             android:title="Theme"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>

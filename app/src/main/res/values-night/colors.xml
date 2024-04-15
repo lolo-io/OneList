@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#e53935</color>
-    <color name="colorPrimaryDark">#b71c1c</color>
     <color name="colorAccent">#eeeeee</color>
     <color name="system_on_surface_light">#1B1B1F</color>
 
+    <color name="error_color">#c54949</color>
 
     <color name="systemBarsColors">@color/system_on_surface_light</color>
+    <color name="windowSplashScreenBackground">@color/systemBarsColors</color>
 
     <color name="settingsTextColor">@android:color/primary_text_dark</color>
     <color name="settingsIconColor">@color/colorAccent</color>

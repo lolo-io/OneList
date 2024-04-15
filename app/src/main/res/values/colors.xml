@@ -6,7 +6,11 @@
     <color name="colorAccent">#757575</color>
     <color name="transparent">@android:color/transparent</color>
     <color name="pure_white">#FFFFFF</color>
+
     <color name="system_on_surface_light">#FFFFFF</color>
+    <color name="windowSplashScreenBackground">@color/colorPrimary</color>
+
+    <color name="error_color">@color/colorPrimary</color>
 
     <color name="systemBarsColors">@color/pure_white</color>
 
