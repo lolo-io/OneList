@@ -14,14 +14,13 @@
 
     <!-- Custom Preference Theme -->
     <style name="CommonPreferenceTheme"
-        parent="PreferenceThemeOverlay">
+        parent="PreferenceThemeOverlay.v14.Material">
         <item name="android:layout">
             @layout/fragment_settings
         </item>
         <item name="android:textColor">@color/settingsTextColor</item>
         <item name="android:backgroundTint">@color/settingsBackgroundColor</item>
     </style>
-
 
     <style name="AppTheme" parent="CommonAppTheme"/>
     <style name="AppThemeLauncher" parent="CommonAppThemeLauncher"/>

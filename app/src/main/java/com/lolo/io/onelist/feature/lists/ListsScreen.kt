@@ -50,6 +50,7 @@ import com.lolo.io.onelist.feature.lists.components.items_lists.ReorderableAndSw
 import com.lolo.io.onelist.feature.lists.components.items_lists.rememberSwipeableLazyListState
 import com.lolo.io.onelist.feature.lists.components.list_chips.ListsFlowRow
 import com.lolo.io.onelist.feature.lists.utils.shareList
+import ifNotEmpty
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
@@ -62,10 +63,28 @@ import kotlin.math.roundToInt
 internal fun ListsScreen(navigateToSettings: () -> Unit) {
     val viewModel = koinInject<ListScreenViewModel>()
 
+    val context = LocalContext.current
+
     val allLists = viewModel.allLists.collectAsStateWithLifecycle().value
     val selectedList = viewModel.selectedList.collectAsStateWithLifecycle().value
     val displayedItems = viewModel.displayedItems.collectAsStateWithLifecycle().value
     val refreshing = viewModel.isRefreshing.collectAsStateWithLifecycle().value
+
+    val errorMessage = viewModel.errorMessage.collectAsStateWithLifecycle().value
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            val message = StringBuilder(context.getString(it.resId)).apply {
+                it.restResIds.ifNotEmpty { restResIds ->
+                    append(" : ")
+                    append(context.getString(restResIds.first()))
+                }
+            }.toString()
+
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            viewModel.resetError()
+        }
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.init()
@@ -216,7 +235,7 @@ private fun ListsScreenUI(
 
         val themeSpaces = MaterialTheme.space
 
-        var deleteItemJobs = remember {
+        val deleteItemJobs = remember {
             mutableMapOf<Long, Job?>()
         }
 

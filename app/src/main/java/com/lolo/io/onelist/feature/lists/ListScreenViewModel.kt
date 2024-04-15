@@ -94,6 +94,11 @@ class ListScreenViewModel(
         } else null
     }
 
+    fun resetError() {
+        allListsWithErrors.value = allListsWithErrors.value.copy(errors = listOf())
+    }
+
+
 
     fun refresh(showRefreshIndicator: Boolean = true) {
         viewModelScope.launch {
