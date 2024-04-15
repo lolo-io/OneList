@@ -1,6 +1,5 @@
 package com.lolo.io.onelist.feature.lists
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lolo.io.onelist.BuildConfig
@@ -126,10 +125,6 @@ class ListScreenViewModel(
         }
     }
 
-    suspend fun importList(uri: Uri): ItemList {
-        return useCases.importList(uri)
-    }
-
     fun deleteList(
         itemList: ItemList,
         deleteBackupFile: Boolean,
@@ -139,7 +134,6 @@ class ListScreenViewModel(
             useCases.removeList(itemList, deleteBackupFile, onFileDeleted)
         }
     }
-
 
     fun clearList(list: ItemList) {
         viewModelScope.launch {
@@ -163,7 +157,6 @@ class ListScreenViewModel(
 
 
     // ITEMS
-
 
     fun switchItemStatus(item: Item) {
         viewModelScope.launch {
