@@ -57,7 +57,6 @@ class ReorderableFlowRowItem<T>(
 
 class ReorderableFlowRowState<T>(
     private val data: MutableState<List<ReorderableFlowRowItem<T>>>,
-    val onListReordered: (List<T>, draggedItem: ReorderableFlowRowItem<T>) -> Unit
 ) {
 
     private val _draggedItem: MutableState<ReorderableFlowRowItem<T>?> = mutableStateOf(null)
@@ -67,6 +66,9 @@ class ReorderableFlowRowState<T>(
         set(value) {
             data.value = value
         }
+
+    val items
+        get() = data.value.map { it.item }
 
     var draggedItem
         get() = _draggedItem.value
@@ -84,7 +86,6 @@ class ReorderableFlowRowState<T>(
 @Composable
 fun <T> rememberReorderableFlowRowState(
     items: List<T>,
-    onListReordered: (List<T>, draggedItem: ReorderableFlowRowItem<T>) -> Unit = { _, _ -> }
 ): ReorderableFlowRowState<T> {
     val draggableListState = remember(items) {
         val data =
@@ -93,7 +94,7 @@ fun <T> rememberReorderableFlowRowState(
                     ReorderableFlowRowItem(it)
                 }
             )
-        ReorderableFlowRowState(data, onListReordered)
+        ReorderableFlowRowState(data)
     }
 
     return draggableListState
@@ -144,10 +145,6 @@ fun <T> Modifier.reorderableFlowRow(
                                                     draggedItem,
                                                     it
                                                 )
-                                            reorderableFlowLayoutState.onListReordered(
-                                                reorderableFlowLayoutState.reorderableItems.map { it.item },
-                                                it
-                                            )
                                         }
 
 
@@ -163,10 +160,6 @@ fun <T> Modifier.reorderableFlowRow(
                                                     draggedItem,
                                                     it
                                                 )
-                                            reorderableFlowLayoutState.onListReordered(
-                                                reorderableFlowLayoutState.reorderableItems.map { it.item },
-                                                it
-                                            )
                                         }
 
                                     }

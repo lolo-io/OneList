@@ -20,28 +20,35 @@ fun <T> DraggableFlowRow(
     onDragStart: (item: T) -> Unit = {},
     onDragEnd: () -> Unit = {},
     onDragCancel: () -> Unit = {},
-    onListReordered: (List<T>, item: ReorderableFlowRowItem<T>) -> Unit = { _, _, -> },
+    onListReordered: (List<T>) -> Unit = { _ -> },
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     maxItemsInEachRow: Int = Int.MAX_VALUE,
 ) {
 
+
     val draggableListState = rememberReorderableFlowRowState(
         items = items,
-        onListReordered = onListReordered
-
     )
 
     Box(
         modifier = Modifier.fillMaxWidth(),
     ) {
         FlowRow(
-            modifier = modifier.reorderableFlowRow(
-                reorderableFlowLayoutState = draggableListState,
-                onDragStart = onDragStart,
-                onDragEnd = onDragEnd,
-                onDragCancel = onDragCancel
-            ).fillMaxWidth(),
+            modifier = modifier
+                .reorderableFlowRow(
+                    reorderableFlowLayoutState = draggableListState,
+                    onDragStart = onDragStart,
+                    onDragEnd = {
+                        onListReordered(draggableListState.items)
+                        onDragEnd()
+                    },
+                    onDragCancel = {
+                        onListReordered(draggableListState.items)
+                        onDragCancel()
+                    }
+                )
+                .fillMaxWidth(),
             horizontalArrangement = horizontalArrangement,
             verticalArrangement = verticalArrangement,
             maxItemsInEachRow = maxItemsInEachRow

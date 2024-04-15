@@ -176,8 +176,8 @@ private fun ListsScreenUI(
                         actions.selectList(it)
                         showSelectedListControls = true
                     },
-                    onListReordered = { list, _ ->
-                        actions.reorderLists(list)
+                    onListReordered = { list ->
+                       actions.reorderLists(list)
                     })
 
             }
