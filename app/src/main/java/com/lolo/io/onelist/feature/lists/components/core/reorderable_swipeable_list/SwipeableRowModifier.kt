@@ -77,10 +77,11 @@ fun Modifier.swipeableRow(
 
 
     var isFling by remember { mutableStateOf(false) }
+    var isReset by remember { mutableStateOf(false) }
 
     val animateOffset = animateFloatAsState(
         targetValue = offset,
-        animationSpec = if (!isFling) spring() else tween(650),
+        animationSpec = if (!isFling && !isReset) spring() else tween(650),
         label = "Offset animation"
     )
 
@@ -114,17 +115,23 @@ fun Modifier.swipeableRow(
             )
         }
         .pointerInput(anchors) {
+
             awaitPointerEventScope {
                 while (true) {
+
+
                     awaitPointerEvent().changes.forEach {
                         pointerDownX = it.position.x
 
                         var isHorizontal = false
 
+                        isReset = false
+                        isFling = false
+                        var flingTargetAnchorsState = SwipeRowAnchorsState.Default
 
                         awaitTouchSlopOrCancellation(it.id) { change, overSlop ->
 
-                            if (overSlop.x.absoluteValue < overSlop.y.absoluteValue * 3) {
+                            if (overSlop.x.absoluteValue < overSlop.y.absoluteValue * 2) {
                                 isHorizontal = false
                             } else {
                                 isHorizontal = true
@@ -141,17 +148,14 @@ fun Modifier.swipeableRow(
                                 val deltaTime = change.uptimeMillis - change.previousUptimeMillis
                                 val velocity = deltaX / deltaTime
 
-                                if (!isFling && previousPointerPositionX != 0f && velocity >= 3.4) {
+                                if (!isFling && velocity >= 3.4) {
                                     isFling = true
-                                    anchorState = anchorState.next()
-                                    offset = anchorState.anchor(anchors)
-                                    setTargetAnchorState(anchorState)
+                                    flingTargetAnchorsState = anchorState.next()
+
                                 }
-                                if (!isFling && previousPointerPositionX != 0f && velocity <= -3.4) {
+                                if (!isFling  && velocity <= -3.4) {
                                     isFling = true
-                                    anchorState = anchorState.previous()
-                                    offset = anchorState.anchor(anchors)
-                                    setTargetAnchorState(anchorState)
+                                    flingTargetAnchorsState = anchorState.previous()
                                 }
                                 previousPointerPositionX = change.position.x
 
@@ -168,20 +172,27 @@ fun Modifier.swipeableRow(
                         }
 
                         awaitDragOrCancellation(it.id)
-                        anchorState = if (offset >= anchors.end * 0.5f) {
-                            setTargetAnchorState(SwipeRowAnchorsState.End)
-                            SwipeRowAnchorsState.End
-                        } else if (offset <= anchors.start * 0.6f) {
-                            setTargetAnchorState(SwipeRowAnchorsState.Start)
-                            SwipeRowAnchorsState.Start
+                        if(isFling) {
+                            anchorState = flingTargetAnchorsState
+                            setTargetAnchorState(flingTargetAnchorsState)
                         } else {
-                            setTargetAnchorState(SwipeRowAnchorsState.Default)
-                            SwipeRowAnchorsState.Default
-
+                            anchorState = if (offset >= anchors.end * 0.5f) {
+                                isReset = true
+                                setTargetAnchorState(SwipeRowAnchorsState.End)
+                                SwipeRowAnchorsState.End
+                            } else if (offset <= anchors.start * 0.6f) {
+                                isReset = true
+                                setTargetAnchorState(SwipeRowAnchorsState.Start)
+                                SwipeRowAnchorsState.Start
+                            } else {
+                                isReset = true
+                                setTargetAnchorState(SwipeRowAnchorsState.Default)
+                                SwipeRowAnchorsState.Default
+                            }
                         }
+
                         offset = anchorState.anchor(anchors)
 
-                        isFling = false
                     }
                 }
             }

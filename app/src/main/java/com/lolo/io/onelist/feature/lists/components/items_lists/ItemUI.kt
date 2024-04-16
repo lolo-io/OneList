@@ -5,6 +5,8 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,9 +54,13 @@ fun ItemUI(
 ) {
     Surface(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable(
+                onClick = { onClick() },
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ),
         color = Color.Transparent,
-        onClick = onClick,
     ) {
         Column(
             modifier = Modifier
@@ -116,7 +122,9 @@ fun ItemUI(
 
 
                         if (item.comment.isNotEmpty()) {
-                            Box(modifier = Modifier.align(Alignment.Top).padding(top = MaterialTheme.space.Tiny)) {
+                            Box(modifier = Modifier
+                                .align(Alignment.Top)
+                                .padding(top = MaterialTheme.space.Tiny)) {
                                 val animatedArrowRotation by animateFloatAsState(
                                     targetValue = if (item.commentDisplayed) 0f else 180f,
                                     animationSpec = tween(

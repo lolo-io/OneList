@@ -19,7 +19,6 @@ android {
         versionCodeCI = (versionProps["VERSION_CODE"] as String).toInt()
     }
 
-
     defaultConfig {
         multiDexEnabled = true
         applicationId = "com.lolo.io.onelist"
