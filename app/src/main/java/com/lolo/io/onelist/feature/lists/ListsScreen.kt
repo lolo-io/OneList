@@ -60,7 +60,8 @@ import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
 @Composable
-internal fun ListsScreen(navigateToSettings: () -> Unit) {
+internal fun ListsScreen(
+    navigateToSettings: () -> Unit) {
     val viewModel = koinInject<ListScreenViewModel>()
 
     val context = LocalContext.current
@@ -69,6 +70,8 @@ internal fun ListsScreen(navigateToSettings: () -> Unit) {
     val selectedList = viewModel.selectedList.collectAsStateWithLifecycle().value
     val displayedItems = viewModel.displayedItems.collectAsStateWithLifecycle().value
     val refreshing = viewModel.isRefreshing.collectAsStateWithLifecycle().value
+
+
 
     val errorMessage = viewModel.errorMessage.collectAsStateWithLifecycle().value
 
@@ -86,9 +89,6 @@ internal fun ListsScreen(navigateToSettings: () -> Unit) {
         }
     }
 
-    LaunchedEffect(viewModel) {
-        viewModel.init()
-    }
 
     val listScreenActions = remember {
         object : ListScreenActions {

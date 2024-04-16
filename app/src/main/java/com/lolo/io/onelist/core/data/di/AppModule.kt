@@ -1,6 +1,7 @@
 package com.lolo.io.onelist.core.data.di
 
 import androidx.room.Room
+import com.lolo.io.onelist.MainActivityViewModel
 import com.lolo.io.onelist.core.data.file_access.FileAccess
 import com.lolo.io.onelist.core.data.reporitory.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
@@ -10,8 +11,9 @@ import com.lolo.io.onelist.core.domain.use_cases.AddItemToList
 import com.lolo.io.onelist.core.domain.use_cases.ClearList
 import com.lolo.io.onelist.core.domain.use_cases.CreateList
 import com.lolo.io.onelist.core.domain.use_cases.EditItemOfList
-import com.lolo.io.onelist.core.domain.use_cases.SaveListToDb
 import com.lolo.io.onelist.core.domain.use_cases.GetAllLists
+import com.lolo.io.onelist.core.domain.use_cases.SaveListToDb
+import com.lolo.io.onelist.core.domain.use_cases.LoadAllLists
 import com.lolo.io.onelist.core.domain.use_cases.HandleFirstLaunch
 import com.lolo.io.onelist.core.domain.use_cases.ImportList
 import com.lolo.io.onelist.core.domain.use_cases.MoveList
@@ -26,6 +28,8 @@ import com.lolo.io.onelist.core.domain.use_cases.ShowWhatsNew
 import com.lolo.io.onelist.core.domain.use_cases.SwitchItemCommentShown
 import com.lolo.io.onelist.core.domain.use_cases.SwitchItemStatus
 import com.lolo.io.onelist.core.domain.use_cases.SyncAllLists
+import com.lolo.io.onelist.feature.lists.tuto.FirstLaunchLists
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
@@ -46,9 +50,8 @@ val appModule = module {
         val saveListToDb = SaveListToDb(get())
         OneListUseCases(
             createList = CreateList(get()),
-            getAllLists = GetAllLists(
-                (get())
-            ),
+            loadAllLists = LoadAllLists(get()),
+            getAllLists = GetAllLists(get()),
             removeList = RemoveList((get())),
             handleFirstLaunch = HandleFirstLaunch(get(), get()),
             saveListToDb = saveListToDb,
@@ -80,6 +83,14 @@ val appModule = module {
     single<ItemListDao> {
         val database = get<OneListDatabase>()
         database.itemListDao
+    }
+
+    single {
+        FirstLaunchLists(get())
+    }
+
+    viewModel<MainActivityViewModel> {
+        MainActivityViewModel(get(), get(), get())
     }
 }
 

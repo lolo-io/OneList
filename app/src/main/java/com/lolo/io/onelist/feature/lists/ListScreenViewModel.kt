@@ -2,16 +2,13 @@ package com.lolo.io.onelist.feature.lists
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lolo.io.onelist.BuildConfig
 import com.lolo.io.onelist.R
-import com.lolo.io.onelist.core.data.model.AllListsWithErrors
 import com.lolo.io.onelist.core.data.model.ErrorLoadingList
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.ui.util.UIString
-import com.lolo.io.onelist.feature.lists.tuto.FirstLaunchLists
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,15 +20,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ListScreenViewModel(
-    private val firstLaunchLists: FirstLaunchLists,
     private val useCases: OneListUseCases,
-    private val preferences: SharedPreferencesHelper
+    preferences: SharedPreferencesHelper
 ) : ViewModel() {
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val allListsWithErrors = MutableStateFlow(AllListsWithErrors())
+    private val allListsWithErrors = useCases.getAllLists()
 
     val allLists = allListsWithErrors.map {
         it.lists
@@ -53,28 +49,15 @@ class ListScreenViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ItemList())
 
 
-    val errorMessage = allListsWithErrors.map {
-        getErrorMessageWhenLoadingLists(it.errors)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), null)
-
-    private val _showWhatsNew = MutableStateFlow(false)
-    val showWhatsNew = _showWhatsNew.asStateFlow()
+    private val _errorMessage = MutableStateFlow<UIString?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
 
     init {
-        refresh(showRefreshIndicator = false)
-    }
-
-    suspend fun init() {
-        useCases.handleFirstLaunch(firstLaunchLists.firstLaunchLists())
-        setAppVersion()
-    }
-
-
-    private fun setAppVersion() {
-        if (preferences.version != BuildConfig.VERSION_NAME) {
-            //   _showWhatsNew.value = useCases.showWhatsNew() // no whatsNew for this version
-            preferences.version = BuildConfig.VERSION_NAME
-        }
+        allListsWithErrors.onEach {
+            _errorMessage.value = if (it.errors.isNotEmpty()) {
+                getErrorMessageWhenLoadingLists(it.errors)
+            } else null
+        }.launchIn(viewModelScope)
     }
 
     private fun getErrorMessageWhenLoadingLists(errors: List<ErrorLoadingList>): UIString? {
@@ -95,10 +78,8 @@ class ListScreenViewModel(
     }
 
     fun resetError() {
-        allListsWithErrors.value = allListsWithErrors.value.copy(errors = listOf())
+        _errorMessage.value = null
     }
-
-
 
     fun refresh(showRefreshIndicator: Boolean = true) {
         viewModelScope.launch {
@@ -154,15 +135,13 @@ class ListScreenViewModel(
 
     private suspend fun getAllLists(showRefreshIndicator: Boolean = true) {
         _isRefreshing.value = showRefreshIndicator
-        useCases.getAllLists().onEach {
-            allListsWithErrors.value = it
+        useCases.loadAllLists().onEach {
             _isRefreshing.value = false
         }.launchIn(viewModelScope)
     }
 
 
     // ITEMS
-
     fun switchItemStatus(item: Item) {
         viewModelScope.launch {
             _displayedItems.value = useCases.switchItemStatus(selectedList.value, item).items

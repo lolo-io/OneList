@@ -8,10 +8,7 @@ import org.koin.dsl.module
 
 val listsModule = module {
     viewModel<ListScreenViewModel> {
-        ListScreenViewModel(get(), get(), get())
-    }
-    single {
-        FirstLaunchLists(get())
+        ListScreenViewModel(get(), get())
     }
 
     single {

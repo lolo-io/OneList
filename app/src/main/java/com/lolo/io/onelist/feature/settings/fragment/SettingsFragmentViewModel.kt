@@ -50,7 +50,7 @@ class SettingsFragmentViewModel(
 
     fun onPreferUseFiles() {
         viewModelScope.launch {
-            useCases.getAllLists()
+            useCases.loadAllLists()
         }
     }
 

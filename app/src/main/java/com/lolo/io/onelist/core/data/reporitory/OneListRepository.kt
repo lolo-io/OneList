@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
@@ -32,6 +33,9 @@ class OneListRepository(
 
     private val _allListsWithErrors =
         MutableStateFlow(AllListsWithErrors())
+
+    val allListsWithErrors
+        get() = _allListsWithErrors.asStateFlow()
 
     suspend fun getAllLists(): Flow<AllListsWithErrors> {
         withContext(Dispatchers.IO) {

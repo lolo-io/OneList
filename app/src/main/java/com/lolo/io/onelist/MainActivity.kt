@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,10 +13,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.doOnPreDraw
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.compose.rememberNavController
 import com.anggrayudi.storage.SimpleStorageHelper
 import com.lolo.io.onelist.core.data.reporitory.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
@@ -22,7 +28,9 @@ import com.lolo.io.onelist.core.design.OneListTheme
 import com.lolo.io.onelist.core.ui.Config
 import com.lolo.io.onelist.feature.lists.navigation.LISTS_SCREEN_ROUTE
 import com.lolo.io.onelist.feature.lists.utils.StorageHelperHolder
+import com.lolo.io.onelist.feature.whatsnew.navigation.navigateToWhatsNewScreen
 import com.lolo.io.onelist.navigation.OneListNavHost
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -31,6 +39,7 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder {
     override val storageHelper = SimpleStorageHelper(this)
 
     private val preferences by inject<SharedPreferencesHelper>()
+    private val viewModel by inject<MainActivityViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -42,16 +51,39 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder {
             importListFromIntent(intent)
         }
 
-
-
         val sharedPreferencesHelper by inject<SharedPreferencesHelper>()
+
+        val content: View = findViewById(android.R.id.content)
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    return if (viewModel.listsLoaded.value) {
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+        )
+
         setContent {
-            OneListTheme(
-                sharedPreferencesHelper.theme == SharedPreferencesHelper.THEME_DYNAMIC
-            ) {
+            val navController = rememberNavController()
+            val showWhatsNew = viewModel.showWhatsNew.collectAsStateWithLifecycle().value
+
+            LaunchedEffect(showWhatsNew) {
+                if(showWhatsNew) {
+                    navController.navigateToWhatsNewScreen()
+                }
+            }
+
+            OneListTheme(isDynamic = sharedPreferencesHelper.theme == SharedPreferencesHelper.THEME_DYNAMIC) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    Surface(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
+                    Surface(modifier = Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding()) {
                         OneListNavHost(
+                            navController =  navController,
                             startDestination = LISTS_SCREEN_ROUTE
                         )
                     }

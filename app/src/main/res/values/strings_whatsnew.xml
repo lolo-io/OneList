@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="onelist_updated">Breaking Change !</string>
-    <string name="external_folder_title">The way you save your lists on your device has changed.</string>
-    <string name="external_folder_content">If you used the feature to backup your lists locally before, go to settings, check \"Backup lists on device\", and select or create a folder where your lists will be saved.
-        \n\nIf you used this feature before, your previous list files won\'t be updated anymore, be sure you make this operation in order to have your lists backed up again. This will create new backup files.
-        \n\nIf you didn\'t use this feature before, you can ignore this message.
-        \n\n
-        \n\nImport a list has also been moved into the settings.</string>
+    <string name="whatsnew_title">1List has been updated.</string>
+    <string name="whatsnew_first_title">You can undo a deleted item</string>
+    <string name="whatsnew_first_desc">When you swipe an item left to delete it, you have 2 seconds to change your mind and swipe it back to the middle. This will cancel the deletion.</string>
+    <string name="whatsnew_second_title">Small ui changes</string>
+    <string name="whatsnew_second_desc">There have been some small UI changes to comply with new UX standards.</string>
+    <string name="whatsnew_third_title">Dynamic theme</string>
+    <string name="whatsnew_third_desc">If you are on Android 11 or above, you can use a dynamic theme that will adapt to your devices wallpaper and style.</string>
     <string name="continue_button">Continue</string>
 </resources>

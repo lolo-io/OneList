@@ -6,15 +6,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.design.colors.darkColorScheme
 import com.lolo.io.onelist.core.design.colors.lightColorScheme
 
 @Composable
-fun OneListTheme(isDynamic: Boolean = false , content: @Composable () -> Unit) {
+fun OneListTheme(
+    isDynamic: Boolean = false,
+    content: @Composable () -> Unit
+) {
 
     val isDark = isSystemInDarkTheme()
     val colorScheme =

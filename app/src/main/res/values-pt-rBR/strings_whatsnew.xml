@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="onelist_updated">Mudança Importante!</string>
-    <string name="external_folder_title">A maneira como você salva suas listas em seu dispositivo mudou.</string>
-    <string name="external_folder_content">Se você utilizava a funcionalidade de backup local de suas listas, vá para as configurações, marque "Fazer backup de listas no dispositivo" e selecione ou crie uma pasta onde suas listas serão salvas.
-\n\nSe você utilizava essa funcionalidade, seus arquivos de listas anteriores não serão mais atualizados. Certifique-se de realizar esta operação para ter suas listas novamente salvas. Isso criará novos arquivos de backup.
-\n\nSe você não utilizou essa funcionalidade anteriormente, pode ignorar esta mensagem.
-\n\nA importação de listas também foi movida para as configurações.</string>
+    <string name="whatsnew_title">1List foi atualizada.</string>
+    <string name="whatsnew_first_title">Você pode desfazer a exclusão de um item.</string>
+    <string name="whatsnew_first_desc">Quando você desliza um item para a esquerda para excluí-lo, você tem 2 segundos para mudar de ideia e deslizá-lo de volta para o meio. Isso cancelará a exclusão.</string>
+    <string name="whatsnew_second_title">Pequenas mudanças na interface</string>
+    <string name="whatsnew_second_desc">Houve algumas pequenas mudanças na interface para cumprir as novas normas de UX.</string>
+    <string name="whatsnew_third_title">Tema dinâmico</string>
+    <string name="whatsnew_third_desc">Se você estiver no Android 11 ou superior, você pode usar um tema dinâmico que se adaptará ao papel de parede e estilo do seu dispositivo.</string>
     <string name="continue_button">Continuar</string>
 </resources>

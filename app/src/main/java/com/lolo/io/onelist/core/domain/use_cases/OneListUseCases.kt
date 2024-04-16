@@ -13,6 +13,7 @@ data class OneListUseCases(
     val switchItemStatus: SwitchItemStatus,
     val switchItemCommentShown: SwitchItemCommentShown,
     val saveListToDb: SaveListToDb,
+    val loadAllLists: LoadAllLists,
     val getAllLists: GetAllLists,
     val setBackupUri: SetBackupUri,
     val removeList: RemoveList,
