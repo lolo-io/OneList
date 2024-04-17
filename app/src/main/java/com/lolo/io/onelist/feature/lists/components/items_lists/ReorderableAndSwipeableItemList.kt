@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
@@ -13,6 +14,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -28,28 +30,29 @@ import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.ReorderableList
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.hijacker.rememberLazyListStateHijacker
+import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.swipeableRowScope
+import com.lolo.io.onelist.feature.lists.components.dialogs.components.ScopedComposable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 class SwipeableLazyListState(
     val listState: LazyListState
 ) {
-    private val swipeStates: HashMap<Long, SwipeState> = hashMapOf()
+    val swipeStates = mutableStateMapOf<Long, SwipeState>()
+
     fun setSwipeState(item: Item, state: SwipeState) {
         swipeStates[item.id] = state
     }
+
     fun resetSwipeState(item: Item) {
         swipeStates[item.id] = SwipeState.NONE
-    }
-    fun getSwipeState(item: Item) : SwipeState {
-        return swipeStates[item.id] ?: SwipeState.NONE
     }
 }
 
 @Composable
-fun rememberSwipeableLazyListState(): SwipeableLazyListState  {
+fun rememberSwipeableLazyListState(): SwipeableLazyListState {
     val listState = rememberLazyListState()
+
     return remember { // todo add Saved to hold swipe after configuration change
         SwipeableLazyListState(listState)
     }
@@ -75,13 +78,12 @@ fun ReorderableAndSwipeableItemList(
 
     val coroutineScope = rememberCoroutineScope()
 
-    var isSwiping by remember { mutableStateOf(false) }
     var isReordering by remember { mutableStateOf(false) }
 
     var enableItemClick by remember { mutableStateOf(true) }
 
-    LaunchedEffect(isSwiping, isReordering) {
-        enableItemClick = if (isSwiping || isReordering) false else {
+    LaunchedEffect(isReordering) {
+        enableItemClick = if (isReordering) false else {
             delay(200)
             true
         }
@@ -92,53 +94,54 @@ fun ReorderableAndSwipeableItemList(
             .fillMaxSize()
             .nestedScroll(pullRefreshState.nestedScrollConnection)
     ) {
-        rememberLazyListStateHijacker(listState = swipeableListState.listState, enabled = !isReordering)
+        rememberLazyListStateHijacker(
+            listState = swipeableListState.listState,
+            enabled = !isReordering
+        )
         ReorderableList(
             modifier = modifier,
             listState = swipeableListState.listState,
             items = items,
             itemKey = { it.id },
             canReorder = { item1, item2 -> item1.done == item2.done },
-            enableReorder = !isSwiping,
-            userScrollEnabled = !isSwiping,
             onListReordered = onListReordered,
             onReordering = {
                 isReordering = it
             },
             drawRow = { item ->
 
-                SwipeableItem(
-                    item = item,
-                    swipeState = swipeableListState.getSwipeState(item),
+                ScopedComposable(scope = swipeableRowScope(
+                    swipeState = swipeableListState.swipeStates[item.id] ?: SwipeState.NONE,
                     setSwipeState = {
                         swipeableListState.setSwipeState(item, it)
-                    },
-                    onIsSwiping = {
-                        isSwiping = it
-                    },
-                    onSwipedToStart = {
-                        onItemSwipedToStart(item)
-                    },
-                    onSwipedToEnd = {
-                        onItemSwipedToEnd(item)
-                    },
-                    onSwipedBackToCenter = {
-                        onItemSwipedBackToCenter(item)
                     }
-                ) {
-                    ItemUI(
-                        item,
-                        onClick = {
-                            coroutineScope.launch {
-                                if (enableItemClick) {
-                                    onClickOnItem(item)
+                )) {
+                    SwipeableItem(
+                        item = item,
+                        onSwipedToStart = {
+                            onItemSwipedToStart(item)
+                        },
+                        onSwipedToEnd = {
+                            onItemSwipedToEnd(item)
+                        },
+                        onSwipedBackToCenter = {
+                            onItemSwipedBackToCenter(item)
+                        }
+                    ) {
+                        ItemUI(
+                            item,
+                            onClick = {
+                                coroutineScope.launch {
+                                    if (enableItemClick) {
+                                        onClickOnItem(item)
+                                    }
                                 }
-                            }
-                        },
-                        onClickDisplayComment = {
-                            onShowOrHideComment(item)
-                        },
-                    )
+                            },
+                            onClickDisplayComment = {
+                                onShowOrHideComment(item)
+                            },
+                        )
+                    }
                 }
             },
         )

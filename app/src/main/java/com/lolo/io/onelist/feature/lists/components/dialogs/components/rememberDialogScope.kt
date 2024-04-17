@@ -19,6 +19,6 @@ fun rememberDialogScope(dismiss: () -> Unit): DialogScope {
 }
 
 @Composable
-fun ScopedComposable(scope: DialogScope, content: @Composable DialogScope.() -> Unit) {
+fun <T>ScopedComposable(scope: T, content: @Composable T.() -> Unit) {
     content(scope)
 }

@@ -1,133 +1,125 @@
 package com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue.EndToStart
+import androidx.compose.material3.SwipeToDismissBoxValue.Settled
+import androidx.compose.material3.SwipeToDismissBoxValue.StartToEnd
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.design.colors.appColors
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
-import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
+
+interface SwipeableRowScope {
+    val swipeState: SwipeState
+    val setSwipeState: (SwipeState) -> Unit
+}
 
 @Composable
-fun SwipeableRow(
+fun swipeableRowScope(
+    swipeState: SwipeState,
+    setSwipeState: (SwipeState) -> Unit
+) =
+    object : SwipeableRowScope {
+        override val swipeState: SwipeState
+            get() = swipeState
+        override val setSwipeState: (SwipeState) -> Unit
+            get() = setSwipeState
+    }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SwipeableRowScope.SwipeableRow(
     modifier: Modifier = Modifier,
-    swipeState: SwipeState = SwipeState.NONE,
-    setSwipeState: (SwipeState) -> Unit = {},
     backgroundStartToEnd: @Composable() (RowScope.() -> Unit),
     backgroundEndToStart: @Composable() (RowScope.() -> Unit),
     onSwipedToEnd: () -> Unit = {},
     onSwipedToStart: () -> Unit = {},
     onSwipedBackToCenter: () -> Unit = {},
-    onIsSwiping: (Boolean) -> Unit = {},
     content: @Composable() (() -> Unit),
+) {
 
-    ) {
+    val coroutineScope = rememberCoroutineScope()
+
     Row(
         modifier = modifier
             .fillMaxWidth()
     ) {
 
-        var offset by remember { mutableFloatStateOf(0f) }
-        var targetAnchorState by remember { mutableStateOf(SwipeRowAnchorsState.Default) }
+        val state = rememberSwipeToDismissBoxState(
+            confirmValueChange = {
+                when (it) {
+                    StartToEnd -> {
+                        onSwipedToEnd()
+                        true
+                    }
+
+                    EndToStart -> {
+                        onSwipedToStart()
+                        true
+                    }
+
+                    Settled -> {
+                        onSwipedBackToCenter()
+                        true
+                    }
+                }
+            },
+            positionalThreshold = { it * .7f }
+        )
 
         LaunchedEffect(swipeState) {
-            targetAnchorState = when (swipeState) {
-                SwipeState.START -> SwipeRowAnchorsState.Start
-                SwipeState.END -> SwipeRowAnchorsState.End
-                SwipeState.NONE -> SwipeRowAnchorsState.Default
+
+            when (swipeState) {
+                SwipeState.START -> state.snapTo(EndToStart)
+                SwipeState.END -> state.snapTo(StartToEnd)
+                SwipeState.NONE -> state.reset()
             }
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .swipeableRow(
-                    targetAnchorState = targetAnchorState,
-                    setTargetAnchorState = {
-                        targetAnchorState = it
-                    },
-
-                    onOffset = {
-                        offset = it
-                    },
-                    onAnchorState = {
-                        when (it) {
-                            SwipeRowAnchorsState.Start -> {
-                                setSwipeState(SwipeState.START)
-                                onSwipedToStart()
-                            }
-
-                            SwipeRowAnchorsState.Default -> {
-                                setSwipeState(SwipeState.NONE)
-                                onSwipedBackToCenter()
-                            }
-
-                            SwipeRowAnchorsState.End -> {
-                                setSwipeState(SwipeState.END)
-                                onSwipedToEnd()
+        SwipeToDismissBox(
+            state = state, backgroundContent = when (state.dismissDirection) {
+                StartToEnd -> backgroundStartToEnd
+                EndToStart -> ({
+                    Row(modifier = Modifier.pointerInput(Unit) {
+                        detectHorizontalDragGestures { change, dragAmount ->
+                            coroutineScope.launch {
+                                state.reset()
                             }
                         }
-                    },
-                    onIsSwiping = {
-                        onIsSwiping(it)
-                    }
-                )
-        ) {
-
-            // Background
-            Row(
-                modifier = Modifier
-                    .matchParentSize()
-            ) {
-                if (offset > 0f) {
-                    backgroundStartToEnd()
-                } else if (offset < 0f) {
-                    backgroundEndToStart()
-                }
-            }
-
-            // Foreground
-            Box(
-                Modifier
-                    .offset {
-                        IntOffset(
-                            x = offset.roundToInt(), y = 0
-                        )
                     }) {
-                Row(
-                    Modifier
-                        .background(
-                            shape = RoundedCornerShape(5f),
-                            color = if (offset == 0f) Color.Transparent
-                            else MaterialTheme.appColors.itemRowForeground
-                        )
-                        .fillMaxWidth()
+                        backgroundEndToStart()
+                    }
+                })
 
-                ) {
-                    content()
-                }
+                Settled -> ({})
+            }
+        ) {
+            Row(
+                Modifier
+                    .background(
+                        shape = RoundedCornerShape(5f),
+                        color = MaterialTheme.appColors.itemRowForeground
+                    )
+                    .fillMaxWidth()
+
+            ) {
+                content()
             }
 
         }
@@ -138,7 +130,7 @@ fun SwipeableRow(
 @Composable
 private fun Preview_SwipeableRow() = ComposePreview {
 
-
+    /*
     SwipeableRow(
         backgroundStartToEnd = {
             Box(
@@ -158,4 +150,7 @@ private fun Preview_SwipeableRow() = ComposePreview {
             Text(modifier = Modifier.padding(vertical = 4.dp), text = " Swipe Me")
         },
     )
+
+     */
 }
+

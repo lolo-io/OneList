@@ -37,6 +37,7 @@ data class AppColors(
     val swipeEditBackground: Color,
     val itemArrow: Color,
     val itemRowForeground: Color,
+    val itemRowBackground: Color,
 
     // Add Item
     val addItemCheck: Color,
@@ -125,6 +126,7 @@ fun appColors(
     textFieldText = MaterialTheme.colorScheme.onSurface,
     textFieldPlaceholder = MaterialTheme.colorScheme.outline,
     textFieldBackgroundNoBorder = Color.Transparent,
+    itemRowBackground = MaterialTheme.colorScheme.surface,
     textFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.background,
         unfocusedContainerColor = MaterialTheme.colorScheme.background,

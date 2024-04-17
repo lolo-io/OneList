@@ -249,10 +249,13 @@ private fun ListsScreenUI(
             },
             items = displayedItems,
             onItemSwipedToStart = {
-                deleteItemJobs[it.id] = coroutineScope.launch {
-                    delay(2000)
-                    actions.removeItem(it)
+                if( deleteItemJobs[it.id] == null) {
+                    deleteItemJobs[it.id] = coroutineScope.launch {
+                        delay(2000)
+                        actions.removeItem(it)
+                    }
                 }
+
             },
             onItemSwipedToEnd = {
                 showDialog = DialogShown.EditItemDialog

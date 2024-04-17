@@ -7,6 +7,7 @@ import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
 import com.lolo.io.onelist.feature.lists.tuto.FirstLaunchLists
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -27,9 +28,8 @@ class MainActivityViewModel(
         viewModelScope.launch {
             useCases.handleFirstLaunch(firstLaunchLists.firstLaunchLists())
             setAppVersion()
-            useCases.loadAllLists().onEach {
-                _listsLoaded.value = true
-            }.launchIn(this)
+            useCases.loadAllLists().first()
+            _listsLoaded.value = true
         }
     }
 

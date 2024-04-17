@@ -28,25 +28,20 @@ import com.lolo.io.onelist.core.model.preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.SwipeableRow
+import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.SwipeableRowScope
 
 @Composable
-internal fun SwipeableItem(
+internal fun SwipeableRowScope.SwipeableItem(
     item: Item,
     modifier: Modifier = Modifier,
-    swipeState: SwipeState = SwipeState.NONE,
-    setSwipeState: (SwipeState) -> Unit = {},
     onSwipedToStart: () -> Unit = {},
     onSwipedToEnd: () -> Unit = {},
     onSwipedBackToCenter: () -> Unit = {},
-    onIsSwiping: (Boolean) -> Unit = {},
     drawItem: @Composable (Item) -> Unit = {}
 ) {
 
     SwipeableRow(
         modifier = modifier,
-        onIsSwiping = onIsSwiping,
-        swipeState = swipeState,
-        setSwipeState = setSwipeState,
         backgroundStartToEnd = {
             Box(
                 Modifier
@@ -78,12 +73,15 @@ internal fun SwipeableItem(
             }
         },
         onSwipedToEnd = {
+            setSwipeState(SwipeState.END)
             onSwipedToEnd()
         },
         onSwipedToStart = {
+            setSwipeState(SwipeState.START)
             onSwipedToStart()
         },
-        onSwipedBackToCenter= {
+        onSwipedBackToCenter = {
+            setSwipeState(SwipeState.NONE)
             onSwipedBackToCenter()
         }
     ) {
@@ -94,7 +92,7 @@ internal fun SwipeableItem(
 @Preview
 @Composable
 private fun Preview_SwipeableItem() = ComposePreview {
-
+/*
     var swipeState by remember {
         mutableStateOf(SwipeState.NONE)
     }
@@ -122,4 +120,6 @@ private fun Preview_SwipeableItem() = ComposePreview {
                 Text(text = "Reset Swipe")
             }
         }
+
+ */
 }

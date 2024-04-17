@@ -36,7 +36,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.lolo.io.onelist.R
 import com.lolo.io.onelist.core.design.app
 import com.lolo.io.onelist.core.design.colors.appColors
@@ -157,6 +159,7 @@ fun ItemUI(
                         false -> MaterialTheme.typography.app.itemComment
                         true -> MaterialTheme.typography.app.itemCommentDone
                     },
+                    lineHeight = 16.sp,
                     color = MaterialTheme.appColors.itemComment,
                     modifier = Modifier
                         .padding(

@@ -40,11 +40,17 @@ fun <T> DraggableFlowRow(
                     reorderableFlowLayoutState = draggableListState,
                     onDragStart = onDragStart,
                     onDragEnd = {
-                        onListReordered(draggableListState.items)
+                        if (draggableListState.items != items) {
+                            onListReordered(draggableListState.items)
+                        }
                         onDragEnd()
                     },
                     onDragCancel = {
-                        onListReordered(draggableListState.items)
+                        /*
+                        if(draggableListState.items != items) {
+                            onListReordered(draggableListState.items)
+                        }
+                         */
                         onDragCancel()
                     }
                 )
