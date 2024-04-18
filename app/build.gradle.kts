@@ -16,10 +16,8 @@ android {
     if (versionPropsFile.canRead()) {
         val versionProps = Properties()
         versionProps.load(FileInputStream(versionPropsFile))
-        val v = versionProps["VERSION_CODE"]
         versionCodeCI = (versionProps["VERSION_CODE"] as String).toInt()
     }
-
 
     defaultConfig {
         multiDexEnabled = true
@@ -28,7 +26,7 @@ android {
         minSdk = 23
         targetSdk = 34
         versionCode = versionCodeCI ?: 19
-        versionName = "1.4.2"
+        versionName = "1.5.0"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -39,6 +37,11 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
 
     signingConfigs {
@@ -86,7 +89,6 @@ repositories {
 }
 
 dependencies {
-
     // android
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.preference.ktx)
@@ -105,12 +107,30 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlin.stdlib.jdk7)
 
+    // compose
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation (libs.androidx.compose.ui.viewbinding) // To inflate SettingsFragment
+    implementation (libs.androidx.navigation.compose)
+    // compose: android studio preview support
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    // compose: ui tests
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    implementation (libs.androidx.lifecycle.runtime.compose)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
     // firebase
     implementation(libs.firebase.crashlytics)
 
     // koin di
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.navigation)
+    implementation(libs.koin.androidx.compose)
 
     // room
     implementation(libs.androidx.room.runtime)
@@ -121,7 +141,9 @@ dependencies {
     implementation(libs.gson)
 
     // other libs
-    implementation(libs.whatsnew)
-    implementation(libs.storage)
-    implementation(libs.advrecyclerview)
+    implementation (libs.whatsnew)
+    implementation (libs.storage)
+    implementation (libs.advrecyclerview)
+    implementation(libs.reorderable)
+    implementation(libs.lazylist.hijacker)
 }

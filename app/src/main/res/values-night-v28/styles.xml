@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppThemeV28Night" parent="AppThemeV23Night"/>
+
+    <style name="AppThemeLauncherV28Night" parent="AppThemeLauncherV23Night">
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme" parent="AppThemeV28Night"/>
+    <style name="AppThemeLauncher" parent="AppThemeLauncherV28Night" />
+
+</resources>
