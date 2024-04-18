@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="onelist_updated">Changement Majeur !</string>
-    <string name="external_folder_title">La façon dont vous enregistrez vos listes sur votre appareil a changé.</string>
-    <string name="external_folder_content">\n\nSi vous utilisiez la fonctionnalité de sauvegarde locale de vos listes, allez dans les paramètres, cochez "Sauvegarder les listes sur l'appareil", et sélectionnez ou créez un dossier où vos listes seront enregistrées.
-\n\nSi vous utilisiez cette fonctionnalité, vos fichiers de listes précédents ne seront plus mis à jour. Assurez-vous de réaliser cette opération afin de sauvegarder à nouveau vos listes. Cela crééra de nouveaux fichiers de sauvegarde.
-\n\nSi vous n\'utilisiez pas cette fonctionnalité, vous pouvez ignorer ce message.
-\n\nL\'importation des listes a également été déplacée dans les paramètres.</string>
+    <string name="whatsnew_title">1List a été mis à jour.</string>
+    <string name="whatsnew_first_title">Vous pouvez annuler la suppression d\'un élément.</string>
+    <string name="whatsnew_first_desc">Lorsque vous faites glisser un élément vers la gauche pour le supprimer, vous avez 2 secondes pour changer d\'avis et le faire glisser de nouveau vers le milieu. Cela annulera la suppression.</string>
+    <string name="whatsnew_second_title">Petits changements d\'interface utilisateur</string>
+    <string name="whatsnew_second_desc">Il y a eu quelques petits changements dans l\'interface utilisateur pour se conformer aux nouvelles normes d\'UX.</string>
+    <string name="whatsnew_third_title">Thème dynamique</string>
+    <string name="whatsnew_third_desc">Si vous êtes sur Android 11 ou ultérieur, vous pouvez utiliser un thème dynamique qui s\'adaptera au papier peint et au style de votre appareil.</string>
     <string name="continue_button">Continuer</string>
 </resources>

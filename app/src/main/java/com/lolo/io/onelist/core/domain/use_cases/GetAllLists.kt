@@ -10,7 +10,7 @@ import java.io.FileNotFoundException
 class GetAllLists(private val repository: OneListRepository) {
 
     @Throws(FileNotFoundException::class, JsonSyntaxException::class, JsonIOException::class)
-    suspend operator fun invoke(): Flow<AllListsWithErrors> {
-        return repository.getAllLists()
+    operator fun invoke(): Flow<AllListsWithErrors> {
+        return repository.allListsWithErrors
     }
 }

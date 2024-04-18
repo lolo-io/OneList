@@ -2,6 +2,7 @@ package com.lolo.io.onelist.core.data.shared_preferences
 
 import android.app.Application
 import android.net.Uri
+import android.os.Build
 import androidx.preference.PreferenceManager
 import com.anggrayudi.storage.file.DocumentFileCompat
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,13 +11,21 @@ import kotlinx.coroutines.flow.asStateFlow
 class SharedPreferencesHelper(
     private val app: Application,
 ) {
-    private val versionPref: String = "version"
-    private val selectedListPref = "selectedList"
-    private val backUpLocallyPref = "backUpLocally"
-    private val backupDisplayPathPref = "backupDisplayPath" // only for display
-    private val themePref: String = "theme"
-    private val firstLaunchPref = "firstLaunch"
-    private val preferUseFilesPref = "preferUseFiles"
+
+    companion object {
+        const val VERSION_PREF: String = "version"
+        const val SELECTED_LIST_PREF = "selectedList"
+        const val BACK_UP_LOCALLY_PREF = "backUpLocally"
+        const val BACKUP_DISPLAYED_PATH = "backupDisplayPath" // only for display
+        const val THEME_PREF: String = "theme"
+        const val FIRST_LAUNCH_PREF = "firstLaunch"
+        const val PREFER_USE_FILES_PREF = "preferUseFiles"
+
+        const val THEME_AUTO = "auto"
+        const val THEME_LIGHT = "light"
+        const val THEME_DARK = "dark"
+        const val THEME_DYNAMIC = "dynamic"
+    }
 
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(app)
 
@@ -51,34 +60,34 @@ class SharedPreferencesHelper(
     }
 
     var backupDisplayPath: String?
-        get() = getPref(backupDisplayPathPref)
-        set(value) = editPref(backupDisplayPathPref, value)
+        get() = getPref(BACKUP_DISPLAYED_PATH)
+        set(value) = editPref(BACKUP_DISPLAYED_PATH, value)
 
     var backupUri: String?
-        get() = getPref(backUpLocallyPref)
-        set(value) = editPref(backUpLocallyPref, value)
+        get() = getPref(BACK_UP_LOCALLY_PREF)
+        set(value) = editPref(BACK_UP_LOCALLY_PREF, value)
 
     var version: String
-        get() = getPref(versionPref) ?: ""
-        set(value) = editPref(versionPref, value)
+        get() = getPref(VERSION_PREF) ?: ""
+        set(value) = editPref(VERSION_PREF, value)
 
     var theme: String
-        get() = getPref(themePref) ?: "auto"
-        set(value) = editPref(versionPref, value)
+        get() = getPref(THEME_PREF) ?: getDefaultTheme()
+        set(value) = editPref(VERSION_PREF, value)
 
     var firstLaunch: Boolean
-        get() = firstLaunchPref.getPref(true)
-        set(value) = firstLaunchPref.editPref(value)
+        get() = FIRST_LAUNCH_PREF.getPref(true)
+        set(value) = FIRST_LAUNCH_PREF.editPref(value)
 
     var preferUseFiles: Boolean
-        get() = preferUseFilesPref.getPref(false)
-        set(value) = preferUseFilesPref.editPref(value)
+        get() = PREFER_USE_FILES_PREF.getPref(false)
+        set(value) = PREFER_USE_FILES_PREF.editPref(value)
 
     var selectedListIndex: Int
-        get() = selectedListPref.getPref(0)
+        get() = SELECTED_LIST_PREF.getPref(0)
         set(value) {
             _selectedListIndexStateFlow.value = value
-            selectedListPref.editPref(value)
+            SELECTED_LIST_PREF.editPref(value)
         }
 
 
@@ -86,6 +95,15 @@ class SharedPreferencesHelper(
     val selectedListIndexStateFlow = _selectedListIndexStateFlow.asStateFlow()
 
     val canAccessBackupUri
-        get() = backupUri?.let { DocumentFileCompat.fromUri(app, Uri.parse(it))?.canWrite() } != false
+        get() = backupUri?.let {
+            DocumentFileCompat.fromUri(app, Uri.parse(it))?.canWrite()
+        } != false
+
+
+    private fun getDefaultTheme(): String {
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
+            THEME_LIGHT
+        else THEME_AUTO
+    }
 
 }
