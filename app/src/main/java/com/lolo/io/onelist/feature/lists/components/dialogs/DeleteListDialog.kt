@@ -45,9 +45,11 @@ import com.lolo.io.onelist.feature.lists.components.dialogs.components.rememberD
 @Composable
 internal fun DialogScope.DeleteListDialog(
     list: ItemList,
-    onDeleteList: () -> Unit = {},
+    onDeleteList: (deleteFile: Boolean) -> Unit = {},
     onJustClearList: () -> Unit = {}
 ) {
+
+    var deleteFile by remember { mutableStateOf(list.uri != null) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -87,7 +89,6 @@ internal fun DialogScope.DeleteListDialog(
         )
 
         if(list.uri != null) {
-            var deleteFile by remember { mutableStateOf(true) }
             Row(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.large)
@@ -148,7 +149,7 @@ internal fun DialogScope.DeleteListDialog(
             }
 
             DialogButtons(onPositiveClicked = {
-                onDeleteList()
+                onDeleteList(deleteFile)
             }, onNegativeClicked = {
                 dismiss()
             })

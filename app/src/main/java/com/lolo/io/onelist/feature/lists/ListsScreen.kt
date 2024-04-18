@@ -318,8 +318,8 @@ private fun ListsScreenUI(
             }
 
             DialogShown.DeleteListDialog -> {
-                DeleteListDialog(list = selectedList, onDeleteList = {
-                    actions.deleteList(selectedList, true, onFileDeleted = {
+                DeleteListDialog(list = selectedList, onDeleteList = { deleteFile ->
+                    actions.deleteList(selectedList, deleteFile, onFileDeleted = {
                         Toast.makeText(
                             context,
                             context.getString(R.string.file_deleted),
