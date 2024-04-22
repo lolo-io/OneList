@@ -2,7 +2,8 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.onelist.android.application)
+    alias(libs.plugins.onelist.android.application.compose)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
@@ -38,10 +39,6 @@ android {
         viewBinding = true
         buildConfig = true
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
     }
 
     signingConfigs {
@@ -108,17 +105,12 @@ dependencies {
     implementation(libs.kotlin.stdlib.jdk7)
 
     // compose
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.compose.ui.viewbinding) // To inflate SettingsFragment
     implementation (libs.androidx.navigation.compose)
-    // compose: android studio preview support
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.tooling)
+
     // compose: ui tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     implementation (libs.androidx.lifecycle.runtime.compose)
