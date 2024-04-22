@@ -58,6 +58,12 @@ internal fun OneListTextField(
         )
     }
 
+    LaunchedEffect(value) {
+        if(value.isEmpty()) {
+            textFieldValueState = TextFieldValue(value, selection = TextRange.Zero)
+        }
+    }
+
     BasicTextField(
         modifier = modifier
             .ifThen(showBorder) {

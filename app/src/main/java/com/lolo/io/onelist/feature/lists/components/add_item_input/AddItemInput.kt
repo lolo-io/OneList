@@ -33,6 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -57,6 +59,10 @@ internal fun AddItemInput(
     val keyboardController = LocalSoftwareKeyboardController.current
     val view = LocalView.current
 
+    val focusRequester = remember {
+        FocusRequester()
+    }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -80,7 +86,8 @@ internal fun AddItemInput(
 
         OneListTextField(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             value = value,
             placeholder = "Add",
             onValueChange = onValueChange,
@@ -104,6 +111,7 @@ internal fun AddItemInput(
                             onClick = {
                                 onSubmit()
                                 view.playSoundEffect(SoundEffectConstants.CLICK)
+                                focusRequester.requestFocus()
                             },
                         ) {
                             Icon(
