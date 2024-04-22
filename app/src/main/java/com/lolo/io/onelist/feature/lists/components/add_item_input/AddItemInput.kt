@@ -104,7 +104,7 @@ internal fun AddItemInput(
                             onClick = {
                                 onSubmit()
                                 view.playSoundEffect(SoundEffectConstants.CLICK)
-                            }
+                            },
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Check,
@@ -171,7 +171,7 @@ internal fun AddItemInput(
         }
 
         val showCommentArrow by remember(value) {
-            derivedStateOf { value.isNotEmpty() }
+            derivedStateOf { value.isNotEmpty() || showCommentInput || commentValue.isNotEmpty() }
         }
 
         val animatedArrowVisibility by animateFloatAsState(
@@ -193,6 +193,7 @@ internal fun AddItemInput(
                 showCommentInput = !showCommentInput
                 view.playSoundEffect(SoundEffectConstants.CLICK)
             },
+            enabled = showCommentArrow,
             contentPadding = PaddingValues(0.dp)
         ) {
 
