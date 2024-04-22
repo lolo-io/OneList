@@ -52,17 +52,11 @@ internal fun OneListTextField(
     var lineCount by remember { mutableIntStateOf(0) }
     var singleLineFix by remember { mutableStateOf(false) }
 
-
-    var internalTextFieldValue by remember(value) {
+    var textFieldValueState by remember {
         mutableStateOf(
             TextFieldValue(value, selection = TextRange(Int.MAX_VALUE))
         )
     }
-
-    LaunchedEffect(internalTextFieldValue.text) {
-        onValueChange(internalTextFieldValue.text)
-    }
-
 
     BasicTextField(
         modifier = modifier
@@ -74,9 +68,10 @@ internal fun OneListTextField(
                 )
             }
             .heightIn(36.dp, if (lineCount <= 1) 36.dp else Dp.Unspecified),
-        value = internalTextFieldValue,
+        value = textFieldValueState,
         onValueChange = {
-            internalTextFieldValue = it
+            textFieldValueState = it
+            onValueChange(it.text)
         },
         textStyle = MaterialTheme.typography.bodyLarge.copy(
             color = MaterialTheme.appColors.textFieldText
@@ -97,7 +92,7 @@ internal fun OneListTextField(
         cursorBrush = SolidColor(MaterialTheme.appColors.textFieldCursor),
     ) { innerTextField ->
         TextFieldDefaults.DecorationBox(
-            value = internalTextFieldValue.text,
+            value = value,
             contentPadding = PaddingValues(MaterialTheme.space.Tiny),
             innerTextField = innerTextField,
             enabled = true,
