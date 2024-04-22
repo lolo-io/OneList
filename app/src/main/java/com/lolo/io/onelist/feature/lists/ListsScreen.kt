@@ -306,13 +306,16 @@ private fun ListsScreenUI(
 
             DialogShown.EditItemDialog -> {
                 editedItem?.let { itemToEdit ->
-                    EditItemDialog(
-                        itemToEdit,
-                        onSubmit = {
-                            actions.editItem(it)
-                            dismiss()
-                        },
-                    )
+                    displayedItems.find { it.id == itemToEdit.id }?.let {
+                        EditItemDialog(
+                            it,
+                            onSubmit = {
+                                actions.editItem(it)
+                                dismiss()
+                            },
+                        )
+                    }
+
                 }
 
             }
