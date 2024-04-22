@@ -14,6 +14,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -109,7 +110,6 @@ fun ReorderableAndSwipeableItemList(
                 isReordering = it
             },
             drawRow = { item ->
-
                 ScopedComposable(scope = swipeableRowScope(
                     swipeState = swipeableListState.swipeStates[item.id] ?: SwipeState.NONE,
                     setSwipeState = {
