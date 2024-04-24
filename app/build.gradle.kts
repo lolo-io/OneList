@@ -73,48 +73,10 @@ android {
 }
 
 dependencies {
-    // android
+
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.preference.ktx)
-    implementation(libs.androidx.lifecycle.extensions)
-    implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.androidx.appcompat)
-
-    // android - design
-    implementation(libs.constraint.layout)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.flexbox)
-    implementation(libs.material)
-    implementation(libs.androidx.swiperefreshlayout)
-
-    // kotlin
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlin.stdlib.jdk7)
-
-    // compose
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation (libs.androidx.compose.ui.viewbinding) // To inflate SettingsFragment
-    implementation (libs.androidx.navigation.compose)
-
-    // compose: ui tests
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    implementation (libs.androidx.lifecycle.runtime.compose)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-    // firebase
     implementation(libs.firebase.crashlytics)
-
-    // json
-    implementation(libs.gson)
-
-    // other libs
-    implementation (libs.whatsnew)
     implementation (libs.storage)
-    implementation (libs.advrecyclerview)
-    implementation(libs.reorderable)
-    implementation(libs.lazylist.hijacker)
 
     // projects
     implementation(project(":core:designsystem"))
