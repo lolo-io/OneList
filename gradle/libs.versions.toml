@@ -105,3 +105,5 @@ onelist-android-application-compose = { id = "onelist.android.application.compos
 onelist-android-library = { id = "onelist.android.library", version = "unspecified" }
 onelist-android-library-compose = { id = "onelist.android.library.compose", version = "unspecified"}
 onelist-android-feature = { id = "onelist.android.feature", version = "unspecified" }
+onelist-android-koin = { id = "onelist.android.koin", version = "unspecified"}
+onelist-android-feature-koin = { id = "onelist.android.feature.koin", version = "unspecified" }

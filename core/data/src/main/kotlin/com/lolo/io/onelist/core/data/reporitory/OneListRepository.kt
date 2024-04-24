@@ -11,6 +11,7 @@ import com.lolo.io.onelist.core.data.utils.toItemListEntity
 import com.lolo.io.onelist.core.data.utils.updateOne
 import com.lolo.io.onelist.core.database.util.toItemListModel
 import com.lolo.io.onelist.core.database.util.toItemListModels
+import com.lolo.io.onelist.core.model.ItemList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -83,7 +84,7 @@ class OneListRepository(
         return _allListsWithErrors
     }
 
-    suspend fun createList(itemList: com.lolo.io.onelist.core.model.ItemList) {
+    suspend fun createList(itemList: ItemList) {
         itemList.position = _allListsWithErrors.value.lists.size - 1
         _allListsWithErrors.value =
             ListsWithErrors(_allListsWithErrors.value.lists + upsertList(itemList))
@@ -93,7 +94,7 @@ class OneListRepository(
 
     // does upsert in dao, and if has backup uri -> save list file; can create a file
     // and also update alllists flow
-    suspend fun saveListToDb(itemList: com.lolo.io.onelist.core.model.ItemList) {
+    suspend fun saveListToDb(itemList: ItemList) {
         upsertList(itemList).let {
             _allListsWithErrors.value = ListsWithErrors(
                 _allListsWithErrors.value.lists.updateOne(itemList) { it.id == itemList.id })
@@ -102,9 +103,9 @@ class OneListRepository(
 
 
     // does upsert in dao, and if has backup uri -> save list file; can create a file
-    private suspend fun upsertList(list: com.lolo.io.onelist.core.model.ItemList): com.lolo.io.onelist.core.model.ItemList {
+    private suspend fun upsertList(list: ItemList): ItemList {
 
-        val upsertInDao: suspend (list: com.lolo.io.onelist.core.model.ItemList) -> Unit = { insertList ->
+        val upsertInDao: suspend (list: ItemList) -> Unit = { insertList ->
             withContext(Dispatchers.IO) {
                 dao.upsert(insertList.toItemListEntity()).takeIf { it > 0 }?.let {
                     insertList.id = it
@@ -131,7 +132,7 @@ class OneListRepository(
 
     @Throws
     suspend fun deleteList(
-        itemList: com.lolo.io.onelist.core.model.ItemList,
+        itemList: ItemList,
         deleteBackupFile: Boolean,
         onFileDeleted: () -> Unit
     ) {
@@ -156,7 +157,7 @@ class OneListRepository(
         }
     }
 
-    suspend fun importList(uri: Uri): com.lolo.io.onelist.core.model.ItemList {
+    suspend fun importList(uri: Uri): ItemList {
         val list = fileAccess.createListFromUri(uri,
             onListCreated = {
                 saveListToDb(
@@ -171,11 +172,11 @@ class OneListRepository(
         return list
     }
 
-    fun selectList(list: com.lolo.io.onelist.core.model.ItemList) {
+    fun selectList(list: ItemList) {
         preferences.selectedListIndex = _allListsWithErrors.value.lists.indexOf(list)
     }
 
-    suspend fun saveAllLists(lists: List<com.lolo.io.onelist.core.model.ItemList>) {
+    suspend fun saveAllLists(lists: List<ItemList>) {
         _allListsWithErrors.value = ListsWithErrors(lists)
         coroutineScope {
             // update async to improve list move performance.

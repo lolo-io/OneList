@@ -35,7 +35,7 @@ class MainActivityViewModel(
 
     private fun setAppVersion() {
         if (preferences.version != BuildConfig.VERSION_NAME) {
-            _showWhatsNew.value = useCases.showWhatsNew()
+            _showWhatsNew.value = useCases.showWhatsNew(BuildConfig.VERSION_NAME)
             preferences.version = BuildConfig.VERSION_NAME
         }
     }

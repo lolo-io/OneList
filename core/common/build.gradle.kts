@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.onelist.android.library)
-    alias(libs.plugins.onelist.android.library.compose)
 }
 
 android {

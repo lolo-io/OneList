@@ -120,7 +120,6 @@ class FileAccess(
         }
     }
 
-
     suspend fun createListFromUri(
         uri: Uri, onListCreated: suspend (list: com.lolo.io.onelist.core.model.ItemList) -> Unit
     ): com.lolo.io.onelist.core.model.ItemList {
@@ -130,30 +129,13 @@ class FileAccess(
                 val content =
                     app.contentResolver.openInputStream(uri)
                         .use { iss -> iss?.bufferedReader()?.use { it.readText() } }
-                // return :
+
                 gson.fromJson(content, com.lolo.io.onelist.core.model.ItemList::class.java).also {
                     it.uri = uri
                     onListCreated(it)
                 }
-
-            } catch (e: IllegalArgumentException) {
-                throw e
             } catch (e: Exception) {
-                // Todo Change Error to not use R
-                //throw IOException(app.getString(R.string.error_opening_file))
-                throw IOException("error_opening_file")
-            }
-        }
-    }
-
-    suspend fun saveAllListToFiles(
-        backupUri: String,
-        lists: List<com.lolo.io.onelist.core.model.ItemList>,
-        onNewFileCreated: (com.lolo.io.onelist.core.model.ItemList, Uri?) -> Unit
-    ) {
-        return withContext(Dispatchers.IO) {
-            lists.forEach {
-                saveListFile(backupUri, it, onNewFileCreated)
+                throw e
             }
         }
     }
@@ -168,6 +150,5 @@ class FileAccess(
                 )
             }
     }
-
 
 }

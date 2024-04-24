@@ -21,10 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.feature.lists.R
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
 import com.lolo.io.onelist.feature.lists.components.dialogs.components.DialogButtons
 import com.lolo.io.onelist.feature.lists.components.dialogs.components.DialogScope
@@ -63,7 +65,7 @@ fun DialogScope.EditItemDialog(
                     .focusRequester(textField)
                     .fillMaxWidth(),
                 value = itemTitle,
-                placeholder = "Item name",
+                placeholder = stringResource(id = R.string.item_name),
                 onValueChange = { itemTitle = it },
                 singleLine = true,
                 showBorder = false,

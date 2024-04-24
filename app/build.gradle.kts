@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.onelist.android.application)
     alias(libs.plugins.onelist.android.application.compose)
+    alias(libs.plugins.onelist.android.koin)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
@@ -22,9 +23,6 @@ android {
     defaultConfig {
         multiDexEnabled = true
         applicationId = "com.lolo.io.onelist"
-        compileSdk = 34
-        minSdk = 23
-        targetSdk = 34
         versionCode = versionCodeCI ?: 19
         versionName = "1.5.0"
         vectorDrawables.useSupportLibrary = true
@@ -35,7 +33,6 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
         buildConfig = true
         compose = true
     }
@@ -108,11 +105,6 @@ dependencies {
 
     // firebase
     implementation(libs.firebase.crashlytics)
-
-    // koin di
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.navigation)
-    implementation(libs.koin.androidx.compose)
 
     // json
     implementation(libs.gson)

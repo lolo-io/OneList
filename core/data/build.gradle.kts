@@ -1,23 +1,19 @@
 plugins {
     alias(libs.plugins.onelist.android.library)
-    alias(libs.plugins.onelist.android.library.compose)
+    alias(libs.plugins.onelist.android.koin)
 }
 
 android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    namespace = "com.lolo.io.onelist.core.model"
+    namespace = "com.lolo.io.onelist.core.data"
 }
 
 dependencies {
     implementation(libs.androidx.preference.ktx)
     implementation (libs.storage)
     implementation(libs.gson)
-    api(project(":core:database"))
 
-    // koin di
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.navigation)
-    implementation(libs.koin.androidx.compose)
+    api(project(":core:database"))
 }

@@ -20,7 +20,7 @@ $title:
 
 ${items.joinToString("\n") { it.toStringForShare() }}
 
-${context.getString(R.string.list_created_with_one1ist)}
+${context.getString(R.string.list_created_with_onelist)}
 ${context.getString(R.string.app_link)}
         """.trimIndent()
 }

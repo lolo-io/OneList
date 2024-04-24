@@ -15,10 +15,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.feature.lists.R
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
 import com.lolo.io.onelist.feature.lists.components.dialogs.components.DialogButtons
 import com.lolo.io.onelist.feature.lists.components.dialogs.components.DialogScope
@@ -55,7 +57,7 @@ fun DialogScope.EditListDialog(
                     .focusRequester(textField)
                     .fillMaxWidth(),
                 value = value,
-                placeholder = "List name",
+                placeholder = stringResource(id = R.string.list_title),
                 onValueChange = { value = it },
                 singleLine = true,
                 showBorder = false,

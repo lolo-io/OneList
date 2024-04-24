@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.onelist.android.feature)
     alias(libs.plugins.onelist.android.library.compose)
+    alias(libs.plugins.onelist.android.feature.koin)
 }
 
 android {
@@ -15,18 +16,10 @@ android {
 }
 
 dependencies {
-
-    implementation(libs.androidx.preference.ktx)
-
-    // koin di
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.navigation)
-    implementation(libs.koin.androidx.compose)
-
     // Inflate SettingsFragment
     implementation (libs.androidx.compose.ui.viewbinding)
 
-    // other libs
+    implementation(libs.androidx.preference.ktx)
     implementation (libs.storage)
 
     implementation(project(":core:common"))

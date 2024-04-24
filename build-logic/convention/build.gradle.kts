@@ -56,5 +56,16 @@ gradlePlugin {
             id = "onelist.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
+
+        register("androidKoin") {
+            id = "onelist.android.koin"
+            implementationClass = "AndroidKoinConventionPlugin"
+        }
+
+        register("androidFeatureKoin") {
+            id = "onelist.android.feature.koin"
+            implementationClass = "AndroidFeatureKoinConventionPlugin"
+        }
+
     }
 }
