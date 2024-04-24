@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">Réglages</string>
+    <string name="success_all_backup">Toutes vos listes ont été sauvegardées.</string>
+    <string name="error_all_backup">Une erreur s\'est produite lors de la sauvegarde.</string>
+    <string name="settings_backup_select">Sélectionnez un dossier où vos listes seront sauvegardées</string>
+    <string name="settings_error_try_switch_option">ⓘ Essayez de désactiver puis de réactiver cette option.</string>
+    <string name="setting_prefer_backup_files_summary">Si activée, vos listes seront récupérées à partir des fichiers de sauvegarde. Utile si vous synchronisez votre dossier de sauvegarde avec d\'autres appareils.</string>
+    <string name="settings_backup_all_summary">Chaque liste est sauvegardée à chaque modification. Cliquez ici pour forcer une sauvegarde maintenant.</string>
+    <string name="settings_prefer_backup_files_title">Obtenir des listes à partir des fichiers de sauvegarde</string>
+    <string name="settings_import_summary">Importer une liste depuis votre système de fichiers (fichier .1list).\nSi le fichier se trouve dans votre dossier de sauvegarde, le même fichier sera utilisé pour les sauvegardes ; sinon, un nouveau fichier sera créé dans votre dossier de sauvegarde.</string>
+    <string name="settings_import_title">Importer une liste</string>
+    <string name="settings_backup_title">Sauvegarder les listes sur l\'appareil</string>
+    <string name="backup_all_lists">Sauvegarder toutes les listes</string>
+    <string name="list_imported">Votre liste a été importée.</string>
+    <string name="about">À propos</string>
+    <string name="personalization">Personalisation</string>
+    <string name="app_version">Version de l\'application</string>
+    <string name="show_last_release_note">Revoir la dernière note de version</string>
+
+    <string name="error_import_list">Erreur lors de l\'importation de votre liste : Ce fichier ne peut pas être importé.</string>
+
+</resources>

@@ -9,20 +9,19 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply {
-                apply("nowinandroid.android.library")
-                apply("nowinandroid.android.hilt")
+                apply("onelist.android.library")
             }
-            extensions.configure<LibraryExtension> {
+          /*  extensions.configure<LibraryExtension> {
                 defaultConfig {
                     testInstrumentationRunner =
                         "com.google.samples.apps.nowinandroid.core.testing.NiaTestRunner"
                 }
                 testOptions.animationsDisabled = true
-            }
+            }*/
 
             dependencies {
-                // todo add("implementation", project(":core:ui"))
-                // todo add("implementation", project(":core:designsystem"))
+                add("implementation", project(":core:ui"))
+                add("implementation", project(":core:designsystem"))
 
                 add("implementation", libs.findLibrary("androidx-lifecycle-runtime-compose").get())
                 add("implementation", libs.findLibrary("androidx-lifecycle-viewmodel-compose").get())

@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.ksp)
 }
 android {
     namespace = "com.lolo.io.onelist"
@@ -50,10 +49,6 @@ android {
         }
     }
 
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
-
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".debug"
@@ -78,11 +73,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-}
-repositories {
-    google()
-    mavenCentral()
-    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -124,11 +114,6 @@ dependencies {
     implementation(libs.koin.androidx.navigation)
     implementation(libs.koin.androidx.compose)
 
-    // room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-
     // json
     implementation(libs.gson)
 
@@ -138,4 +123,13 @@ dependencies {
     implementation (libs.advrecyclerview)
     implementation(libs.reorderable)
     implementation(libs.lazylist.hijacker)
+
+    // projects
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:domain"))
+
+    implementation(project(":feature:lists"))
+    implementation(project(":feature:settings"))
+    implementation(project(":feature:whatsnew"))
 }

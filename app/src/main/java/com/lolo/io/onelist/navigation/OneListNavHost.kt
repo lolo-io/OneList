@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.anggrayudi.storage.SimpleStorageHelper
 import com.lolo.io.onelist.feature.lists.navigation.LISTS_SCREEN_ROUTE
 import com.lolo.io.onelist.feature.lists.navigation.listsScreen
 import com.lolo.io.onelist.feature.settings.navigation.navigateToSettingsScreen
@@ -15,6 +16,7 @@ import com.lolo.io.onelist.feature.whatsnew.navigation.whatsNewScreen
 @Composable
 fun OneListNavHost(
     modifier: Modifier = Modifier,
+    simpleStorageHelper: SimpleStorageHelper,
     navController: NavHostController = rememberNavController(),
     startDestination: String = LISTS_SCREEN_ROUTE
 ) {
@@ -34,6 +36,7 @@ fun OneListNavHost(
         )
 
         settingsScreen(
+            simpleStorageHelper = simpleStorageHelper,
             navigateToWhatsNew = { navController.navigateToWhatsNewScreen() },
         )
 

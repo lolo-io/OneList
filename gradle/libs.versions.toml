@@ -85,6 +85,7 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-viewbinding = { group = "androidx.compose.ui", name = "ui-viewbinding" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -101,3 +102,6 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 # Plugins defined by this project
 onelist-android-application = { id = "onelist.android.application", version = "unspecified" }
 onelist-android-application-compose = { id = "onelist.android.application.compose", version = "unspecified"}
+onelist-android-library = { id = "onelist.android.library", version = "unspecified" }
+onelist-android-library-compose = { id = "onelist.android.library.compose", version = "unspecified"}
+onelist-android-feature = { id = "onelist.android.feature", version = "unspecified" }

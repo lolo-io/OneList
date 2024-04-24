@@ -16,27 +16,23 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.anggrayudi.storage.SimpleStorageHelper
 import com.lolo.io.onelist.core.data.reporitory.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
-import com.lolo.io.onelist.core.design.OneListTheme
+import com.lolo.io.onelist.core.designsystem.OneListTheme
 import com.lolo.io.onelist.core.ui.Config
 import com.lolo.io.onelist.feature.lists.navigation.LISTS_SCREEN_ROUTE
-import com.lolo.io.onelist.feature.lists.utils.StorageHelperHolder
 import com.lolo.io.onelist.feature.whatsnew.navigation.navigateToWhatsNewScreen
 import com.lolo.io.onelist.navigation.OneListNavHost
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-class MainActivity : AppCompatActivity(), StorageHelperHolder {
+class MainActivity : AppCompatActivity() {
 
-    override val storageHelper = SimpleStorageHelper(this)
+    private val storageHelper = SimpleStorageHelper(this)
 
     private val preferences by inject<SharedPreferencesHelper>()
     private val viewModel by inject<MainActivityViewModel>()
@@ -84,6 +80,7 @@ class MainActivity : AppCompatActivity(), StorageHelperHolder {
                         .statusBarsPadding()) {
                         OneListNavHost(
                             navController =  navController,
+                            simpleStorageHelper = storageHelper,
                             startDestination = LISTS_SCREEN_ROUTE
                         )
                     }
