@@ -1,0 +1,30 @@
+<resources>
+    <string name="item_name">Nom de l\'objet</string>
+    <string name="list_title">Nom de la liste</string>
+    <string name="delete_list_forever_warning">Cette action supprimera la liste et tous les objets qu\'elle contient. Êtes-vous sûr de vouloir supprimer cette liste ? (vous ne pourrez plus annuler)</string>
+    <string name="list_default_name">Ma Liste</string>
+    <string name="clear_list">Vider seulement</string>
+    <string name="expand_item">Déveolpper</string>
+    <string name="delete_list">Supprimer la liste</string>
+    <string name="list_created_with_onelist">Liste créée avec 1List.</string>
+    <string name="file_deleted">Fichier supprimé.</string>
+    <string name="also_delete_file">Aussi supprimer le fichier associé</string>
+    <string name="personalization">Personalisation</string>
+    <string name="about">À propos</string>
+    <string name="app_version">Version de l\'application</string>
+    <string name="show_last_release_note">Revoir la dernière note de version</string>
+    <string name="error_could_not_fetch_some_lists">Certaines listes n\'ont pas pu être chargées depuis vos fichiers</string>
+    <string name="error_file_missing">Fichier inaccessible</string>
+    <string name="error_permission_not_granted">Permission refusée</string>
+    <string name="error_file_corrupted">Fichier corrompu</string>
+    <string name="error_unknown">Erreur inconnue</string>
+    <string name="setting_prefer_backup_files_summary">Si activée, vos listes seront récupérées à partir des fichiers de sauvegarde. Utile si vous synchronisez votre dossier de sauvegarde avec d\'autres appareils.</string>
+    <string name="settings_backup_all_summary">Chaque liste est sauvegardée à chaque modification. Cliquez ici pour forcer une sauvegarde maintenant.</string>
+    <string name="settings_prefer_backup_files_title">Obtenir des listes à partir des fichiers de sauvegarde</string>
+    <string name="settings_import_summary">Importer une liste depuis votre système de fichiers (fichier .1list).\nSi le fichier se trouve dans votre dossier de sauvegarde, le même fichier sera utilisé pour les sauvegardes ; sinon, un nouveau fichier sera créé dans votre dossier de sauvegarde.</string>
+    <string name="settings_import_title">Importer une liste</string>
+    <string name="settings_backup_title">Sauvegarder les listes sur l\'appareil</string>
+    <string name="backup_all_lists">Sauvegarder toutes les listes</string>
+    <string name="list_imported">Votre liste a été importée.</string>
+    <string name="error_import_list">Erreur lors de l\'importation de votre liste : Ce fichier ne peut pas être importé.</string>
+</resources>
