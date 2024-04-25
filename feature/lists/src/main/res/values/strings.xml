@@ -9,6 +9,7 @@
     <string name="delete_list">Delete List</string>
     <string name="list_created_with_onelist">List created with 1List.</string>
     <string name="file_deleted">File deleted.</string>
+    <string name="error_deleting_file">Error while deleting file.</string>
     <string name="also_delete_file">Also delete file on the filesystem</string>
     <string name="personalization">Personalization</string>
     <string name="about">About</string>

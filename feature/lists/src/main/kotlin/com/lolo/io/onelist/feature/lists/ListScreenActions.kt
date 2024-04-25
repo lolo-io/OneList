@@ -13,6 +13,7 @@ interface ListScreenActions {
     fun onSelectedListReordered(items: List<Item>)
     fun refresh()
     fun createList(list: ItemList)
+    fun createListThenAddItem(item: Item)
     fun editList(list: ItemList)
     fun editItem(item: Item)
     fun deleteList(list: ItemList, deleteBackupFile: Boolean, onFileDeleted: () -> Unit)

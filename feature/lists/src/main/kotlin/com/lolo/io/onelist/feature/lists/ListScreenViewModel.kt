@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.lolo.io.onelist.core.data.model.ErrorLoadingList
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
+import com.lolo.io.onelist.core.model.Item
+import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.ui.util.UIString
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class ListScreenViewModel(
     private val useCases: OneListUseCases,
@@ -31,7 +34,7 @@ class ListScreenViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), listOf())
 
 
-    private val _displayedItems = MutableStateFlow(listOf<com.lolo.io.onelist.core.model.Item>())
+    private val _displayedItems = MutableStateFlow(listOf<Item>())
     val displayedItems
         get() = _displayedItems.asStateFlow()
 
@@ -40,11 +43,12 @@ class ListScreenViewModel(
         preferences.selectedListIndexStateFlow
 
     var selectedList = combine(allLists, selectedListIndex) { pAllLists, pIndex ->
-        (pAllLists.getOrNull(pIndex) ?: com.lolo.io.onelist.core.model.ItemList()).also {
-            _displayedItems.value = it.items
+        (pAllLists.getOrNull(pIndex)).also {
+            _displayedItems.value = it?.items ?: listOf()
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000),
-        com.lolo.io.onelist.core.model.ItemList()
+    }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000),
+        null
     )
 
 
@@ -88,47 +92,60 @@ class ListScreenViewModel(
 
     // LISTS
 
-    fun createList(itemList: com.lolo.io.onelist.core.model.ItemList) {
+    fun createList(itemList: ItemList) {
         viewModelScope.launch {
             useCases.createList(itemList)
         }
     }
 
-    fun editList(itemList: com.lolo.io.onelist.core.model.ItemList) {
+    fun editList(itemList: ItemList) {
         viewModelScope.launch {
             useCases.saveListToDb(itemList)
         }
     }
 
-    fun selectList(itemList: com.lolo.io.onelist.core.model.ItemList) {
+    fun selectList(itemList: ItemList) {
         useCases.selectList(itemList)
     }
 
-    fun reorderLists(lists: List<com.lolo.io.onelist.core.model.ItemList>) {
+    fun reorderLists(lists: List<ItemList>) {
         viewModelScope.launch {
-            useCases.reorderLists(lists, selectedList.value)
+            selectedList.value?.let {
+                useCases.reorderLists(lists, it)
+            }
         }
     }
 
     fun deleteList(
-        itemList: com.lolo.io.onelist.core.model.ItemList,
+        itemList: ItemList,
         deleteBackupFile: Boolean,
         onFileDeleted: () -> Unit
     ) {
         viewModelScope.launch {
-            useCases.removeList(itemList, deleteBackupFile, onFileDeleted)
+            try {
+                useCases.removeList(itemList, deleteBackupFile, onFileDeleted)
+            } catch (e: IOException) {
+                if (deleteBackupFile) {
+                    _errorMessage.value = UIString
+                        .StringResources(
+                            R.string.error_deleting_file
+                        )
+                }
+            }
         }
     }
 
-    fun clearList(list: com.lolo.io.onelist.core.model.ItemList) {
+    fun clearList(list: ItemList) {
         viewModelScope.launch {
             _displayedItems.value = useCases.clearList(list).items
         }
     }
 
-    fun onSelectedListReordered(items: List<com.lolo.io.onelist.core.model.Item>) {
+    fun onSelectedListReordered(items: List<Item>) {
         viewModelScope.launch {
-            useCases.setItemsOfList(selectedList.value, items)
+            selectedList.value?.let {
+                useCases.setItemsOfList(it, items)
+            }
         }
     }
 
@@ -141,35 +158,53 @@ class ListScreenViewModel(
 
 
     // ITEMS
-    fun switchItemStatus(item: com.lolo.io.onelist.core.model.Item) {
+    fun switchItemStatus(item: Item) {
         viewModelScope.launch {
-            _displayedItems.value = useCases.switchItemStatus(selectedList.value, item).items
+            selectedList.value?.let {
+                _displayedItems.value = useCases.switchItemStatus(it, item).items
+            }
         }
     }
 
-    fun switchItemCommentShown(item: com.lolo.io.onelist.core.model.Item) {
+    fun switchItemCommentShown(item: Item) {
         viewModelScope.launch {
-            _displayedItems.value = useCases.switchItemCommentShown(selectedList.value, item).items
+            selectedList.value?.let {
+                _displayedItems.value =
+                    useCases.switchItemCommentShown(it, item).items
+            }
         }
     }
 
-    fun addItem(item: com.lolo.io.onelist.core.model.Item) {
+    fun addItem(item: Item) {
         viewModelScope.launch {
-            _displayedItems.value = useCases.addItemToList(selectedList.value, item).items
+            selectedList.value?.let {
+                _displayedItems.value = useCases.addItemToList(it, item).items
+            }
         }
     }
 
-    fun removeItem(item: com.lolo.io.onelist.core.model.Item) {
+    fun createListThenAddItem(itemList: ItemList, item: Item) {
         viewModelScope.launch {
-            _displayedItems.value = useCases.removeItemFromList(selectedList.value, item).items
+            useCases.createList(itemList)
+            selectedList.value?.let {
+                _displayedItems.value = useCases.addItemToList(it, item).items
+            }
         }
     }
 
-    fun editItem(item: com.lolo.io.onelist.core.model.Item) {
+    fun removeItem(item: Item) {
         viewModelScope.launch {
-            _displayedItems.value = useCases.editItemOfList(selectedList.value, item).items
+            selectedList.value?.let {
+                _displayedItems.value = useCases.removeItemFromList(it, item).items
+            }
         }
-        editList(selectedList.value.copy())
     }
 
+    fun editItem(item: Item) {
+        viewModelScope.launch {
+            selectedList.value?.let {
+                _displayedItems.value = useCases.editItemOfList(it, item).items
+            }
+        }
+    }
 }

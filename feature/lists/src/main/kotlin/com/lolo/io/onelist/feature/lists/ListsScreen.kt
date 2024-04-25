@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lolo.io.onelist.core.designsystem.space
+import com.lolo.io.onelist.core.model.Item
+import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.model.previewMany
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.components.add_item_input.AddItemInput
@@ -56,7 +58,8 @@ import kotlin.math.roundToInt
 
 @Composable
 internal fun ListsScreen(
-    navigateToSettings: () -> Unit) {
+    navigateToSettings: () -> Unit
+) {
     val viewModel = koinInject<ListScreenViewModel>()
 
     val context = LocalContext.current
@@ -65,7 +68,6 @@ internal fun ListsScreen(
     val selectedList = viewModel.selectedList.collectAsStateWithLifecycle().value
     val displayedItems = viewModel.displayedItems.collectAsStateWithLifecycle().value
     val refreshing = viewModel.isRefreshing.collectAsStateWithLifecycle().value
-
 
 
     val errorMessage = viewModel.errorMessage.collectAsStateWithLifecycle().value
@@ -87,25 +89,28 @@ internal fun ListsScreen(
 
     val listScreenActions = remember {
         object : ListScreenActions {
-            override fun selectList(list: com.lolo.io.onelist.core.model.ItemList) = viewModel.selectList(list)
-            override fun reorderLists(lists: List<com.lolo.io.onelist.core.model.ItemList>) = viewModel.reorderLists(lists)
-            override fun addItem(item: com.lolo.io.onelist.core.model.Item) = viewModel.addItem(item)
-            override fun switchItemStatus(item: com.lolo.io.onelist.core.model.Item) = viewModel.switchItemStatus(item)
-            override fun removeItem(item: com.lolo.io.onelist.core.model.Item) = viewModel.removeItem(item)
-            override fun switchItemCommentShown(item: com.lolo.io.onelist.core.model.Item) = viewModel.switchItemCommentShown(item)
-            override fun onSelectedListReordered(items: List<com.lolo.io.onelist.core.model.Item>) =
+            override fun selectList(list: ItemList) = viewModel.selectList(list)
+            override fun reorderLists(lists: List<ItemList>) = viewModel.reorderLists(lists)
+            override fun addItem(item: Item) = viewModel.addItem(item)
+            override fun createListThenAddItem(item: Item) = viewModel.createListThenAddItem(
+                ItemList(context.getString(R.string.list_default_name)), item
+            )
+            override fun switchItemStatus(item: Item) = viewModel.switchItemStatus(item)
+            override fun removeItem(item: Item) = viewModel.removeItem(item)
+            override fun switchItemCommentShown(item: Item) = viewModel.switchItemCommentShown(item)
+            override fun onSelectedListReordered(items: List<Item>) =
                 viewModel.onSelectedListReordered(items)
 
             override fun refresh() = viewModel.refresh()
-            override fun createList(list: com.lolo.io.onelist.core.model.ItemList) = viewModel.createList(list)
-            override fun editList(list: com.lolo.io.onelist.core.model.ItemList) = viewModel.editList(list)
-            override fun editItem(item: com.lolo.io.onelist.core.model.Item) = viewModel.editItem(item)
+            override fun createList(list: ItemList) = viewModel.createList(list)
+            override fun editList(list: ItemList) = viewModel.editList(list)
+            override fun editItem(item: Item) = viewModel.editItem(item)
             override fun deleteList(
-                list: com.lolo.io.onelist.core.model.ItemList, deleteBackupFile: Boolean,
+                list: ItemList, deleteBackupFile: Boolean,
                 onFileDeleted: () -> Unit
             ) = viewModel.deleteList(list, deleteBackupFile, onFileDeleted)
 
-            override fun clearList(list: com.lolo.io.onelist.core.model.ItemList) = viewModel.clearList(list)
+            override fun clearList(list: ItemList) = viewModel.clearList(list)
         }
     }
 
@@ -121,9 +126,9 @@ internal fun ListsScreen(
 
 @Composable
 private fun ListsScreenUI(
-    allLists: List<com.lolo.io.onelist.core.model.ItemList>,
-    selectedList: com.lolo.io.onelist.core.model.ItemList,
-    displayedItems: List<com.lolo.io.onelist.core.model.Item>,
+    allLists: List<ItemList>,
+    selectedList: ItemList?,
+    displayedItems: List<Item>,
     refreshing: Boolean,
     actions: ListScreenActions,
     navigateToSettings: () -> Unit
@@ -136,7 +141,7 @@ private fun ListsScreenUI(
     var showSelectedListControls by remember { mutableStateOf(false) }
 
     var showDialog by rememberSaveable { mutableStateOf(DialogShown.None) }
-    var editedItem by remember { mutableStateOf<com.lolo.io.onelist.core.model.Item?>(null) }
+    var editedItem by remember { mutableStateOf<Item?>(null) }
 
     val swipeableListState = rememberSwipeableLazyListState()
 
@@ -173,7 +178,10 @@ private fun ListsScreenUI(
                     }, onClickShareList = {
                         coroutineScope.launch {
                             delay(200)
-                            shareList(context, selectedList)
+                            selectedList?.let {
+                                shareList(context, selectedList)
+                            }
+
                         }
                         view.playSoundEffect(SoundEffectConstants.CLICK)
                     },
@@ -214,13 +222,17 @@ private fun ListsScreenUI(
             commentValue = addItemComment,
             onCommentValueChange = { addItemComment = it },
             onSubmit = {
-                actions.addItem(
-                    com.lolo.io.onelist.core.model.Item(
-                        title = addItemTitle,
-                        comment = addItemComment,
-                        commentDisplayed = addItemComment.isNotEmpty()
-                    )
+
+                val itemToAdd =  Item(
+                    title = addItemTitle,
+                    comment = addItemComment,
+                    commentDisplayed = addItemComment.isNotEmpty()
                 )
+                if(selectedList != null) {
+                    actions.addItem(itemToAdd)
+                } else {
+                    actions.createListThenAddItem(itemToAdd)
+                }
                 addItemTitle = ""
                 addItemComment = ""
                 coroutineScope.launch {
@@ -244,7 +256,7 @@ private fun ListsScreenUI(
             },
             items = displayedItems,
             onItemSwipedToStart = {
-                if( deleteItemJobs[it.id] == null) {
+                if (deleteItemJobs[it.id] == null) {
                     deleteItemJobs[it.id] = coroutineScope.launch {
                         delay(2000)
                         actions.removeItem(it)
@@ -287,14 +299,16 @@ private fun ListsScreenUI(
         when (showDialog) {
             DialogShown.CreateListDialog -> {
                 CreateListDialog(onSubmit = {
-                    actions.createList(com.lolo.io.onelist.core.model.ItemList(title = it))
+                    actions.createList(ItemList(title = it))
                     dismiss()
                 })
             }
 
             DialogShown.EditListDialog -> {
                 EditListDialog(selectedList, onSubmit = {
-                    actions.editList(selectedList.copy(title = it))
+                    selectedList?.let { selectedList ->
+                        actions.editList(selectedList.copy(title = it))
+                    }
                     dismiss()
                 })
             }
@@ -316,21 +330,23 @@ private fun ListsScreenUI(
             }
 
             DialogShown.DeleteListDialog -> {
-                DeleteListDialog(list = selectedList, onDeleteList = { deleteFile ->
-                    actions.deleteList(selectedList, deleteFile, onFileDeleted = {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.file_deleted),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                selectedList?.let {
+                    DeleteListDialog(list = selectedList, onDeleteList = { deleteFile ->
+                        actions.deleteList(selectedList, deleteFile, onFileDeleted = {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.file_deleted),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        })
+                        view.playSoundEffect(SoundEffectConstants.CLICK)
+                        dismiss()
+                    }, onJustClearList = {
+                        actions.clearList(selectedList)
+                        view.playSoundEffect(SoundEffectConstants.CLICK)
+                        dismiss()
                     })
-                    view.playSoundEffect(SoundEffectConstants.CLICK)
-                    dismiss()
-                }, onJustClearList = {
-                    actions.clearList(selectedList)
-                    view.playSoundEffect(SoundEffectConstants.CLICK)
-                    dismiss()
-                })
+                }
             }
 
             DialogShown.None -> {}
@@ -344,37 +360,40 @@ private fun ListsScreenUI(
 @Composable
 private fun Preview_ListsScreen() = ComposePreview {
 
-    val allLists = com.lolo.io.onelist.core.model.ItemList.previewMany(5)
+    val allLists = ItemList.previewMany(5)
     val selectedList = allLists[0]
     val displayedItems = allLists[0].items
     var refreshing by remember { mutableStateOf(false) }
 
     val listScreenActions = remember {
         object : ListScreenActions {
-            override fun selectList(list: com.lolo.io.onelist.core.model.ItemList) = showPreviewDialog("selectList")
-            override fun reorderLists(lists: List<com.lolo.io.onelist.core.model.ItemList>) = showPreviewDialog("reorderLists")
-            override fun addItem(item: com.lolo.io.onelist.core.model.Item) = showPreviewDialog("addItem")
-            override fun switchItemStatus(item: com.lolo.io.onelist.core.model.Item) = showPreviewDialog("switchItemStatus")
-            override fun removeItem(item: com.lolo.io.onelist.core.model.Item) = showPreviewDialog("removeItem")
-            override fun switchItemCommentShown(item: com.lolo.io.onelist.core.model.Item) =
+            override fun selectList(list: ItemList) = showPreviewDialog("selectList")
+            override fun reorderLists(lists: List<ItemList>) = showPreviewDialog("reorderLists")
+            override fun addItem(item: Item) = showPreviewDialog("addItem")
+            override fun switchItemStatus(item: Item) = showPreviewDialog("switchItemStatus")
+            override fun removeItem(item: Item) = showPreviewDialog("removeItem")
+            override fun switchItemCommentShown(item: Item) =
                 showPreviewDialog("switchItemCommentShown")
 
-            override fun onSelectedListReordered(items: List<com.lolo.io.onelist.core.model.Item>) =
+            override fun onSelectedListReordered(items: List<Item>) =
                 showPreviewDialog("onSelectedListReordered")
 
             override fun refresh() {
                 refreshing = true
             }
 
-            override fun createList(list: com.lolo.io.onelist.core.model.ItemList) = showPreviewDialog("createList")
-            override fun editList(list: com.lolo.io.onelist.core.model.ItemList) = showPreviewDialog("editList")
-            override fun editItem(item: com.lolo.io.onelist.core.model.Item) = showPreviewDialog("editItem")
+            override fun createList(list: ItemList) = showPreviewDialog("createList")
+            override fun createListThenAddItem(item: Item) =
+                showPreviewDialog("createListThenAddItem")
+
+            override fun editList(list: ItemList) = showPreviewDialog("editList")
+            override fun editItem(item: Item) = showPreviewDialog("editItem")
             override fun deleteList(
-                list: com.lolo.io.onelist.core.model.ItemList, deleteBackupFile: Boolean,
+                list: ItemList, deleteBackupFile: Boolean,
                 onFileDeleted: () -> Unit
             ) = showPreviewDialog("deleteList")
 
-            override fun clearList(list: com.lolo.io.onelist.core.model.ItemList) = showPreviewDialog("clearList")
+            override fun clearList(list: ItemList) = showPreviewDialog("clearList")
         }
     }
 
