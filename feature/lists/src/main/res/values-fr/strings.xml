@@ -8,6 +8,7 @@
     <string name="delete_list">Supprimer la liste</string>
     <string name="list_created_with_onelist">Liste créée avec 1List.</string>
     <string name="file_deleted">Fichier supprimé.</string>
+    <string name="error_deleting_file">Erreur lors de la suppression du fichier.</string>
     <string name="also_delete_file">Aussi supprimer le fichier associé</string>
     <string name="personalization">Personalisation</string>
     <string name="about">À propos</string>

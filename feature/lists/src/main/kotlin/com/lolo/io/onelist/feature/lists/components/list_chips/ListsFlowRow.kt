@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ListsFlowRow(
     lists: List<ItemList>,
-    selectedList: ItemList,
+    selectedList: ItemList?,
     modifier : Modifier = Modifier,
     onClick: (ItemList) -> Unit,
     onLongClick: (ItemList) -> Unit = {},

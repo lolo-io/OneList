@@ -143,14 +143,18 @@ class OneListRepository(
 
         val position = _allListsWithErrors.value.lists.indexOf(itemList)
 
-
         _allListsWithErrors.value =
             ListsWithErrors(_allListsWithErrors.value.lists
                 .filter { it.id != itemList.id })
 
-        val nextSelected = _allListsWithErrors.value.lists.getOrNull(position)
-            ?: _allListsWithErrors.value.lists[position - 1]
-        selectList(nextSelected)
+        if(_allListsWithErrors.value.lists.isNotEmpty()) {
+            val nextSelected = _allListsWithErrors.value.lists.getOrNull(position)
+                ?: _allListsWithErrors.value.lists[position - 1]
+            selectList(nextSelected)
+        } else {
+            preferences.selectedListIndex = 0
+        }
+
 
         if (deleteBackupFile) {
             fileAccess.deleteListBackupFile(itemList, onFileDeleted)

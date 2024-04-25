@@ -9,6 +9,7 @@
     <string name="delete_list">Apagar Lista</string>
     <string name="list_created_with_onelist">Lista criada com 1List.</string>
     <string name="file_deleted">Arquivo apagado.</string>
+    <string name="error_deleting_file">Erro ao excluir arquivo.</string>
     <string name="also_delete_file">Apagar também arquivo no sistema de arquivos</string>
     <string name="personalization">Personalização</string>
     <string name="about">Sobre</string>
