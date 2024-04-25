@@ -14,21 +14,21 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.android")
-          // todo       apply("nowinandroid.android.lint")
+          // todo       apply("onelist.android.lint")
             }
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = 34
             }
-            extensions.configure<LibraryAndroidComponentsExtension> {
-                disableUnnecessaryAndroidTests(target)
-            }
+//            extensions.configure<LibraryAndroidComponentsExtension> {
+//                disableUnnecessaryAndroidTests(target)
+//            }
             dependencies {
                 add("testImplementation", kotlin("test"))
-            // todo     add("testImplementation", project(":core:testing"))
+                add("testImplementation", project(":core:testing"))
                 add("androidTestImplementation", kotlin("test"))
-            // todo      add("androidTestImplementation", project(":core:testing"))
+                add("androidTestImplementation", project(":core:testing"))
             }
         }
     }

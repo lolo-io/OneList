@@ -26,4 +26,6 @@ dependencies {
 
     implementation(project(":core:common"))
     implementation(project(":core:domain"))
+
+    androidTestImplementation(project(":core:testing"))
 }

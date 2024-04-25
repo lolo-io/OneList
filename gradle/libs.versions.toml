@@ -1,7 +1,6 @@
 [versions]
 androidGradlePlugin = "8.3.0"
 activityCompose = "1.8.2"
-appcompat = "1.6.1"
 crashlytics = "18.6.2"
 firebase-crashlytics-gradle-plugin = "2.9.9"
 gson = "2.5.6"
@@ -20,12 +19,17 @@ lazylistHijacker = "1.1.0"
 navigationCompose = "2.7.7"
 androidxComposeCompiler = "1.5.10"
 
+# test
+junit4 = "4.13.2"
+androidxTestCore = "1.5.0"
+androidxTestRules = "1.5.0"
+androidxTestRunner = "1.5.2"
+kotlinxCoroutines = "1.7.3"
+
 # plugins versions
-android-application-plugin="8.3.0"
+android-application-plugin= "8.3.0"
 kotlin-android-plugin="1.9.22"
 google-services-plugin = "4.4.1"
-coreKtx = "1.12.0"
-junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 
@@ -54,18 +58,25 @@ reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reo
 ## workaround for list scrolling when first visible item of lazy list is moved
 lazylist-hijacker = { module = "me.gingerninja.lazylist:hijacker", version.ref = "lazylistHijacker" }
 
-# compose bom & compose libs without ref:
+# compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-viewbinding = { group = "androidx.compose.ui", name = "ui-viewbinding" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+
+# test
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRules" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 
 
 [plugins]

@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,7 +60,8 @@ fun ItemUI(
                 onClick = { onClick() },
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
-            ),
+            )
+            .testTag("item-ui-surface"),
         color = Color.Transparent,
     ) {
         Column(
@@ -133,6 +135,7 @@ fun ItemUI(
                                     ), label = ""
                                 )
                                 IconButton(
+                                    modifier = Modifier.testTag("item-ui-arrow-comment"),
                                     onClick = onClickDisplayComment
                                 ) {
                                     Image(
