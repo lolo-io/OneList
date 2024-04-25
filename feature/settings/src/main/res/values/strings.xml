@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">Settings</string>
+    <string name="success_all_backup">All your lists have been backed up.</string>
+    <string name="error_all_backup">An error occurred while processing backup.</string>
+    <string name="settings_backup_select">Select a folder where your lists will be backed up</string>
+    <string name="settings_error_try_switch_option">ⓘ Try disabling and then re-enabling this option.</string>
+    <string name="setting_prefer_backup_files_summary">If enabled, your lists will be fetched from the backup files. This is useful if you sync your backup folder with other devices.</string>
+    <string name="settings_backup_all_summary">Each list is backed up every time you modify it. Click here to force a backup now.</string>
+    <string name="settings_prefer_backup_files_title">Get lists from backup files</string>
+    <string name="settings_import_summary">Import a list from your filesystem (.1list file).\nIf the file is in your backup folder, the same file will be used for backups; if not, a new file will be created in your backup folder.</string>
+    <string name="settings_import_title">Import a list</string>
+    <string name="settings_backup_title">Backup lists on device</string>
+    <string name="backup_all_lists">Backup all lists</string>
+    <string name="list_imported">Your list has been imported.</string>
+    <string name="about">About</string>
+    <string name="personalization">Personalization</string>
+    <string name="app_version">App Version</string>
+    <string name="show_last_release_note">Show last release note</string>
+    <string name="error_import_list">Error while importing your list : This file can\'t be imported.</string>
+</resources>

@@ -2,11 +2,12 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.onelist.android.application)
+    alias(libs.plugins.onelist.android.application.compose)
+    alias(libs.plugins.onelist.android.koin)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.ksp)
 }
 android {
     namespace = "com.lolo.io.onelist"
@@ -22,9 +23,6 @@ android {
     defaultConfig {
         multiDexEnabled = true
         applicationId = "com.lolo.io.onelist"
-        compileSdk = 34
-        minSdk = 23
-        targetSdk = 34
         versionCode = versionCodeCI ?: 19
         versionName = "1.5.0"
         vectorDrawables.useSupportLibrary = true
@@ -35,13 +33,8 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
         buildConfig = true
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
     }
 
     signingConfigs {
@@ -51,10 +44,6 @@ android {
             keyAlias = System.getenv("ONELIST_KEYSTORE_ALIAS")
             keyPassword = System.getenv("ONELIST_KEYSTORE_ALIAS_PASSWORD")
         }
-    }
-
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
     }
 
     buildTypes {
@@ -82,68 +71,19 @@ android {
     }
 
 }
-repositories {
-    google()
-    mavenCentral()
-    maven { url = uri("https://jitpack.io") }
-}
 
 dependencies {
-    // android
+
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.preference.ktx)
-    implementation(libs.androidx.lifecycle.extensions)
-    implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.androidx.appcompat)
-
-    // android - design
-    implementation(libs.constraint.layout)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.flexbox)
-    implementation(libs.material)
-    implementation(libs.androidx.swiperefreshlayout)
-
-    // kotlin
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlin.stdlib.jdk7)
-
-    // compose
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation (libs.androidx.compose.ui.viewbinding) // To inflate SettingsFragment
-    implementation (libs.androidx.navigation.compose)
-    // compose: android studio preview support
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    // compose: ui tests
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    implementation (libs.androidx.lifecycle.runtime.compose)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-    // firebase
     implementation(libs.firebase.crashlytics)
-
-    // koin di
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.navigation)
-    implementation(libs.koin.androidx.compose)
-
-    // room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-
-    // json
-    implementation(libs.gson)
-
-    // other libs
-    implementation (libs.whatsnew)
     implementation (libs.storage)
-    implementation (libs.advrecyclerview)
-    implementation(libs.reorderable)
-    implementation(libs.lazylist.hijacker)
+
+    // projects
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:domain"))
+
+    implementation(project(":feature:lists"))
+    implementation(project(":feature:settings"))
+    implementation(project(":feature:whatsnew"))
 }
