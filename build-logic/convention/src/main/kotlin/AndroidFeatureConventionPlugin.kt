@@ -15,7 +15,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             extensions.configure<LibraryExtension> {
                 defaultConfig {
                     testInstrumentationRunner =
-                        "androidx.test.runner.AndroidJUnitRunner"
+                        "com.lolo.io.onelist.core.testing.OneListTestRunner"
                 }
                 testOptions.animationsDisabled = true
             }

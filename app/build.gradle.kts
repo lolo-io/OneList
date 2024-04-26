@@ -6,9 +6,12 @@ plugins {
     alias(libs.plugins.onelist.android.application.compose)
     alias(libs.plugins.onelist.android.koin)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
 }
+if (gradle.startParameter.taskNames.toString().contains("Release")) {
+    plugins.apply("com.google.gms.google-services")
+}
+
 android {
     namespace = "com.lolo.io.onelist"
 
@@ -26,6 +29,11 @@ android {
         versionCode = versionCodeCI ?: 19
         versionName = "1.5.0"
         vectorDrawables.useSupportLibrary = true
+        testBuildType = "instrumented"
+
+        testInstrumentationRunner =
+            "com.lolo.io.onelist.core.testing.OneListTestRunner"
+
     }
 
     androidResources {
@@ -46,13 +54,16 @@ android {
         }
     }
 
+
     buildTypes {
-        getByName("debug") {
+        debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
-            resValue("string", "app_name", "1ListDev")
         }
-        getByName("release") {
+
+
+
+        release {
             isMinifyEnabled = true
             isShrinkResources = true
 
@@ -62,6 +73,13 @@ android {
             )
             resValue("string", "app_name", "1List")
             signingConfig = signingConfigs.getByName("release")
+        }
+
+        create("instrumented") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".test"
+            versionNameSuffix = "-TEST"
+            matchingFallbacks.add("debug")
         }
     }
 
@@ -75,8 +93,8 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.firebase.crashlytics)
-    implementation (libs.storage)
+    releaseImplementation(libs.firebase.crashlytics)
+    implementation(libs.storage)
 
     // projects
     implementation(project(":core:designsystem"))

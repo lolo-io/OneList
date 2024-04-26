@@ -3,9 +3,9 @@ package com.lolo.io.onelist.core.domain.use_cases
 import com.google.gson.JsonIOException
 import com.google.gson.JsonSyntaxException
 import com.lolo.io.onelist.core.data.model.ListsWithErrors
-import com.lolo.io.onelist.core.data.reporitory.OneListRepository
 import kotlinx.coroutines.flow.Flow
 import java.io.FileNotFoundException
+import com.lolo.io.onelist.core.data.reporitory.OneListRepository
 
 class LoadAllLists(private val repository: OneListRepository) {
 

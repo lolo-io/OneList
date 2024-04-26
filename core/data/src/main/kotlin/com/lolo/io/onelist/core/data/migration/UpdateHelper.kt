@@ -7,7 +7,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lolo.io.onelist.core.data.reporitory.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
-import com.lolo.io.onelist.core.model.ItemList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

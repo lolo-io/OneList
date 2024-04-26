@@ -24,7 +24,8 @@ class App : Application() {
                 settingsModule,
                 dataModule,
                 daosModule,
-                domainModule)
+                domainModule
+            )
         }
     }
 }

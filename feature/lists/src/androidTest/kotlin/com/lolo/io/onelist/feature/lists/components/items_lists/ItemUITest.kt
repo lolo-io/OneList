@@ -14,28 +14,28 @@ import kotlin.test.assertTrue
 
 class ItemUITest : ComposeTest() {
     @Test
-    fun testItemUI_NormalState() {
+    fun itemUI_NormalState() {
         val testItem = testItemWithComment
         setupAndRunCommonTests(testItem)
         assertTextIsNotShown(testItem.comment)
     }
 
     @Test
-    fun testItemUI_CommentDisplayed() {
+    fun itemUI_CommentDisplayed() {
         val testItem = testItemCommentDisplayed
         setupAndRunCommonTests(testItemCommentDisplayed)
         assertTextIsShown(testItem.comment)
     }
 
     @Test
-    fun testItemUI_Done() {
+    fun itemUI_Done() {
         val testItem = testItemWithCommentDone
         setupAndRunCommonTests(testItem)
         assertTextIsNotShown(testItem.comment)
     }
 
     @Test
-    fun testItemUI_NoComment() {
+    fun itemUI_NoComment() {
         val testItem = testItemWithoutComment
         setupAndRunCommonTests(testItem)
 
