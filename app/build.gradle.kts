@@ -23,6 +23,12 @@ android {
         versionCodeCI = (versionProps["VERSION_CODE"] as String).toInt()
     }
 
+    sourceSets {
+        sourceSets.getByName("androidTest") {
+            kotlin.srcDirs("${project(":feature:lists").projectDir}/src/androidTest/kotlin")
+        }
+    }
+
     defaultConfig {
         multiDexEnabled = true
         applicationId = "com.lolo.io.onelist"
@@ -33,6 +39,7 @@ android {
 
         testInstrumentationRunner =
             "com.lolo.io.onelist.core.testing.OneListTestRunner"
+
 
     }
 

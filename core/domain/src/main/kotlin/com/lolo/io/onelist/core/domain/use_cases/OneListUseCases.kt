@@ -7,7 +7,7 @@ data class OneListUseCases(
     val clearList: ClearList,
     val setItemsOfList: SetItemOfList,
     val reorderLists: ReorderLists,
-    val addItemToList: com.lolo.io.onelist.core.domain.use_cases.AddItemToList,
+    val addItemToList: AddItemToList,
     val editItemOfList: EditItemOfList,
     val removeItemFromList: RemoveItemFromList,
     val switchItemStatus: SwitchItemStatus,

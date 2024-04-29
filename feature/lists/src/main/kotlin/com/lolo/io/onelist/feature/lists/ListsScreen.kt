@@ -57,7 +57,7 @@ import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
 @Composable
-internal fun ListsScreen(
+fun ListsScreen(
     navigateToSettings: () -> Unit
 ) {
     val viewModel = koinInject<ListScreenViewModel>()
@@ -125,7 +125,7 @@ internal fun ListsScreen(
 }
 
 @Composable
-private fun ListsScreenUI(
+internal fun ListsScreenUI(
     allLists: List<ItemList>,
     selectedList: ItemList?,
     displayedItems: List<Item>,

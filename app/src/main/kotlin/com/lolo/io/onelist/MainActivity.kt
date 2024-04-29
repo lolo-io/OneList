@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
 
-        this.apply {  }
+
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme)
         Config.init(applicationContext)

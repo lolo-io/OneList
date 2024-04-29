@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -94,7 +95,9 @@ class ListScreenViewModel(
 
     fun createList(itemList: ItemList) {
         viewModelScope.launch {
-            useCases.createList(itemList)
+            useCases.selectList(
+                useCases.createList(itemList)
+            )
         }
     }
 
@@ -185,7 +188,9 @@ class ListScreenViewModel(
 
     fun createListThenAddItem(itemList: ItemList, item: Item) {
         viewModelScope.launch {
-            useCases.createList(itemList)
+            useCases.selectList(
+                useCases.createList(itemList)
+            )
             selectedList.value?.let {
                 _displayedItems.value = useCases.addItemToList(it, item).items
             }

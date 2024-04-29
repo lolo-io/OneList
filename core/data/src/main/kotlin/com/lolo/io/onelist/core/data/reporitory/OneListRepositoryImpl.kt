@@ -84,11 +84,13 @@ class OneListRepositoryImpl(
         return _allListsWithErrors
     }
 
-    override suspend fun createList(itemList: ItemList) {
+    override suspend fun createList(itemList: ItemList): ItemList {
+        val addedList = upsertList(itemList)
         itemList.position = _allListsWithErrors.value.lists.size - 1
         _allListsWithErrors.value =
             ListsWithErrors(_allListsWithErrors.value.lists + upsertList(itemList))
-        preferences.selectedListIndex = _allListsWithErrors.value.lists.size - 1
+
+        return addedList
     }
 
 

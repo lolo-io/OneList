@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -109,14 +110,19 @@ internal fun OneListHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = {
-                if (showSelectedListControls) {
-                    actions.onClickEditList()
-                } else {
-                    actions.onClickShareList()
-                }
-                view.playSoundEffect(SoundEffectConstants.CLICK)
-            }) {
+            IconButton(
+                modifier = with(Modifier) {
+                    if (showSelectedListControls) testTag("edit_list_button")
+                    else testTag("share_list_button")
+                },
+                onClick = {
+                    if (showSelectedListControls) {
+                        actions.onClickEditList()
+                    } else {
+                        actions.onClickShareList()
+                    }
+                    view.playSoundEffect(SoundEffectConstants.CLICK)
+                }) {
                 Icon(
                     modifier = Modifier.alpha(targetRotationDefaultsControls.value),
                     imageVector = Icons.Default.Share, contentDescription = "Share List",
@@ -130,23 +136,34 @@ internal fun OneListHeader(
 
             }
 
-            IconButton(onClick = {
-                if (showSelectedListControls) {
-                    actions.onClickDeleteList()
-                } else {
-                    actions.onClickCreateList()
-                }
-                view.playSoundEffect(SoundEffectConstants.CLICK)
-            }) {
+            IconButton(
+                modifier = with(Modifier) {
+                    if (showSelectedListControls) {
+                        testTag("delete_list_button")
+                    } else {
+                        testTag("add_list_button")
+                    }
+                },
+                onClick = {
+                    if (showSelectedListControls) {
+                        actions.onClickDeleteList()
+                    } else {
+                        actions.onClickCreateList()
+                    }
+                    view.playSoundEffect(SoundEffectConstants.CLICK)
+                }) {
                 Icon(
                     modifier = Modifier
                         .alpha(targetRotationDefaultsControls.value)
-                        .scale(1.2f),
+                        .scale(1.2f)
+                        .testTag("add_list_icon"),
                     imageVector = Icons.Default.Add, contentDescription = "Create List",
                 )
 
                 Icon(
-                    modifier = Modifier.alpha(targetRotationListsControls.value),
+                    modifier = Modifier
+                        .alpha(targetRotationListsControls.value)
+                        .testTag("delete_list_icon"),
                     imageVector = Icons.Default.Delete, contentDescription = "Delete List",
                     tint = MaterialTheme.appColors.deleteListIcon
                 )

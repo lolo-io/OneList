@@ -1,9 +1,11 @@
 package com.lolo.io.onelist.feature.lists.components.items_lists
 
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.performClick
+import com.lolo.io.onelist.core.designsystem.OneListTheme
 import com.lolo.io.onelist.core.model.Item
-import com.lolo.io.onelist.core.testing.core.ComposeTest
+import com.lolo.io.onelist.core.testing.core.AbstractComposeTest
 import com.lolo.io.onelist.core.testing.data.testItemCommentDisplayed
 import com.lolo.io.onelist.core.testing.data.testItemWithComment
 import com.lolo.io.onelist.core.testing.data.testItemWithCommentDone
@@ -12,7 +14,9 @@ import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class ItemUITest : ComposeTest() {
+class ItemUITest : AbstractComposeTest(
+    ComponentActivity::class.java
+) {
     @Test
     fun itemUI_NormalState() {
         val testItem = testItemWithComment
@@ -50,11 +54,13 @@ class ItemUITest : ComposeTest() {
         var displayCommentClicked = false
 
         composeTestRule.setContent {
-            ItemUI(
-                item = item,
-                onClick = { itemClicked = true },
-                onClickDisplayComment = { displayCommentClicked = true }
-            )
+            OneListTheme {
+                ItemUI(
+                    item = item,
+                    onClick = { itemClicked = true },
+                    onClickDisplayComment = { displayCommentClicked = true }
+                )
+            }
         }
 
         assertNodeTagIsShown(TAG_ITEM_UI_SURFACE)

@@ -13,8 +13,12 @@ class FakeSharedPreferenceHelper() : SharedPreferencesHelper {
     override var theme: String = "light"
     override var firstLaunch: Boolean = false
     override var preferUseFiles: Boolean = false
-    override var selectedListIndex: Int = 0
-    private val _selectedListIndexStateFlow = MutableStateFlow(selectedListIndex)
+    override var selectedListIndex: Int
+        get() = _selectedListIndexStateFlow.value
+        set(value) {
+            _selectedListIndexStateFlow.value = value
+        }
+    private val _selectedListIndexStateFlow = MutableStateFlow(0)
     override val selectedListIndexStateFlow: StateFlow<Int>
         get() = _selectedListIndexStateFlow.asStateFlow()
     override val canAccessBackupUri: Boolean = true

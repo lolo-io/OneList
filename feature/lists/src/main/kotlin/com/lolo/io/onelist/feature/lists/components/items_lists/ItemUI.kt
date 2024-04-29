@@ -43,13 +43,14 @@ import com.lolo.io.onelist.core.designsystem.app
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.dimen
 import com.lolo.io.onelist.core.designsystem.space
+import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.preview
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
 import com.lolo.io.onelist.feature.lists.R
 
 @Composable
 fun ItemUI(
-    item: com.lolo.io.onelist.core.model.Item,
+    item: Item,
     onClick: () -> Unit = {},
     onClickDisplayComment: () -> Unit = {},
 ) {
@@ -119,7 +120,8 @@ fun ItemUI(
                                 .heightIn(MaterialTheme.dimen.listItemMinHeight)
                                 .alignByBaseline()
                                 .padding(vertical = MaterialTheme.space.Tiny)
-                                .wrapContentHeight(align = Alignment.CenterVertically),
+                                .wrapContentHeight(align = Alignment.CenterVertically)
+                                .testTag("item-ui-title"),
                         )
 
 

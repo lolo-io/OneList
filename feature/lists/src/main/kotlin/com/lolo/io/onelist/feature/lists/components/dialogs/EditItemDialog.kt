@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.designsystem.space
@@ -53,7 +54,9 @@ fun DialogScope.EditItemDialog(
         textField.requestFocus()
     }
 
-    Column {
+    Column(
+        modifier = Modifier.testTag("edit-item-dialog")
+    ) {
         Box(
             modifier = Modifier.padding(
                 horizontal = MaterialTheme.space.Normal,
@@ -63,7 +66,8 @@ fun DialogScope.EditItemDialog(
             OneListTextField(
                 modifier = Modifier
                     .focusRequester(textField)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .testTag("edit-item-dialog-item-title"),
                 value = itemTitle,
                 placeholder = stringResource(id = R.string.item_name),
                 onValueChange = { itemTitle = it },
@@ -88,7 +92,8 @@ fun DialogScope.EditItemDialog(
             OneListTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = MaterialTheme.space.Tiny),
+                    .padding(top = MaterialTheme.space.Tiny)
+                    .testTag("edit-item-dialog-item-comment"),
                 value = itemComment,
                 showBorder = false,
                 placeholder = "Item Comment",

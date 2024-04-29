@@ -9,8 +9,9 @@ val testLists = (0..<5).map { listIndex ->
 }
 
 fun createTestList(
-    position: Int,
-    id: Long = position.toLong()
+    position: Int = 0,
+    id: Long = position.toLong(),
+    hasComments: Boolean = false
 ): ItemList = ItemList(
     title = "Item List $position",
     position = position,
@@ -18,8 +19,16 @@ fun createTestList(
         Item.preview.copy(
             title = "Test Item $position - $itemIndex",
             id = position * 10L + itemIndex,
+            comment = if (hasComments) "Test Item $position - $itemIndex Comment" else ""
         )
     },
     uri = null,
     id = id
 )
+
+fun createFakeListWhereAllItemsHaveComment() =
+    listOf(
+        createTestList(
+            hasComments = true
+        )
+    )

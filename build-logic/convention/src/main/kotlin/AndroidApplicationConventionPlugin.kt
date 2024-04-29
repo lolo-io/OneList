@@ -30,6 +30,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 add("androidTestImplementation", project(":core:testing"))
                 add("testImplementation", libs.findLibrary("koin-android-test").get())
                 add("androidTestImplementation", libs.findLibrary("koin-android-test").get())
+
+                add("implementation", libs.findLibrary("koin-androidx-compose").get())
             }
         }
     }

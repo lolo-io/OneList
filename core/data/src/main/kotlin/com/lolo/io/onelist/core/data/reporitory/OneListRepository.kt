@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface OneListRepository {
     val allListsWithErrors: StateFlow<ListsWithErrors>
     suspend fun getAllLists(): Flow<ListsWithErrors>
-    suspend fun createList(itemList: ItemList)
+    suspend fun createList(itemList: ItemList): ItemList
     suspend fun saveListToDb(itemList: ItemList)
     @Throws
     suspend fun deleteList(

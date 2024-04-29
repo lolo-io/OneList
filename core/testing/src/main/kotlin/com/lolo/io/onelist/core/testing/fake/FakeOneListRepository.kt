@@ -13,7 +13,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 val fakeOneListRepository = FakeOneListRepository()
-class FakeOneListRepository(lists: List<ItemList> = testLists) : OneListRepository {
+
+class FakeOneListRepository(
+    val preferenceHelper: FakeSharedPreferenceHelper = fakeSharedPreferenceHelper,
+    lists: List<ItemList> = testLists) : OneListRepository {
 
     private var selectedListIndex = 0
 
@@ -22,20 +25,33 @@ class FakeOneListRepository(lists: List<ItemList> = testLists) : OneListReposito
     val testMutableAllListsWithErrors =
         MutableStateFlow(ListsWithErrors(lists))
     override val allListsWithErrors: StateFlow<ListsWithErrors>
-        get() = testMutableAllListsWithErrors.asStateFlow()
+        get() {
+            return testMutableAllListsWithErrors.asStateFlow()
+        }
+
+    val selectedList
+        get() = allListsWithErrors.value.lists[preferenceHelper.selectedListIndex]
+
+    fun setFakeLists(itemLists: List<ItemList>) {
+        testMutableAllListsWithErrors.value = ListsWithErrors(itemLists)
+    }
 
     override suspend fun getAllLists(): Flow<ListsWithErrors> {
         delay(300)
         return testMutableAllListsWithErrors
     }
 
-    override suspend fun createList(itemList: ItemList) {
+    override suspend fun createList(itemList: ItemList): ItemList {
+        val newList = itemList.copy(id = ++listIdsIncrement)
         testMutableAllListsWithErrors.value =
-            ListsWithErrors(testMutableAllListsWithErrors.value.lists + itemList.copy(id = ++listIdsIncrement))
+            ListsWithErrors(testMutableAllListsWithErrors.value.lists + newList)
+        return newList
     }
 
     override suspend fun saveListToDb(itemList: ItemList) {
         delay(300)
+        testMutableAllListsWithErrors.value = ListsWithErrors(testMutableAllListsWithErrors.value
+            .lists.map { if (it.id == itemList.id) itemList else it })
     }
 
     override suspend fun deleteList(
@@ -77,7 +93,10 @@ class FakeOneListRepository(lists: List<ItemList> = testLists) : OneListReposito
         return newList
     }
 
-    override fun selectList(list: ItemList) { }
+    override fun selectList(list: ItemList) {
+        preferenceHelper.selectedListIndex =
+            testMutableAllListsWithErrors.value.lists.indexOf(list)
+    }
 
     override suspend fun saveAllLists(lists: List<ItemList>) {
         testMutableAllListsWithErrors.value = ListsWithErrors(lists)
