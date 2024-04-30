@@ -8,6 +8,7 @@ import com.lolo.io.onelist.core.database.di.daosModule
 import com.lolo.io.onelist.core.designsystem.OneListTheme
 import com.lolo.io.onelist.core.domain.di.domainModule
 import com.lolo.io.onelist.core.testing.core.AbstractComposeTest
+import com.lolo.io.onelist.core.testing.data.createEmptyTestList
 import com.lolo.io.onelist.core.testing.data.createFakeListWhereAllItemsHaveComment
 import com.lolo.io.onelist.core.testing.data.createTestList
 import com.lolo.io.onelist.core.testing.fake.FakeOneListRepository
@@ -25,6 +26,7 @@ import org.junit.Test
 import org.koin.androidx.compose.KoinAndroidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.util.UUID
+import kotlin.random.Random
 
 class ListScreenTest : AbstractComposeTest(
     ComponentActivity::class.java,
@@ -117,14 +119,33 @@ class ListScreenTest : AbstractComposeTest(
             listOf(itemList)
         )
         with(composeTestRule) {
-
             val listNameSuffix = UUID.randomUUID().toString().substring(0, 8)
             sharedTestEditList(itemList.title, listNameSuffix)
         }
     }
 
 
-    // todo add items to list
+    @Test
+    fun addItemsToList() {
+        val itemList = createEmptyTestList()
+        repository.setFakeLists(
+            listOf(itemList)
+        )
+        with(composeTestRule) {
+            val addedItemsTitles = mutableListOf<String>()
+
+            (1..5).forEach {
+                val itemTitle = UUID.randomUUID().toString().substring(0, 8)
+                addedItemsTitles.add(itemTitle)
+                val itemComment = if (Random.nextBoolean()) {
+                    UUID.randomUUID().toString().substring(0, 16)
+                } else ""
+                addItemToList(itemTitle, itemComment)
+            }
+
+            checkListItemOrders(addedItemsTitles)
+        }
+    }
     // todo delete list
     // todo select list
 

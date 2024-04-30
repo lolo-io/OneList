@@ -39,8 +39,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
@@ -74,7 +76,6 @@ internal fun AddItemInput(
             mutableStateOf(false)
         }
 
-
         val animatedSubmitAlpha by animateFloatAsState(
             targetValue = if (value.isEmpty()) 0f else 1f,
             animationSpec = tween(
@@ -87,7 +88,8 @@ internal fun AddItemInput(
         OneListTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(focusRequester),
+                .focusRequester(focusRequester)
+                .testTag(TestTags.AddItemInput),
             value = value,
             placeholder = "Add",
             onValueChange = onValueChange,
@@ -107,7 +109,8 @@ internal fun AddItemInput(
                 if (value.isNotEmpty()) {
                     if (animatedSubmitAlpha > 0) {
                         IconButton(
-                            modifier = Modifier.alpha(animatedSubmitAlpha),
+                            modifier = Modifier.alpha(animatedSubmitAlpha)
+                                .testTag(TestTags.AddItemInputSubmitButton),
                             onClick = {
                                 onSubmit()
                                 view.playSoundEffect(SoundEffectConstants.CLICK)
@@ -141,7 +144,8 @@ internal fun AddItemInput(
                 OneListTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.space.Tiny),
+                        .padding(top = MaterialTheme.space.Tiny)
+                        .testTag(TestTags.AddItemCommentInput),
                     value = commentValue,
                     placeholder = "Comment",
                     onValueChange = {
@@ -194,7 +198,8 @@ internal fun AddItemInput(
             modifier = Modifier
                 .size(36.dp)
                 .padding(MaterialTheme.space.Tiny)
-                .alpha(animatedArrowVisibility),
+                .alpha(animatedArrowVisibility)
+                .testTag(TestTags.AddItemCommentArrowButton),
             onClick = {
                 arrowRotation += 180f
                 if (arrowRotation == 340f) arrowRotation = 180f

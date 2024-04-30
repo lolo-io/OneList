@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
@@ -72,7 +73,7 @@ fun <T> ReorderableList(
     }
 
     LazyColumn(
-        modifier = modifier.fillMaxSize().testTag("items_lazy_column"),
+        modifier = modifier.fillMaxSize().testTag(TestTags.ItemsLazyColumn),
         userScrollEnabled = userScrollEnabled,
         state = listState,
         contentPadding = PaddingValues(top = 1.dp),

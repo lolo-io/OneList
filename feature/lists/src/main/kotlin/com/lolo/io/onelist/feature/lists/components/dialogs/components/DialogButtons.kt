@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
@@ -40,7 +41,7 @@ fun DialogButtons(
                 .align(Alignment.End)
         ) {
             IconButton(
-                modifier = Modifier.testTag("common-dialog-negative-button"),
+                modifier = Modifier.testTag(TestTags.CommonDialogNegativeButton),
                 onClick = {
                 onNegativeClicked()
                 view.playSoundEffect(SoundEffectConstants.CLICK)
@@ -51,7 +52,7 @@ fun DialogButtons(
                     tint = MaterialTheme.appColors.dialogButtonCancel
                 )
             }
-            IconButton( modifier = Modifier.testTag("common-dialog-positive-button"),
+            IconButton( modifier = Modifier.testTag(TestTags.CommonDialogPositiveButton),
                 onClick = {
                 onPositiveClicked()
                 view.playSoundEffect(SoundEffectConstants.CLICK)

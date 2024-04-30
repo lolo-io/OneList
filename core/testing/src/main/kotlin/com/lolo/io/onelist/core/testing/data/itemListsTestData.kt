@@ -32,3 +32,12 @@ fun createFakeListWhereAllItemsHaveComment() =
             hasComments = true
         )
     )
+
+fun createEmptyTestList() =
+    ItemList(
+        title = "Item List",
+        position = 0,
+        items = listOf(),
+        uri = null,
+        id = 1
+    )

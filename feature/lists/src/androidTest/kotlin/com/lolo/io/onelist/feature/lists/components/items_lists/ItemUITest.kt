@@ -3,6 +3,7 @@ package com.lolo.io.onelist.feature.lists.components.items_lists
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.performClick
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.OneListTheme
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.testing.core.AbstractComposeTest
@@ -44,7 +45,7 @@ class ItemUITest : AbstractComposeTest(
         setupAndRunCommonTests(testItem)
 
         assertTextIsNotShown(testItem.comment)
-        assertNodeTagIsNotShown(TAG_ITEM_UI_ARROW_COMMENT)
+        assertNodeTagIsNotShown(TestTags.ItemUiArrowComment)
     }
 
     private fun setupAndRunCommonTests(
@@ -63,7 +64,7 @@ class ItemUITest : AbstractComposeTest(
             }
         }
 
-        assertNodeTagIsShown(TAG_ITEM_UI_SURFACE)
+        assertNodeTagIsShown(TestTags.ItemUiSurface)
             .assertHasClickAction()
             .performClick()
 
@@ -77,17 +78,12 @@ class ItemUITest : AbstractComposeTest(
         itemClicked = false
 
         if(item.comment.isNotEmpty()) {
-            assertNodeTagIsShown(TAG_ITEM_UI_ARROW_COMMENT)
+            assertNodeTagIsShown(TestTags.ItemUiArrowComment)
                 .assertHasClickAction()
                 .performClick()
 
             assertTrue(displayCommentClicked, "Display comment arrow not been clicked")
             assertFalse(itemClicked, "Item should not have been clicked")
         }
-    }
-
-    companion object {
-        private const val TAG_ITEM_UI_SURFACE = "item-ui-surface"
-        private const val TAG_ITEM_UI_ARROW_COMMENT = "item-ui-arrow-comment"
     }
 }

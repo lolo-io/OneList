@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import com.lolo.io.onelist.core.data.utils.TestTags
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -64,7 +65,7 @@ fun <T> DraggableFlowRow(
                 key(itemKeys(draggableItem.item)) {
                     Box(
                         modifier = Modifier.reorderableItemInFlowRow(draggableItem)
-                            .testTag("flow_row_item")
+                            .testTag(TestTags.FlowRowItem)
                     ) {
                         drawItem(
                             draggableItem.item,

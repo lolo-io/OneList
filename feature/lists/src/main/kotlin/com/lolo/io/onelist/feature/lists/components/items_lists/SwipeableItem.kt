@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.Palette
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
@@ -34,14 +35,14 @@ internal fun SwipeableRowScope.SwipeableItem(
 ) {
 
     SwipeableRow(
-        modifier = modifier.testTag("swipeable_item"),
+        modifier = modifier.testTag(TestTags.SwipeableItem),
         backgroundStartToEnd = {
             Box(
                 Modifier
                     .background(MaterialTheme.appColors.swipeEditBackground)
                     .fillMaxSize()
                     .padding(start = MaterialTheme.space.Normal)
-                    .testTag("swipeable_item_edit_background"),
+                    .testTag(TestTags.SwipeableItemEditBackground),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Icon(
@@ -57,7 +58,7 @@ internal fun SwipeableRowScope.SwipeableItem(
                     .background(MaterialTheme.appColors.swipeDeleteBackground)
                     .padding(end = MaterialTheme.space.Normal)
                     .fillMaxSize()
-                    .testTag("swipeable_item_delete_background"),
+                    .testTag(TestTags.SwipeableItemDeleteBackground),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(

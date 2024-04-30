@@ -1,6 +1,5 @@
 package com.lolo.io.onelist.e2e
 
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.lolo.io.onelist.MainActivity
 import com.lolo.io.onelist.core.data.di.dataModule
 import com.lolo.io.onelist.core.database.di.daosModule
@@ -52,7 +51,7 @@ class E2EFirstLaunchTest:AbstractComposeTest(
                 testItemsListIsScrollable()
                 it.items.forEachIndexed { index, item ->
                     scrollToItemIfNecessary(index)
-                    testItemIsInList(item)
+                    testItemIsInList(item.title)
                 }
             }
         }

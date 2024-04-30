@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.ui.composables.ComposePreview
@@ -112,8 +113,8 @@ internal fun OneListHeader(
         ) {
             IconButton(
                 modifier = with(Modifier) {
-                    if (showSelectedListControls) testTag("edit_list_button")
-                    else testTag("share_list_button")
+                    if (showSelectedListControls) testTag(TestTags.EditListButton)
+                    else testTag(TestTags.ShareListButton)
                 },
                 onClick = {
                     if (showSelectedListControls) {
@@ -139,9 +140,9 @@ internal fun OneListHeader(
             IconButton(
                 modifier = with(Modifier) {
                     if (showSelectedListControls) {
-                        testTag("delete_list_button")
+                        testTag(TestTags.DeleteListButton)
                     } else {
-                        testTag("add_list_button")
+                        testTag(TestTags.AddListButton)
                     }
                 },
                 onClick = {
@@ -156,14 +157,14 @@ internal fun OneListHeader(
                     modifier = Modifier
                         .alpha(targetRotationDefaultsControls.value)
                         .scale(1.2f)
-                        .testTag("add_list_icon"),
+                        .testTag(TestTags.AddListIcon),
                     imageVector = Icons.Default.Add, contentDescription = "Create List",
                 )
 
                 Icon(
                     modifier = Modifier
                         .alpha(targetRotationListsControls.value)
-                        .testTag("delete_list_icon"),
+                        .testTag(TestTags.DeleteListIcon),
                     imageVector = Icons.Default.Delete, contentDescription = "Delete List",
                     tint = MaterialTheme.appColors.deleteListIcon
                 )

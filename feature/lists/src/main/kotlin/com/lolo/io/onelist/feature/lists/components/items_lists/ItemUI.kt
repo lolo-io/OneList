@@ -39,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.app
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.dimen
@@ -62,7 +63,7 @@ fun ItemUI(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             )
-            .testTag("item-ui-surface"),
+            .testTag(TestTags.ItemUiSurface),
         color = Color.Transparent,
     ) {
         Column(
@@ -121,14 +122,17 @@ fun ItemUI(
                                 .alignByBaseline()
                                 .padding(vertical = MaterialTheme.space.Tiny)
                                 .wrapContentHeight(align = Alignment.CenterVertically)
-                                .testTag("item-ui-title"),
+                                .testTag(TestTags.ItemUiTitle),
                         )
 
 
                         if (item.comment.isNotEmpty()) {
-                            Box(modifier = Modifier
-                                .align(Alignment.Top)
-                                .padding(top = MaterialTheme.space.Tiny)) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.Top)
+                                    .padding(top = MaterialTheme.space.Tiny)
+                                    .testTag(TestTags.itemCommentArrowItemTitle(item.title))
+                            ) {
                                 val animatedArrowRotation by animateFloatAsState(
                                     targetValue = if (item.commentDisplayed) 0f else 180f,
                                     animationSpec = tween(
@@ -137,7 +141,7 @@ fun ItemUI(
                                     ), label = ""
                                 )
                                 IconButton(
-                                    modifier = Modifier.testTag("item-ui-arrow-comment"),
+                                    modifier = Modifier.testTag(TestTags.ItemUiArrowComment),
                                     onClick = onClickDisplayComment
                                 ) {
                                     Image(

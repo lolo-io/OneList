@@ -2,7 +2,6 @@ package com.lolo.io.onelist.feature.lists.components.list_chips
 
 import android.content.res.Configuration
 import android.view.SoundEffectConstants
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FilterChip
@@ -17,6 +16,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.OneListTheme
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 
@@ -43,14 +43,14 @@ fun ListChip(
             .scale(if (state == ListChipState.DRAGGED) 1.1f else 1f)
             .padding(2.dp)
             .height(FilterChipDefaults.Height)
-            .testTag("list_chip_${label}_$state"),
+            .testTag(TestTags.listChipLabelState(label, state.name)),
         selected = asSelected,
         onClick = {
             view.playSoundEffect(SoundEffectConstants.CLICK)
             onClick()
         },
         label = { Text(
-            modifier = Modifier.testTag("list_chip_$label"),
+            modifier = Modifier.testTag(TestTags.listChipLabel(label)),
             text = label) },
         colors = FilterChipDefaults.filterChipColors(
             containerColor = Color.Transparent,
