@@ -20,9 +20,9 @@ dependencies {
     api(libs.androidx.test.runner)
     api(libs.junit4)
     api(libs.kotlinx.coroutines.test)
-    api(libs.mockito)
-    api(libs.mockito.kotlin)
-
+//    api(libs.mockito)
+//    api(libs.mockito.kotlin)
+    api(libs.robolectric)
     debugApi(libs.androidx.compose.ui.test.manifest)
 
     implementation(project(":core:domain"))

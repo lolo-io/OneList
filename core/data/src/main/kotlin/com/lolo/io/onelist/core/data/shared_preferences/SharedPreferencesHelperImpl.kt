@@ -57,7 +57,7 @@ class SharedPreferencesHelperImpl(
 
     override var theme: String
         get() = getPref(SharedPreferencesHelper.THEME_PREF) ?: getDefaultTheme()
-        set(value) = editPref(SharedPreferencesHelper.VERSION_PREF, value)
+        set(value) = editPref(SharedPreferencesHelper.THEME_PREF, value)
 
     override var firstLaunch: Boolean
         get() = SharedPreferencesHelper.FIRST_LAUNCH_PREF.getPref(true)

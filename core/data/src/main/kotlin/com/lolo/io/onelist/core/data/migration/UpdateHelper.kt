@@ -37,7 +37,6 @@ class UpdateHelper(
             applyUpdatePatches(activity, then)
         }
         fixItemsWithSameIdsIfFond(then)
-
     }
 
 
@@ -113,7 +112,7 @@ class UpdateHelper(
                 }
                 ret
             } catch (e: Exception) {
-                listOf<com.lolo.io.onelist.core.model.ItemList>()
+                listOf()
             }
         }
     }

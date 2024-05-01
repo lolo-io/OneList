@@ -8,7 +8,15 @@ android {
         testInstrumentationRunner = "com.lolo.io.onelist.core.testing.OneListTestRunner"
     }
     namespace = "com.lolo.io.onelist.core.data"
+
+    testOptions {
+        unitTests {
+            // For Robolectric
+            isIncludeAndroidResources = true
+        }
+    }
 }
+
 
 dependencies {
     implementation(libs.androidx.preference.ktx)

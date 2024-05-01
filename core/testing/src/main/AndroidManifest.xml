@@ -6,7 +6,7 @@
         android:maxSdkVersion="28" />
 
     <application
-        android:name="com.lolo.io.onelist.core.testing.E2EApplication"
+        android:name="com.lolo.io.onelist.core.testing.TestApplication"
 
         android:allowBackup="true"
         android:hardwareAccelerated="true"
