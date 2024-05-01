@@ -28,6 +28,8 @@ object TestTags {
     const val AddItemCommentInput = "add_item_comment_input"
     const val AddItemCommentArrowButton = "add_item_comment_arrow_button"
     const val AddItemInputSubmitButton = "add_item_input_submit_button"
+    const val DeleteListDialog = "delete_ist_dialog"
+    const val JustClearListButton = "just_clear_list_button"
     fun listChipLabelState(label: String, state: String) = "list_chip_${label}_$state"
     fun listChipLabel(label: String) = "list_chip_${label}"
     fun itemCommentArrowItemTitle(title: String) = "item_comment_arrow_${title}"

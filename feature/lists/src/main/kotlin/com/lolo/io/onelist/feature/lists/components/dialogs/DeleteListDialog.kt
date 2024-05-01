@@ -27,10 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.preview
@@ -50,7 +52,9 @@ internal fun DialogScope.DeleteListDialog(
 
     var deleteFile by remember { mutableStateOf(list.uri != null) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .testTag(TestTags.DeleteListDialog)) {
         Row(
             modifier = Modifier
                 .padding(
@@ -124,6 +128,7 @@ internal fun DialogScope.DeleteListDialog(
         ) {
 
             TextButton(
+                modifier = Modifier.testTag(TestTags.JustClearListButton),
                 onClick = onJustClearList,
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = MaterialTheme.appColors.dialogDeleteJutsClearList

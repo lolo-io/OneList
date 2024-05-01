@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.core.data.reporitory
+package com.lolo.io.onelist.core.data.repository
 
 import android.net.Uri
 import com.google.gson.JsonIOException
@@ -17,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -143,19 +142,9 @@ class OneListRepositoryImpl(
             dao.delete(itemList.toItemListEntity())
         }
 
-        val position = _allListsWithErrors.value.lists.indexOf(itemList)
-
         _allListsWithErrors.value =
             ListsWithErrors(_allListsWithErrors.value.lists
                 .filter { it.id != itemList.id })
-
-        if(_allListsWithErrors.value.lists.isNotEmpty()) {
-            val nextSelected = _allListsWithErrors.value.lists.getOrNull(position)
-                ?: _allListsWithErrors.value.lists[position - 1]
-            selectList(nextSelected)
-        } else {
-            preferences.selectedListIndex = 0
-        }
 
 
         if (deleteBackupFile) {

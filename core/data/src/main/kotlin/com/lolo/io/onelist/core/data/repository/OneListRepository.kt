@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.core.data.reporitory
+package com.lolo.io.onelist.core.data.repository
 
 import android.net.Uri
 import com.lolo.io.onelist.core.data.model.ListsWithErrors

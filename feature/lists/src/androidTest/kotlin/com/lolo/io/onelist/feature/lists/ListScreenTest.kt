@@ -1,8 +1,6 @@
 package com.lolo.io.onelist.feature.lists
 
 import androidx.activity.ComponentActivity
-import com.lolo.io.onelist.core.data.di.dataModule
-import com.lolo.io.onelist.core.data.reporitory.OneListRepository
 import com.lolo.io.onelist.core.testing.fake.fakeDataModule
 import com.lolo.io.onelist.core.database.di.daosModule
 import com.lolo.io.onelist.core.designsystem.OneListTheme
@@ -11,16 +9,12 @@ import com.lolo.io.onelist.core.testing.core.AbstractComposeTest
 import com.lolo.io.onelist.core.testing.data.createEmptyTestList
 import com.lolo.io.onelist.core.testing.data.createFakeListWhereAllItemsHaveComment
 import com.lolo.io.onelist.core.testing.data.createTestList
+import com.lolo.io.onelist.core.testing.data.testLists
 import com.lolo.io.onelist.core.testing.fake.FakeOneListRepository
 import com.lolo.io.onelist.core.testing.fake.FakeSharedPreferenceHelper
-import com.lolo.io.onelist.core.testing.fake.fakeOneListRepository
-import com.lolo.io.onelist.core.testing.fake.fakeSharedPreferenceHelper
 import com.lolo.io.onelist.core.testing.rules.KoinTestRule
-import com.lolo.io.onelist.di.appModule
 import com.lolo.io.onelist.feature.lists.di.listsModule
-import com.lolo.io.onelist.feature.settings.di.settingsModule
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.koin.androidx.compose.KoinAndroidContext
@@ -53,12 +47,10 @@ class ListScreenTest : AbstractComposeTest(
                 daosModule,
                 domainModule
             )
-
         )
 
     @OptIn(KoinExperimentalAPI::class)
-    @Before
-    fun setUp() {
+    fun setUpUI() {
         composeTestRule.setContent {
             KoinAndroidContext {
                 OneListTheme {
@@ -70,6 +62,9 @@ class ListScreenTest : AbstractComposeTest(
 
     @Test
     fun swipeDeleteItem() = runTest {
+        repository.setFakeLists(testLists)
+        setUpUI()
+
         with(composeTestRule) {
             val randomIndex = repository.selectedList.items.indices
                 .random()
@@ -84,6 +79,7 @@ class ListScreenTest : AbstractComposeTest(
         repository.setFakeLists(
             createFakeListWhereAllItemsHaveComment()
         )
+        setUpUI()
 
         with(composeTestRule) {
             val randomIndex = repository.selectedList.items.indices
@@ -99,6 +95,8 @@ class ListScreenTest : AbstractComposeTest(
         repository.setFakeLists(
             listOf()
         )
+        setUpUI()
+
         internalCreateList()
     }
 
@@ -107,7 +105,9 @@ class ListScreenTest : AbstractComposeTest(
         repository.setFakeLists(
             listOf()
         )
-        (1..3).forEach { _ ->
+        setUpUI()
+
+        repeat(3) {
             internalCreateList()
         }
     }
@@ -118,6 +118,8 @@ class ListScreenTest : AbstractComposeTest(
         repository.setFakeLists(
             listOf(itemList)
         )
+        setUpUI()
+
         with(composeTestRule) {
             val listNameSuffix = UUID.randomUUID().toString().substring(0, 8)
             sharedTestEditList(itemList.title, listNameSuffix)
@@ -131,23 +133,74 @@ class ListScreenTest : AbstractComposeTest(
         repository.setFakeLists(
             listOf(itemList)
         )
+        setUpUI()
+
         with(composeTestRule) {
             val addedItemsTitles = mutableListOf<String>()
 
-            (1..5).forEach {
+            repeat(5) {
                 val itemTitle = UUID.randomUUID().toString().substring(0, 8)
                 addedItemsTitles.add(itemTitle)
                 val itemComment = if (Random.nextBoolean()) {
                     UUID.randomUUID().toString().substring(0, 16)
                 } else ""
-                addItemToList(itemTitle, itemComment)
+                sharedAddItemToList(itemTitle, itemComment)
             }
 
-            checkListItemOrders(addedItemsTitles)
+            sharedCheckListItemOrders(addedItemsTitles)
         }
     }
-    // todo delete list
-    // todo select list
+
+    @Test
+    fun deleteList() {
+        repository.setFakeLists(
+            testLists
+        )
+        setUpUI()
+
+        with(composeTestRule) {
+            val displayedTestsLists = testLists.toMutableList()
+            testLists.shuffled().forEach { itemList ->
+                sharedDeleteList(itemList.title)
+                val indexInTestsLists = displayedTestsLists.indexOf(itemList)
+                if (indexInTestsLists < displayedTestsLists.size - 1) {
+                    sharedCheckIsSelected(displayedTestsLists[indexInTestsLists + 1].title)
+                }
+                displayedTestsLists.remove(itemList)
+            }
+        }
+    }
+
+    @Test
+    fun selectList() {
+        repository.setFakeLists(
+            testLists
+        )
+        setUpUI()
+        with(composeTestRule) {
+            val displayedTestsLists = testLists.toMutableList()
+            testLists.shuffled().forEach { itemList ->
+                sharedSelectList(itemList.title)
+                displayedTestsLists.remove(itemList)
+                displayedTestsLists.forEach {
+                    sharedCheckIsNotSelected(it.title)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun justClearList() {
+        val itemList = createTestList()
+        repository.setFakeLists(
+            listOf(itemList)
+        )
+        setUpUI()
+
+        with(composeTestRule) {
+            sharedJustClearList(itemList.title)
+        }
+    }
 
     private fun internalCreateList() {
         with(composeTestRule) {

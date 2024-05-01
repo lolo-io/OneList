@@ -1,6 +1,6 @@
 package com.lolo.io.onelist.core.testing.fake
 
-import com.lolo.io.onelist.core.data.reporitory.OneListRepository
+import com.lolo.io.onelist.core.data.repository.OneListRepository
 import com.lolo.io.onelist.core.domain.use_cases.CreateList
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
 import com.lolo.io.onelist.core.domain.use_cases.AddItemToList

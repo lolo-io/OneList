@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import androidx.fragment.app.FragmentActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.lolo.io.onelist.core.data.reporitory.OneListRepository
+import com.lolo.io.onelist.core.data.repository.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

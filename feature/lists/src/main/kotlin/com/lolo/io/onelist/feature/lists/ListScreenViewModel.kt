@@ -126,7 +126,15 @@ class ListScreenViewModel(
     ) {
         viewModelScope.launch {
             try {
+
+                val position = allLists.value.indexOf(itemList)
+                val nextSelectedIndex = if (position == allLists.value.size - 1) position - 1
+                else position + 1
+                val nextSelectedList = allLists.value[nextSelectedIndex
+                    .coerceAtLeast(0)]
+
                 useCases.removeList(itemList, deleteBackupFile, onFileDeleted)
+                useCases.selectList(nextSelectedList)
             } catch (e: IOException) {
                 if (deleteBackupFile) {
                     _errorMessage.value = UIString

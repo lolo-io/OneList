@@ -2,10 +2,9 @@ package com.lolo.io.onelist.core.testing.fake
 
 import android.net.Uri
 import com.lolo.io.onelist.core.data.model.ListsWithErrors
-import com.lolo.io.onelist.core.data.reporitory.OneListRepository
+import com.lolo.io.onelist.core.data.repository.OneListRepository
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.testing.data.createTestList
-import com.lolo.io.onelist.core.testing.data.testLists
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +15,8 @@ val fakeOneListRepository = FakeOneListRepository()
 
 class FakeOneListRepository(
     val preferenceHelper: FakeSharedPreferenceHelper = fakeSharedPreferenceHelper,
-    lists: List<ItemList> = testLists) : OneListRepository {
+    lists: List<ItemList> = listOf()
+) : OneListRepository {
 
     private var selectedListIndex = 0
 
@@ -63,15 +63,6 @@ class FakeOneListRepository(
             ListsWithErrors(testMutableAllListsWithErrors.value.lists
                 .filter { it.id != itemList.id })
 
-        val position = testMutableAllListsWithErrors.value.lists.indexOf(itemList)
-
-        selectedListIndex = if (testMutableAllListsWithErrors.value.lists.isNotEmpty()) {
-            val nextSelected = testMutableAllListsWithErrors.value.lists.getOrNull(position)
-                ?: testMutableAllListsWithErrors.value.lists[position - 1]
-            testMutableAllListsWithErrors.value.lists.indexOf(nextSelected)
-        } else {
-            0
-        }
 
         if (deleteBackupFile) {
             onFileDeleted()

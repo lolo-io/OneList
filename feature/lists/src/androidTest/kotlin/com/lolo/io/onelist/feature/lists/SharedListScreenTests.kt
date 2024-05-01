@@ -1,8 +1,6 @@
 package com.lolo.io.onelist.feature.lists
 
-import android.util.Log
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsFocused
@@ -14,14 +12,12 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onAllNodesWithTag
-import androidx.compose.ui.test.onChild
-import androidx.compose.ui.test.onChildren
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.printToLog
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
 import com.lolo.io.onelist.core.testing.core.ComposeTestRule
@@ -31,7 +27,7 @@ import com.lolo.io.onelist.core.testing.core.getItemForegroundUI
 import com.lolo.io.onelist.core.testing.core.getSwipeableRow
 import com.lolo.io.onelist.core.testing.core.testListChipIsShown
 import com.lolo.io.onelist.core.testing.core.waitUntilDeleteBackgroundIsNotDisplayed
-import com.lolo.io.onelist.core.testing.core.waitUntilEditBackgroundIsNotDisplayed
+import com.lolo.io.onelist.core.testing.core.waitUntilEditBackgroundIsNotDoesNotExist
 import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.feature.lists.components.list_chips.ListChipState
 import kotlin.test.assertEquals
@@ -78,25 +74,25 @@ fun ComposeTestRule.sharedTestSwipeEditItem(
     onNodeWithTag(TestTags.EditItemDialog).assertIsDisplayed()
     onNodeWithTag(TestTags.EditItemDialogItemTitle).assertTextContains(itemTitle)
     onNodeWithTag(TestTags.EditItemDialogItemComment).assertTextContains(itemComment)
-
     onNodeWithTag(TestTags.EditItemDialogItemTitle).assertIsFocused()
 
+
     onNodeWithTag(TestTags.EditItemDialogItemTitle).performTextInput(suffixAddedAfterEdit)
-
     onNodeWithTag(TestTags.EditItemDialogItemComment).performTextInput(suffixAddedAfterEdit)
-
     onNodeWithTag(TestTags.CommonDialogPositiveButton).performClick()
 
-    waitUntilEditBackgroundIsNotDisplayed()
+    waitUntilEditBackgroundIsNotDoesNotExist()
 
     itemForegroundUI.assertIsDisplayed()
 
+    // waitUntilItemTitleIsDisplayed(...)
     waitUntilAtLeastOneExists(
         hasText("$itemTitle$suffixAddedAfterEdit"), 3000
     )
 
     onAllNodesWithTag(TestTags.ItemUiArrowComment)[itemIndex].performClick()
 
+    // waitUntilItemCommentIsDisplayed(...)
     waitUntilAtLeastOneExists(
         hasText("$itemComment$suffixAddedAfterEdit"), 3000
     )
@@ -149,13 +145,13 @@ fun ComposeTestRule.sharedTestEditList(listName: String, editedListSuffix: Strin
     waitUntilAtLeastOneExists(
         hasText(newListTitle), 3000
     )
-
+    // waitUntilListChipIsSelected(listName)
     onNodeWithTag(TestTags.listChipLabelState(newListTitle, ListChipState.SELECTED.name))
 
 }
 
 @OptIn(ExperimentalTestApi::class)
-fun ComposeTestRule.addItemToList(itemTitle: String, itemComment: String) {
+fun ComposeTestRule.sharedAddItemToList(itemTitle: String, itemComment: String) {
     onNodeWithTag(TestTags.AddItemInput).assertIsDisplayed()
     onNodeWithTag(TestTags.AddItemInput).performTextInput(itemTitle)
     if (itemComment.isNotEmpty()) {
@@ -190,7 +186,7 @@ fun ComposeTestRule.addItemToList(itemTitle: String, itemComment: String) {
 }
 
 
-fun ComposeTestRule.checkListItemOrders(itemTitles: List<String>) {
+fun ComposeTestRule.sharedCheckListItemOrders(itemTitles: List<String>) {
     onAllNodesWithTag(TestTags.SwipeableItem).assertCountEquals(itemTitles.size)
     // First get all added item nodes
     val nodes = itemTitles.map {
@@ -202,4 +198,51 @@ fun ComposeTestRule.checkListItemOrders(itemTitles: List<String>) {
     }
     // Items should be sorted last to first (last item has lower Y, first has highest => sorted descending)
     assertEquals(positions, positions.sortedDescending())
+}
+
+
+@OptIn(ExperimentalTestApi::class)
+fun ComposeTestRule.sharedDeleteList(listName: String) {
+    onNodeWithText(listName).performTouchInput { longClick() }
+    onNodeWithTag(TestTags.DeleteListButton).apply {
+        assertIsDisplayed()
+        performClick()
+    }
+    onNodeWithTag(TestTags.DeleteListDialog).assertIsDisplayed()
+    onNodeWithTag(TestTags.CommonDialogPositiveButton).performClick()
+    onNodeWithTag(TestTags.DeleteListDialog).assertIsNotDisplayed()
+    waitUntilDoesNotExist(
+        hasText(listName)
+    )
+}
+
+fun ComposeTestRule.sharedCheckIsSelected(listName: String) {
+    onNodeWithTag(TestTags.listChipLabelState(listName, ListChipState.SELECTED.name))
+        .assertExists()
+}
+
+fun ComposeTestRule.sharedCheckIsNotSelected(listName: String) {
+    onNodeWithTag(TestTags.listChipLabelState(listName, ListChipState.SELECTED.name))
+        .assertDoesNotExist()
+}
+
+fun ComposeTestRule.sharedSelectList(listName: String) {
+    onNodeWithText(listName).performClick()
+    sharedCheckIsSelected(listName)
+}
+
+@OptIn(ExperimentalTestApi::class)
+fun ComposeTestRule.sharedJustClearList(listName: String) {
+    onAllNodesWithTag(TestTags.SwipeableItem).onFirst().assertExists()
+    onNodeWithText(listName).performTouchInput { longClick() }
+    onNodeWithTag(TestTags.DeleteListButton).apply {
+        assertIsDisplayed()
+        performClick()
+    }
+    onNodeWithTag(TestTags.DeleteListDialog).assertIsDisplayed()
+    onNodeWithTag(TestTags.JustClearListButton).performClick()
+    onNodeWithTag(TestTags.DeleteListDialog).assertIsNotDisplayed()
+    waitUntilDoesNotExist(
+        hasTestTag(TestTags.SwipeableItem)
+    )
 }

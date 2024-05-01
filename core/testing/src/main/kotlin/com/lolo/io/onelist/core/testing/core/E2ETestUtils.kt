@@ -13,7 +13,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.data.utils.TestTags
 
@@ -63,7 +62,7 @@ fun ComposeTestRule.waitUntilDeleteBackgroundIsNotDisplayed() =
     )
 
 @OptIn(ExperimentalTestApi::class)
-fun ComposeTestRule.waitUntilEditBackgroundIsNotDisplayed() =
+fun ComposeTestRule.waitUntilEditBackgroundIsNotDoesNotExist() =
     waitUntilDoesNotExist(
         hasTestTag(TestTags.SwipeableItemEditBackground),
         10000

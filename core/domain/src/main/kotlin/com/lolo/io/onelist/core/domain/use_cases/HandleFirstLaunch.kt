@@ -1,6 +1,6 @@
 package com.lolo.io.onelist.core.domain.use_cases
 
-import com.lolo.io.onelist.core.data.reporitory.OneListRepository
+import com.lolo.io.onelist.core.data.repository.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.model.ItemList
 import kotlinx.coroutines.delay
