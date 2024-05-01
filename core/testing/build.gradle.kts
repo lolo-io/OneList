@@ -20,6 +20,8 @@ dependencies {
     api(libs.androidx.test.runner)
     api(libs.junit4)
     api(libs.kotlinx.coroutines.test)
+    api(libs.mockito)
+    api(libs.mockito.kotlin)
 
     debugApi(libs.androidx.compose.ui.test.manifest)
 

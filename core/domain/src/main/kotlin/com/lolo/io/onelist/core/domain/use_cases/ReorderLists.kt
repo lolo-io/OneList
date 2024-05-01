@@ -8,7 +8,7 @@ class ReorderLists(
 ) {
     suspend operator fun invoke(lists: List<ItemList>, selectedList: ItemList): List<ItemList> {
         return lists.also {
-            repository.saveAllLists(it.mapIndexed { index, itemList -> itemList.apply {
+            repository.backupLists(it.mapIndexed { index, itemList -> itemList.apply {
                 itemList.position = index
             } })
             repository.selectList(selectedList)

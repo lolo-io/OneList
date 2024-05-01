@@ -11,14 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-val fakeOneListRepository = FakeOneListRepository()
-
 class FakeOneListRepository(
-    val preferenceHelper: FakeSharedPreferenceHelper = fakeSharedPreferenceHelper,
+    private val preferenceHelper: FakeSharedPreferenceHelper = FakeSharedPreferenceHelper(),
     lists: List<ItemList> = listOf()
 ) : OneListRepository {
-
-    private var selectedListIndex = 0
 
     private var listIdsIncrement = lists.size.toLong()
 
@@ -36,7 +32,7 @@ class FakeOneListRepository(
         testMutableAllListsWithErrors.value = ListsWithErrors(itemLists)
     }
 
-    override suspend fun getAllLists(): Flow<ListsWithErrors> {
+    override suspend fun getAllLists(): StateFlow<ListsWithErrors> {
         delay(300)
         return testMutableAllListsWithErrors
     }
@@ -48,7 +44,7 @@ class FakeOneListRepository(
         return newList
     }
 
-    override suspend fun saveListToDb(itemList: ItemList) {
+    override suspend fun saveList(itemList: ItemList) {
         delay(300)
         testMutableAllListsWithErrors.value = ListsWithErrors(testMutableAllListsWithErrors.value
             .lists.map { if (it.id == itemList.id) itemList else it })
@@ -89,11 +85,11 @@ class FakeOneListRepository(
             testMutableAllListsWithErrors.value.lists.indexOf(list)
     }
 
-    override suspend fun saveAllLists(lists: List<ItemList>) {
+    override suspend fun backupLists(lists: List<ItemList>) {
         testMutableAllListsWithErrors.value = ListsWithErrors(lists)
     }
 
-    override suspend fun syncAllLists() {
+    override suspend fun backupAllListsToFiles() {
         delay(300)
     }
 

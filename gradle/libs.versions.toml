@@ -26,6 +26,8 @@ androidxTestCore = "1.5.0"
 androidxTestRules = "1.5.0"
 androidxTestRunner = "1.5.2"
 kotlinxCoroutines = "1.7.3"
+mockitoVersion = "5.11.0"
+mockitoKotlinVersion = "5.3.1"
 
 # plugins versions
 android-application-plugin= "8.3.0"
@@ -79,6 +81,8 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 koin-android-test = { module = "io.insert-koin:koin-android-test", version.ref = "koin" }
+mockito = { group = "org.mockito",  name = "mockito-core",  version.ref = "mockitoVersion"}
+mockito-kotlin = { group = "org.mockito.kotlin",  name = "mockito-kotlin",  version.ref = "mockitoKotlinVersion"}
 
 
 [plugins]

@@ -8,18 +8,18 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface OneListRepository {
     val allListsWithErrors: StateFlow<ListsWithErrors>
-    suspend fun getAllLists(): Flow<ListsWithErrors>
+    suspend fun getAllLists(): StateFlow<ListsWithErrors>
     suspend fun createList(itemList: ItemList): ItemList
-    suspend fun saveListToDb(itemList: ItemList)
+    suspend fun saveList(itemList: ItemList)
     @Throws
     suspend fun deleteList(
         itemList: ItemList,
-        deleteBackupFile: Boolean,
-        onFileDeleted: () -> Unit
+        deleteBackupFile: Boolean = false,
+        onFileDeleted: () -> Unit = {}
     )
     suspend fun importList(uri: Uri): ItemList
     fun selectList(list: ItemList)
-    suspend fun saveAllLists(lists: List<ItemList>)
-    suspend fun syncAllLists()
+    suspend fun backupLists(lists: List<ItemList>)
+    suspend fun backupAllListsToFiles()
     suspend fun setBackupUri(uri: Uri?, displayPath: String?)
 }

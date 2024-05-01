@@ -5,8 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-val fakeSharedPreferenceHelper = FakeSharedPreferenceHelper()
-class FakeSharedPreferenceHelper() : SharedPreferencesHelper {
+class FakeSharedPreferenceHelper : SharedPreferencesHelper {
     override var backupDisplayPath: String? = null
     override var backupUri: String? = null
     override var version: String = "1.0.0"
@@ -21,5 +20,22 @@ class FakeSharedPreferenceHelper() : SharedPreferencesHelper {
     private val _selectedListIndexStateFlow = MutableStateFlow(0)
     override val selectedListIndexStateFlow: StateFlow<Int>
         get() = _selectedListIndexStateFlow.asStateFlow()
-    override val canAccessBackupUri: Boolean = true
+    override var canAccessBackupUri: Boolean = true
+    private set // bc interface is a val
+
+
+    fun setCanAccessBackupUri(can: Boolean) {
+        canAccessBackupUri = can
+    }
+
+    fun tearDown() {
+        backupUri = null
+        preferUseFiles = false
+        version = "1.0.0"
+        theme = "light"
+        firstLaunch = false
+        _selectedListIndexStateFlow.value = 0
+        canAccessBackupUri = true
+
+    }
 }

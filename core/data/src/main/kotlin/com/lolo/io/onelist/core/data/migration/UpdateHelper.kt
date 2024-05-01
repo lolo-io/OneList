@@ -54,7 +54,7 @@ class UpdateHelper(
                     }
                 }
 
-                repository.saveAllLists(allLists)
+                repository.backupLists(allLists)
 
                 then()
             }

@@ -8,15 +8,16 @@ import com.lolo.io.onelist.core.data.model.ListsWithErrors
 import com.lolo.io.onelist.core.data.model.ErrorLoadingList
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.data.utils.toItemListEntity
-import com.lolo.io.onelist.core.data.utils.updateOne
+import com.lolo.io.onelist.core.data.utils.updateOneIf
+import com.lolo.io.onelist.core.database.dao.ItemListDao
 import com.lolo.io.onelist.core.database.util.toItemListModel
 import com.lolo.io.onelist.core.database.util.toItemListModels
 import com.lolo.io.onelist.core.model.ItemList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -25,7 +26,7 @@ import java.io.FileNotFoundException
 
 class OneListRepositoryImpl(
     private val preferences: SharedPreferencesHelper,
-    private val dao: com.lolo.io.onelist.core.database.dao.ItemListDao,
+    private val dao: ItemListDao,
     private val fileAccess: FileAccess
 ) : OneListRepository {
 
@@ -35,7 +36,7 @@ class OneListRepositoryImpl(
     override val allListsWithErrors
         get() = _allListsWithErrors.asStateFlow()
 
-    override suspend fun getAllLists(): Flow<ListsWithErrors> {
+    override suspend fun getAllLists(): StateFlow<ListsWithErrors> {
         withContext(Dispatchers.IO) {
             val allListsFromDb = dao.getAll()
             val errors = mutableListOf<ErrorLoadingList>()
@@ -85,20 +86,20 @@ class OneListRepositoryImpl(
 
     override suspend fun createList(itemList: ItemList): ItemList {
         val addedList = upsertList(itemList)
-        itemList.position = _allListsWithErrors.value.lists.size - 1
+        itemList.position = _allListsWithErrors.value.lists.size
         _allListsWithErrors.value =
-            ListsWithErrors(_allListsWithErrors.value.lists + upsertList(itemList))
+            ListsWithErrors(_allListsWithErrors.value.lists + addedList)
 
         return addedList
     }
 
 
     // does upsert in dao, and if has backup uri -> save list file; can create a file
-    // and also update alllists flow
-    override suspend fun saveListToDb(itemList: ItemList) {
+    // and also update allLists flow
+    override suspend fun saveList(itemList: ItemList) {
         upsertList(itemList).let {
             _allListsWithErrors.value = ListsWithErrors(
-                _allListsWithErrors.value.lists.updateOne(itemList) { it.id == itemList.id })
+                _allListsWithErrors.value.lists.updateOneIf(itemList) { it.id == itemList.id })
         }
     }
 
@@ -124,7 +125,7 @@ class OneListRepositoryImpl(
                         list.uri = uri
                         upsertInDao(list)
                         _allListsWithErrors.value = ListsWithErrors(
-                            _allListsWithErrors.value.lists.updateOne(list) { it.id == list.id })
+                            _allListsWithErrors.value.lists.updateOneIf(list) { it.id == list.id })
                     })
             } else list
         }
@@ -155,7 +156,7 @@ class OneListRepositoryImpl(
     override suspend fun importList(uri: Uri): ItemList {
         val list = fileAccess.createListFromUri(uri,
             onListCreated = {
-                saveListToDb(
+                saveList(
                     it.copy(
                         id = 0L,
                         position = _allListsWithErrors.value.lists.size
@@ -171,7 +172,16 @@ class OneListRepositoryImpl(
         preferences.selectedListIndex = _allListsWithErrors.value.lists.indexOf(list)
     }
 
-    override suspend fun saveAllLists(lists: List<ItemList>) {
+    override suspend fun backupAllListsToFiles() {
+        preferences.backupUri?.let {
+            _allListsWithErrors.value.lists.forEach {
+                upsertList(it)
+            }
+        }
+    }
+
+
+    override suspend fun backupLists(lists: List<ItemList>) {
         _allListsWithErrors.value = ListsWithErrors(lists)
         coroutineScope {
             // update async to improve list move performance.
@@ -184,19 +194,11 @@ class OneListRepositoryImpl(
 
     }
 
-    override suspend fun syncAllLists() {
-        preferences.backupUri?.let {
-            _allListsWithErrors.value.lists.forEach {
-                upsertList(it)
-            }
-        }
-    }
-
     override suspend fun setBackupUri(uri: Uri?, displayPath: String?) {
         if (uri != null) {
             preferences.backupUri = uri.toString()
             preferences.backupDisplayPath = displayPath
-            syncAllLists()
+            backupAllListsToFiles()
         } else {
             preferences.backupUri = null
             preferences.backupDisplayPath = null

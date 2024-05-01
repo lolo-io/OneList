@@ -6,8 +6,9 @@ import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import org.koin.dsl.module
 
 fun fakeDataModule(
-    repository: FakeOneListRepository,
-    sharedPreferencesHelper: SharedPreferencesHelper
+    repository: FakeOneListRepository = FakeOneListRepository(),
+    sharedPreferencesHelper: SharedPreferencesHelper = FakeSharedPreferenceHelper(),
+    fileAccess: FileAccess = FakeFileAccess()
 ) = module {
 
     single<SharedPreferencesHelper> {
@@ -19,7 +20,7 @@ fun fakeDataModule(
     }
 
     single {
-        FileAccess(get())
+        fileAccess
     }
 }
 

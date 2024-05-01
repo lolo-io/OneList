@@ -1,6 +1,7 @@
 package com.lolo.io.onelist.core.data.di
 
 import com.lolo.io.onelist.core.data.file_access.FileAccess
+import com.lolo.io.onelist.core.data.file_access.FileAccessImpl
 import com.lolo.io.onelist.core.data.repository.OneListRepository
 import com.lolo.io.onelist.core.data.repository.OneListRepositoryImpl
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
@@ -18,7 +19,7 @@ val dataModule = module {
     }
 
     single {
-        FileAccess(get())
+        FileAccessImpl(get())
     }
 }
 
