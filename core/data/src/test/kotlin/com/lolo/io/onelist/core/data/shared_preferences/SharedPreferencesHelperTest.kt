@@ -4,7 +4,9 @@ import android.app.Activity
 import android.app.Application
 import androidx.activity.ComponentActivity
 import androidx.test.core.app.ActivityScenario
-import com.lolo.io.onelist.core.testing.TestApplication
+import com.anggrayudi.storage.file.makeFile
+import com.lolo.io.onelist.core.data.utils.TEST_FILES_FOLDER_PATH
+import com.lolo.io.onelist.core.data.utils.withActivity
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -12,8 +14,13 @@ import org.robolectric.annotation.Config
 import java.io.File
 import kotlin.test.assertEquals
 
+/**
+ * For coverage bug with Robolectric, see this thread :
+ * https://github.com/robolectric/robolectric/issues/3023 (same problem)
+ * (go to bottom, get the workaround to edit test configuration in android studio)
+ */
 @RunWith(RobolectricTestRunner::class)
-@Config(application = TestApplication::class)
+@Config(sdk = [34])
 class SharedPreferencesHelperTest {
     @Test
     fun backupDisplayPath() {
@@ -111,6 +118,7 @@ class SharedPreferencesHelperTest {
             )
         }
     }
+
     @Test
     fun selectedListIndexStateFlow() {
 
@@ -122,6 +130,7 @@ class SharedPreferencesHelperTest {
             )
         }
     }
+
     @Test
     fun canAccessBackupUri_backupUriNull() {
         withActivity {
@@ -138,10 +147,17 @@ class SharedPreferencesHelperTest {
             val sharedPreferencesHelper = SharedPreferencesHelperImpl(
                 this.application.applicationContext as Application
             )
-            sharedPreferencesHelper.backupUri = "Bad Uri"
+            sharedPreferencesHelper.backupUri =
+                File(
+                    "${
+                        TEST_FILES_FOLDER_PATH
+                            .substringBeforeLast('/')
+                    }/folder_that_doest_not_exists"
+                ).toURI().toString()
             assertEquals(false, sharedPreferencesHelper.canAccessBackupUri)
         }
     }
+
 
     @Test
     fun canAccessBackupUri_goodBackupUri() {
@@ -149,15 +165,10 @@ class SharedPreferencesHelperTest {
             val sharedPreferencesHelper = SharedPreferencesHelperImpl(
                 this.application.applicationContext as Application
             )
-            sharedPreferencesHelper.backupUri = File("Test").toURI().toString()
-            assertEquals(true, sharedPreferencesHelper.canAccessBackupUri)
-        }
-    }
 
-    private fun withActivity(block: Activity.() -> Unit) {
-        val scenario = ActivityScenario.launch(ComponentActivity::class.java)
-        scenario.onActivity { activity ->
-            block(activity)
+            /* Robolectric use <projectDir>/core/data as the parent folder of the file */
+            sharedPreferencesHelper.backupUri = File(TEST_FILES_FOLDER_PATH).toURI().toString()
+            assertEquals(true, sharedPreferencesHelper.canAccessBackupUri)
         }
     }
 

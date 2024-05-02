@@ -7,7 +7,6 @@
 
     <application
         android:name="com.lolo.io.onelist.core.testing.TestApplication"
-
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:label="Test App"

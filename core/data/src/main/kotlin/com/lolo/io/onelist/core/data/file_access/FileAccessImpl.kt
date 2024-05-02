@@ -10,6 +10,7 @@ import com.anggrayudi.storage.file.makeFile
 import com.google.gson.Gson
 import com.google.gson.JsonIOException
 import com.google.gson.JsonSyntaxException
+import com.lolo.io.onelist.core.model.ItemList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,7 +21,7 @@ import java.io.IOException
 
 class FileAccessImpl(
     private val app: Application,
-)  : FileAccess {
+) : FileAccess {
     private val coroutineIOScope = CoroutineScope(Dispatchers.IO)
     private val gson = Gson()
 
@@ -42,11 +43,11 @@ class FileAccessImpl(
         JsonIOException::class,
         SecurityException::class
     )
-    override suspend fun getListFromLocalFile(list: com.lolo.io.onelist.core.model.ItemList): com.lolo.io.onelist.core.model.ItemList {
+    override suspend fun getListFromLocalFile(list: ItemList): ItemList {
         return coroutineIOScope.async(SupervisorJob()) {
             val listFromFile = list.uri?.let { uri ->
                 app.contentResolver.openInputStream(uri).use {
-                    gson.fromJson(it?.reader(), com.lolo.io.onelist.core.model.ItemList::class.java)
+                    gson.fromJson(it?.reader(), ItemList::class.java)
                 }
             } ?: list
             listFromFile.apply {
@@ -59,9 +60,10 @@ class FileAccessImpl(
 
     override suspend fun saveListFile(
         backupUri: String?,
-        list: com.lolo.io.onelist.core.model.ItemList,
-        onNewFileCreated: suspend (com.lolo.io.onelist.core.model.ItemList, Uri?) -> Unit
-    ): com.lolo.io.onelist.core.model.ItemList {
+        list: ItemList,
+        onNewFileCreated: suspend (ItemList, Uri?) -> Unit
+    ): ItemList {
+
         if (backupUri != null) {
             list.uri.let {
                 if (
@@ -71,27 +73,37 @@ class FileAccessImpl(
                     || !it.canWrite
                 ) {
                     val uri = createListFile(backupUri, list)?.uri
-                    onNewFileCreated(list, uri)
+                    uri?.let {
+                        writeListsToFile(uri, list)
+                        onNewFileCreated(list, uri)
+                    }
                 }
             }
 
             list.uri?.let { uri ->
-                try {
-                    app.contentResolver.openOutputStream(uri, "wt").use { out ->
-                        out?.write(
-                            gson.toJson(list).toByteArray(Charsets.UTF_8)
-                        )
-                    }
-                } catch (e: Exception) {
-                    // Just don't save list in file. error has been toasted before normally.
-                    // Should be handled better
-                }
+                writeListsToFile(uri, list)
             }
         }
         return list
     }
 
-    private fun createListFile(backupUri: String, list: com.lolo.io.onelist.core.model.ItemList): DocumentFile? {
+    private fun writeListsToFile(
+        uri: Uri,
+        list: ItemList,
+    ) {
+        try {
+            app.contentResolver.openOutputStream(uri, "wt").use { out ->
+                out?.write(
+                    gson.toJson(list).toByteArray(Charsets.UTF_8)
+                )
+            }
+        } catch (e: Exception) {
+            // Just don't save list in file. error has been toasted before normally.
+            // Should be handled better
+        }
+    }
+
+    private fun createListFile(backupUri: String, list: ItemList): DocumentFile? {
         val folderUri = Uri.parse(backupUri)
         return Uri.parse(backupUri)?.let {
             return if (DocumentFileCompat.fromUri(app, it)?.canWrite() == true) {
@@ -104,7 +116,7 @@ class FileAccessImpl(
 
     @kotlin.jvm.Throws
     override fun deleteListBackupFile(
-        list: com.lolo.io.onelist.core.model.ItemList,
+        list: ItemList,
         onFileDeleted: () -> Unit,
     ) {
         coroutineIOScope.run {
@@ -121,8 +133,8 @@ class FileAccessImpl(
     }
 
     override suspend fun createListFromUri(
-        uri: Uri, onListCreated: suspend (list: com.lolo.io.onelist.core.model.ItemList) -> Unit
-    ): com.lolo.io.onelist.core.model.ItemList {
+        uri: Uri, onListCreated: suspend (list: ItemList) -> Unit
+    ): ItemList {
         return withContext(Dispatchers.IO) {
             try {
                 val gson = Gson()
@@ -130,7 +142,7 @@ class FileAccessImpl(
                     app.contentResolver.openInputStream(uri)
                         .use { iss -> iss?.bufferedReader()?.use { it.readText() } }
 
-                gson.fromJson(content, com.lolo.io.onelist.core.model.ItemList::class.java).also {
+                gson.fromJson(content, ItemList::class.java).also {
                     it.uri = uri
                     onListCreated(it)
                 }

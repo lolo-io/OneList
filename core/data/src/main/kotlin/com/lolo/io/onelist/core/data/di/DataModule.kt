@@ -18,7 +18,7 @@ val dataModule = module {
         OneListRepositoryImpl(get(), get(), get())
     }
 
-    single {
+    single<FileAccess> {
         FileAccessImpl(get())
     }
 }

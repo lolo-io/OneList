@@ -80,7 +80,7 @@ class SharedPreferencesHelperImpl(
 
     override val canAccessBackupUri
         get() = backupUri?.let {
-            DocumentFileCompat.fromUri(app, Uri.parse(it))?.canWrite()
+            DocumentFileCompat.fromUri(app, Uri.parse(it))?.canWrite() ?: false
         } != false
 
 
