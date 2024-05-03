@@ -18,6 +18,12 @@ class FakeItemListDao : ItemListDao {
         }.toMutableList()
     }
 
+    override fun upsertMany(itemList: List<ItemListEntity>): List<Long> {
+        return itemList.map {
+            upsert(it)
+        }
+    }
+
     override fun upsert(itemList: ItemListEntity): Long {
         var returnId = itemList.id
         if (lists.any { it.id == itemList.id }) {

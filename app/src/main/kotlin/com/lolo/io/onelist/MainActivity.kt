@@ -3,6 +3,7 @@ package com.lolo.io.onelist
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -20,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.anggrayudi.storage.SimpleStorageHelper
+import com.lolo.io.onelist.core.data.updates.UpdateHelper
 import com.lolo.io.onelist.core.data.repository.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.designsystem.OneListTheme
@@ -36,14 +38,19 @@ class MainActivity : AppCompatActivity() {
 
     private val preferences by inject<SharedPreferencesHelper>()
     private val viewModel by inject<MainActivityViewModel>()
+    private val updateHelper by inject<UpdateHelper>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
-
-
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme)
         Config.init(applicationContext)
+
+        updateHelper.applyMigrationsIfNecessary(preferences.version,
+            BuildConfig.VERSION_NAME,
+            this) {
+            viewModel.init()
+        }
 
         if (intent?.action == "android.intent.action.VIEW") {
             importListFromIntent(intent)

@@ -25,6 +25,4 @@ abstract class OneListDatabase: RoomDatabase() {
     @DeleteColumn("item", "stableId")
     @DeleteColumn("itemList", "path")
     class Migration1To2 : AutoMigrationSpec
-
-
 }

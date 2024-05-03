@@ -10,6 +10,10 @@ import com.lolo.io.onelist.core.model.ItemList
 
 @Dao
 interface ItemListDao {
+
+    @Upsert
+    fun upsertMany(itemList: List<ItemListEntity>): List<Long>
+
     @Upsert
     fun upsert(itemList: ItemListEntity): Long
 

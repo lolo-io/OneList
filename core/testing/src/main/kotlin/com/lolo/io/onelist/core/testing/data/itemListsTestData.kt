@@ -1,12 +1,17 @@
 package com.lolo.io.onelist.core.testing.data
 
+import com.lolo.io.onelist.core.data.utils.toItemListEntity
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.model.preview
 
-val testLists = (0..<5).map { listIndex ->
-    createTestList(listIndex + 1)
-}
+val testLists
+    get() = (0..<5).map { listIndex ->
+        createTestList(listIndex + 1)
+    }
+
+val testListsEntities
+    get() = testLists.map { it.toItemListEntity() }
 
 fun createTestList(
     position: Int = 0,

@@ -111,4 +111,6 @@ dependencies {
     implementation(project(":feature:lists"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:whatsnew"))
+
+    //implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 }

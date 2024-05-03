@@ -19,7 +19,7 @@ import com.lolo.io.onelist.core.domain.use_cases.SaveListToDb
 import com.lolo.io.onelist.core.domain.use_cases.SelectList
 import com.lolo.io.onelist.core.domain.use_cases.SetBackupUri
 import com.lolo.io.onelist.core.domain.use_cases.SetItemOfList
-import com.lolo.io.onelist.core.domain.use_cases.ShowWhatsNew
+import com.lolo.io.onelist.core.domain.use_cases.ShouldShowWhatsNew
 import com.lolo.io.onelist.core.domain.use_cases.SwitchItemCommentShown
 import com.lolo.io.onelist.core.domain.use_cases.SwitchItemStatus
 import com.lolo.io.onelist.core.domain.use_cases.SyncAllLists
@@ -40,7 +40,7 @@ fun createFakeUseCases(
         moveList = MoveList(oneListRepository),
         setBackupUri = SetBackupUri(oneListRepository),
         syncAllLists = SyncAllLists(oneListRepository),
-        showWhatsNew = ShowWhatsNew(preferenceHelper),
+        shouldShowWhatsNew = ShouldShowWhatsNew(preferenceHelper),
         addItemToList = AddItemToList(saveListToDb),
         editItemOfList = EditItemOfList(saveListToDb),
         clearList = ClearList(saveListToDb),

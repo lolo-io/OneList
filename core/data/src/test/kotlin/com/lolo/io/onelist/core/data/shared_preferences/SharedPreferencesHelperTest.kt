@@ -2,11 +2,8 @@ package com.lolo.io.onelist.core.data.shared_preferences
 
 import android.app.Activity
 import android.app.Application
-import androidx.activity.ComponentActivity
-import androidx.test.core.app.ActivityScenario
-import com.anggrayudi.storage.file.makeFile
 import com.lolo.io.onelist.core.data.utils.TEST_FILES_FOLDER_PATH
-import com.lolo.io.onelist.core.data.utils.withActivity
+import com.lolo.io.onelist.core.testing.util.withActivity
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

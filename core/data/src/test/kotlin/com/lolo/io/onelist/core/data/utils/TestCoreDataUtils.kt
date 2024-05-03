@@ -15,20 +15,3 @@ const val EXISTING_TEST_LIST_FILE_NAME = "test_list_file"
 
 val existingListFileUri
     get() =  File("$TEST_FILES_FOLDER_PATH/$EXISTING_TEST_LIST_FILE_NAME.1list").toUri()
-
-
-fun withActivity(block: Activity.() -> Unit) {
-    val scenario = ActivityScenario.launch(ComponentActivity::class.java)
-    scenario.onActivity { activity ->
-        block(activity)
-    }
-}
-
-fun suspendWithActivity(block: suspend Activity.() -> Unit) {
-    val scenario = ActivityScenario.launch(ComponentActivity::class.java)
-    scenario.onActivity { activity ->
-        runTest {
-            block(activity)
-        }
-    }
-}

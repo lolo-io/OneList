@@ -19,6 +19,6 @@ data class OneListUseCases(
     val removeList: RemoveList,
     val handleFirstLaunch: HandleFirstLaunch,
     val syncAllLists: SyncAllLists,
-    val showWhatsNew: ShowWhatsNew,
-    val selectList: SelectList
+    val shouldShowWhatsNew: ShouldShowWhatsNew,
+    val selectList: SelectList,
 )

@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.core.data.migration
+package com.lolo.io.onelist.core.data.updates
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -7,16 +7,16 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lolo.io.onelist.core.data.repository.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
+import com.lolo.io.onelist.core.model.ItemList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
 import java.security.SecureRandom
 import kotlin.math.abs
 
-class UpdateHelper(
+class UpdateFromBelowOneDotFour(
     private val preferences: SharedPreferencesHelper,
     private val repository: OneListRepository
 ) {
@@ -31,34 +31,14 @@ class UpdateHelper(
     private val oldDefaultPathPref = "defaultPath"
     private val oldThemePref: String = "theme"
 
-
-    fun applyMigrationsIfNecessary(activity: FragmentActivity, then: () -> Unit) {
+    fun update(activity: FragmentActivity, then: () -> Unit) {
         if (hasToMigratePrefs(activity)) {
             applyUpdatePatches(activity, then)
-        }
-        fixItemsWithSameIdsIfFond(then)
-    }
-
-
-    private fun fixItemsWithSameIdsIfFond(then: () -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val allLists = repository.getAllLists().first().lists
-            val secureRandom = SecureRandom()
-            val ids = allLists.flatMap { it.items }.map { it.id }
-            val distinctIds = ids.distinct()
-            if (ids.size > distinctIds.size) {
-                allLists.forEach {
-                    it.items.forEach {
-                        it.id = secureRandom.nextLong()
-                    }
-                }
-
-                repository.backupLists(allLists)
-
-                then()
-            }
+        } else {
+            then()
         }
     }
+
 
     private fun hasToMigratePrefs(activity: FragmentActivity): Boolean {
         val activityPreferences = activity.getPreferences(Context.MODE_PRIVATE)
@@ -108,7 +88,10 @@ class UpdateHelper(
             oldListsIds = getListIdsTable()
             try {
                 val ret = oldListsIds.map {
-                    gson.fromJson(sp.getString(it.key.toString(), ""), com.lolo.io.onelist.core.model.ItemList::class.java)
+                    gson.fromJson(
+                        sp.getString(it.key.toString(), ""),
+                        ItemList::class.java
+                    )
                 }
                 ret
             } catch (e: Exception) {
@@ -130,4 +113,6 @@ class UpdateHelper(
         } ?: mapOf()
     }
 
+
 }
+
