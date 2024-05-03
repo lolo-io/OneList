@@ -35,4 +35,6 @@ dependencies {
     //implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 
     api(project(":core:model"))
+
+    testImplementation(libs.robolectric)
 }

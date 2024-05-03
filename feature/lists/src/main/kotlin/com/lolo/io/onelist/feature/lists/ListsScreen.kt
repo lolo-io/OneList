@@ -25,11 +25,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
@@ -153,7 +155,8 @@ internal fun ListsScreenUI(
                     showSelectedListControls = false
                     keyboardController?.hide()
                 })
-            }, horizontalAlignment = Alignment.CenterHorizontally
+            }
+            .testTag(TestTags.ListsScreen), horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
 

@@ -24,4 +24,6 @@ dependencies {
     implementation(libs.gson)
 
     api(project(":core:database"))
+
+    testImplementation(libs.robolectric)
 }

@@ -24,4 +24,6 @@ dependencies {
     api (libs.androidx.lifecycle.runtime.compose)
 
     debugApi(libs.androidx.compose.ui.tooling)
+
+    // implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 }

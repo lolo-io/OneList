@@ -16,7 +16,7 @@ import com.lolo.io.onelist.feature.whatsnew.navigation.whatsNewScreen
 @Composable
 fun OneListNavHost(
     modifier: Modifier = Modifier,
-    simpleStorageHelper: SimpleStorageHelper,
+    simpleStorageHelper: SimpleStorageHelper? = null,
     navController: NavHostController = rememberNavController(),
     startDestination: String = LISTS_SCREEN_ROUTE
 ) {
@@ -32,13 +32,17 @@ fun OneListNavHost(
 
     ) {
         listsScreen(
-            navigateToSettings = { navController.navigateToSettingsScreen() },
+            navigateToSettings = {
+                navController.navigateToSettingsScreen()
+            },
         )
 
-        settingsScreen(
-            simpleStorageHelper = simpleStorageHelper,
-            navigateToWhatsNew = { navController.navigateToWhatsNewScreen() },
-        )
+        simpleStorageHelper?.let {
+            settingsScreen(
+                simpleStorageHelper = simpleStorageHelper,
+                navigateToWhatsNew = { navController.navigateToWhatsNewScreen() },
+            )
+        }
 
         whatsNewScreen(
             onClickContinue = { navController.popBackStack() }

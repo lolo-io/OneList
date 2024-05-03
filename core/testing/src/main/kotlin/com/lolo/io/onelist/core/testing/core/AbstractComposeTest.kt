@@ -14,7 +14,7 @@ import org.junit.Rule
 import org.koin.core.module.Module
 
 abstract class AbstractComposeTest(
-    activityClass: Class<out ComponentActivity>,
+    activityClass: Class<out ComponentActivity> = ComponentActivity::class.java,
 ) {
 
     @get:Rule

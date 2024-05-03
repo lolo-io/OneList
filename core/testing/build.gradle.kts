@@ -22,7 +22,7 @@ dependencies {
     api(libs.kotlinx.coroutines.test)
 //    api(libs.mockito)
 //    api(libs.mockito.kotlin)
-    api(libs.robolectric)
+    testApi(libs.robolectric)
     debugApi(libs.androidx.compose.ui.test.manifest)
 
     implementation(project(":core:domain"))

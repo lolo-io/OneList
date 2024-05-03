@@ -21,7 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 
 
-class E2EFirstLaunchTest:AbstractComposeTest(
+class E2EFirstLaunchTest: AbstractComposeTest(
     activityClass = MainActivity::class.java,
 ) {
 

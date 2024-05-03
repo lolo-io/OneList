@@ -75,7 +75,9 @@ internal fun OneListHeader(
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            IconButton(onClick = {
+            IconButton(
+                modifier = Modifier.testTag(TestTags.SettingsButton),
+                onClick = {
                 actions.onClickSettings()
                 view.playSoundEffect(SoundEffectConstants.CLICK)
             }) {
