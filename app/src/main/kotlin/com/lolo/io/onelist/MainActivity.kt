@@ -3,7 +3,6 @@ package com.lolo.io.onelist
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -25,7 +24,6 @@ import com.lolo.io.onelist.core.data.updates.UpdateHelper
 import com.lolo.io.onelist.core.data.repository.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.designsystem.OneListTheme
-import com.lolo.io.onelist.core.ui.Config
 import com.lolo.io.onelist.feature.lists.navigation.LISTS_SCREEN_ROUTE
 import com.lolo.io.onelist.feature.whatsnew.navigation.navigateToWhatsNewScreen
 import com.lolo.io.onelist.navigation.OneListNavHost
@@ -44,7 +42,6 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme)
-        Config.init(applicationContext)
 
         updateHelper.applyMigrationsIfNecessary(preferences.version,
             BuildConfig.VERSION_NAME,

@@ -1,7 +1,7 @@
 package com.lolo.io.onelist.feature.lists
 
-import com.lolo.io.onelist.core.data.model.ErrorLoadingList
-import com.lolo.io.onelist.core.data.model.ListsWithErrors
+import com.lolo.io.onelist.core.data.datamodel.ErrorLoadingList
+import com.lolo.io.onelist.core.data.datamodel.ListsWithErrors
 import com.lolo.io.onelist.core.testing.data.testLists
 import com.lolo.io.onelist.core.testing.fake.FakeOneListRepository
 import com.lolo.io.onelist.core.testing.fake.FakeSharedPreferenceHelper

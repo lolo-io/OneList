@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.core.ui.composables
+package com.lolo.io.onelist.core.designsystem.preview
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -12,22 +12,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.designsystem.OneListTheme
 
-
-interface ComposePreviewScope {
+interface ThemedPreviewScope {
     fun showPreviewDialog(text: String = "Clicked !")
 }
 
-private fun composePreviewScope(
+private fun themedPreviewScope(
     showPreviewDialog: (text: String) -> Unit,
 ) =
-    object : ComposePreviewScope {
+    object : ThemedPreviewScope {
         override fun showPreviewDialog(text: String) {
             showPreviewDialog(text)
         }
     }
 
 @Composable
-fun ComposePreview(content: @Composable ComposePreviewScope.() -> Unit) {
+fun ThemedPreview(content: @Composable ThemedPreviewScope.() -> Unit) {
 
     var showPreviewDialogText by remember {
         mutableStateOf<String?>(null)
@@ -52,15 +51,15 @@ fun ComposePreview(content: @Composable ComposePreviewScope.() -> Unit) {
 
     OneListTheme {
         Surface {
-            content(composePreviewScope(showPreviewDialog = showPreviewDialogFun))
+            content(themedPreviewScope(showPreviewDialog = showPreviewDialogFun))
         }
     }
 }
 
 @Preview
 @Composable
-private fun Preview_ComposePreview() {
-    ComposePreview {
+private fun Preview_ThemedPreview() {
+    ThemedPreview {
         Button(onClick = { showPreviewDialog() }) {
             Text(text = "Click Me")
         }

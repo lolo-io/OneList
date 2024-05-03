@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.common.R as commonR
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 
 @Composable
 internal fun WhatsNewScreen(
@@ -143,7 +143,7 @@ internal fun WhatsNewScreen(
 
 @Preview
 @Composable
-private fun Preview_WhatsNewScreen() = ComposePreview {
+private fun Preview_WhatsNewScreen() = ThemedPreview {
 
     Surface(modifier = Modifier.fillMaxSize()) {
         WhatsNewScreen(

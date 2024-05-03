@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.core.data.model
+package com.lolo.io.onelist.core.data.datamodel
 
 sealed  class ErrorLoadingList {
     data object FileMissingError: ErrorLoadingList()

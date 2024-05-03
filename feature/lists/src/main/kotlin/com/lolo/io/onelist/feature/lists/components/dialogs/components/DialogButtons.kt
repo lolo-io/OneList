@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 
 @Composable
 fun DialogButtons(
@@ -69,7 +69,7 @@ fun DialogButtons(
 
 @Preview
 @Composable
-private fun Preview_DialogButtons() = ComposePreview {
+private fun Preview_DialogButtons() = ThemedPreview {
     Column {
         DialogButtons(
             onPositiveClicked = {},

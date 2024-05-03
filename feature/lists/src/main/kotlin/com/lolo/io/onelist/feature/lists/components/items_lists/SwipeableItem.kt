@@ -19,7 +19,7 @@ import com.lolo.io.onelist.core.designsystem.Palette
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.Item
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.SwipeableRow
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.SwipeableRowScope
@@ -87,7 +87,7 @@ internal fun SwipeableRowScope.SwipeableItem(
 
 @Preview
 @Composable
-private fun Preview_SwipeableItem() = ComposePreview {
+private fun Preview_SwipeableItem() = ThemedPreview {
 /*
     var swipeState by remember {
         mutableStateOf(SwipeState.NONE)

@@ -2,7 +2,6 @@ package com.lolo.io.onelist.core.testing.fake
 
 import android.net.Uri
 import com.lolo.io.onelist.core.data.file_access.FileAccess
-import com.lolo.io.onelist.core.data.model.ErrorLoadingList
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.model.preview

@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.Item
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.R
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
 import com.lolo.io.onelist.feature.lists.components.dialogs.components.DialogButtons
@@ -130,7 +130,7 @@ fun DialogScope.EditItemDialog(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
-private fun Preview_EditItemDialog() = ComposePreview {
+private fun Preview_EditItemDialog() = ThemedPreview {
     ScopedComposable(
         rememberDialogScope { showPreviewDialog("Dismiss") }) {
         EditItemDialog(Item("Test"), onSubmit = {

@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.Item
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyColumnState
 
@@ -130,10 +130,10 @@ fun <T> ReorderableList(
 
 @Preview
 @Composable
-private fun Preview_ReorderableList() = ComposePreview {
+private fun Preview_ReorderableList() = ThemedPreview {
     val items =
         remember { mutableStateOf(List(100) {
-            com.lolo.io.onelist.core.model.Item(
+            Item(
                 title = "\"Item $it\"",
                 id = it.toLong()
             )

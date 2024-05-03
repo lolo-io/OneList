@@ -34,7 +34,7 @@ import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.model.previewMany
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.components.add_item_input.AddItemInput
 import com.lolo.io.onelist.feature.lists.components.dialogs.CreateListDialog
 import com.lolo.io.onelist.feature.lists.components.dialogs.DeleteListDialog
@@ -358,7 +358,7 @@ internal fun ListsScreenUI(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
-private fun Preview_ListsScreen() = ComposePreview {
+private fun Preview_ListsScreen() = ThemedPreview {
 
     val allLists = ItemList.previewMany(5)
     val selectedList = allLists[0]

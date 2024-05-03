@@ -2,17 +2,16 @@ package com.lolo.io.onelist.feature.lists
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lolo.io.onelist.core.data.model.ErrorLoadingList
+import com.lolo.io.onelist.core.data.datamodel.ErrorLoadingList
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
-import com.lolo.io.onelist.core.ui.util.UIString
+import com.lolo.io.onelist.core.data.utils.UIString
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach

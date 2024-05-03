@@ -1,4 +1,4 @@
-package com.lolo.io.onelist.core.ui.util
+package com.lolo.io.onelist.feature.lists.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

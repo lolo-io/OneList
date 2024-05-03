@@ -1,9 +1,8 @@
 package com.lolo.io.onelist.core.data.repository
 
 import android.net.Uri
-import com.lolo.io.onelist.core.data.model.ListsWithErrors
+import com.lolo.io.onelist.core.data.datamodel.ListsWithErrors
 import com.lolo.io.onelist.core.model.ItemList
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface OneListRepository {

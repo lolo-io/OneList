@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
 
 @Composable
@@ -234,7 +234,7 @@ internal fun AddItemInput(
 
 @Preview
 @Composable
-private fun Preview_AddItemInput() = ComposePreview {
+private fun Preview_AddItemInput() = ThemedPreview {
     var text by remember { mutableStateOf("Preview text") }
     var comment by remember { mutableStateOf("") }
     AddItemInput(

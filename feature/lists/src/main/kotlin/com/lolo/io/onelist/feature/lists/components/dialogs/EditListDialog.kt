@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.ItemList
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.R
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
 import com.lolo.io.onelist.feature.lists.components.dialogs.components.DialogButtons
@@ -96,7 +96,7 @@ fun DialogScope.CreateListDialog(
 
 @Preview
 @Composable
-private fun Preview_EditListDialog() = ComposePreview {
+private fun Preview_EditListDialog() = ThemedPreview {
     ScopedComposable(
         rememberDialogScope { showPreviewDialog("Dismiss") }) {
         EditListDialog {
@@ -107,7 +107,7 @@ private fun Preview_EditListDialog() = ComposePreview {
 
 @Preview
 @Composable
-private fun Preview_CreateListDialog() = ComposePreview {
+private fun Preview_CreateListDialog() = ThemedPreview {
     ScopedComposable(
         rememberDialogScope { showPreviewDialog("Dismiss") }) {
         CreateListDialog {

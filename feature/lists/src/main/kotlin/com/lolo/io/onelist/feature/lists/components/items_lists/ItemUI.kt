@@ -46,7 +46,7 @@ import com.lolo.io.onelist.core.designsystem.dimen
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.preview
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.R
 
 @Composable
@@ -182,9 +182,9 @@ fun ItemUI(
 
 @Preview
 @Composable
-private fun Preview_ItemRow() = ComposePreview {
+private fun Preview_ItemRow() = ThemedPreview {
 
-    var item by remember { mutableStateOf(com.lolo.io.onelist.core.model.Item.preview) }
+    var item by remember { mutableStateOf(Item.preview) }
     ItemUI(item,
         onClickDisplayComment = {
             item = item.copy(commentDisplayed = !item.commentDisplayed)
@@ -194,15 +194,15 @@ private fun Preview_ItemRow() = ComposePreview {
 
 @Preview
 @Composable
-private fun Preview_ItemRowWithComment() = ComposePreview {
-    ItemUI(com.lolo.io.onelist.core.model.Item.preview.copy(commentDisplayed = true))
+private fun Preview_ItemRowWithComment() = ThemedPreview {
+    ItemUI(Item.preview.copy(commentDisplayed = true))
 }
 
 @Preview
 @Composable
-private fun Preview_ItemRowDone() = ComposePreview {
+private fun Preview_ItemRowDone() = ThemedPreview {
     ItemUI(
-        com.lolo.io.onelist.core.model.Item.preview.copy(
+        Item.preview.copy(
             done = true
         )
     )
@@ -211,9 +211,9 @@ private fun Preview_ItemRowDone() = ComposePreview {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
-private fun Preview_ItemRowDoneWithComment() = ComposePreview {
+private fun Preview_ItemRowDoneWithComment() = ThemedPreview {
     ItemUI(
-        com.lolo.io.onelist.core.model.Item.preview.copy(
+        Item.preview.copy(
             done = true,
             commentDisplayed = true
         )
@@ -222,7 +222,7 @@ private fun Preview_ItemRowDoneWithComment() = ComposePreview {
 
 @Preview
 @Composable
-private fun Preview_ItemRowLong() = ComposePreview {
-    ItemUI(com.lolo.io.onelist.core.model.Item.preview.copy(title = "Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long "))
+private fun Preview_ItemRowLong() = ThemedPreview {
+    ItemUI(Item.preview.copy(title = "Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long "))
 
 }

@@ -33,8 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
-import com.lolo.io.onelist.feature.lists.R
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.core.common.R as commonR
 
 
@@ -175,6 +174,6 @@ internal fun OneListHeader(
 
 @Preview
 @Composable
-private fun Preview_OneListHeader() = ComposePreview {
+private fun Preview_OneListHeader() = ThemedPreview {
     OneListHeader()
 }

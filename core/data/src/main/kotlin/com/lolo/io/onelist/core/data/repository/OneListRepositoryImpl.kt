@@ -4,8 +4,8 @@ import android.net.Uri
 import com.google.gson.JsonIOException
 import com.google.gson.JsonSyntaxException
 import com.lolo.io.onelist.core.data.file_access.FileAccess
-import com.lolo.io.onelist.core.data.model.ListsWithErrors
-import com.lolo.io.onelist.core.data.model.ErrorLoadingList
+import com.lolo.io.onelist.core.data.datamodel.ListsWithErrors
+import com.lolo.io.onelist.core.data.datamodel.ErrorLoadingList
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.data.utils.toItemListEntity
 import com.lolo.io.onelist.core.data.utils.updateOneIf
