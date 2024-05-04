@@ -28,7 +28,7 @@ class UpdateFromOneDotFourDotOne(
                     }
                 }
 
-                repository.backupLists(allLists)
+                repository.backupListsAsync(allLists)
 
                 then()
             }

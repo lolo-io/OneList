@@ -86,8 +86,8 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 koin-android-test = { module = "io.insert-koin:koin-android-test", version.ref = "koin" }
-#mockito = { group = "org.mockito",  name = "mockito-core",  version.ref = "mockitoVersion"}
-#mockito-kotlin = { group = "org.mockito.kotlin",  name = "mockito-kotlin",  version.ref = "mockitoKotlinVersion"}
+mockito = { group = "org.mockito",  name = "mockito-core",  version.ref = "mockitoVersion"}
+mockito-kotlin = { group = "org.mockito.kotlin",  name = "mockito-kotlin",  version.ref = "mockitoKotlinVersion"}
 robolectric = { group="org.robolectric", name="robolectric", version.ref = "robolectric"}
 
 

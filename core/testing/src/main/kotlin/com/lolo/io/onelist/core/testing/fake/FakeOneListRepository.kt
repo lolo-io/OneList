@@ -15,12 +15,15 @@ class FakeOneListRepository(
     lists: List<ItemList> = listOf()
 ) : OneListRepository {
 
+    val calledFunctions = mutableListOf<String>()
+
     private var listIdsIncrement = lists.size.toLong()
 
     val testMutableAllListsWithErrors =
         MutableStateFlow(ListsWithErrors(lists))
     override val allListsWithErrors: StateFlow<ListsWithErrors>
         get() {
+            calledFunctions += Thread.currentThread().stackTrace[1].methodName
             return testMutableAllListsWithErrors.asStateFlow()
         }
 
@@ -32,11 +35,13 @@ class FakeOneListRepository(
     }
 
     override suspend fun getAllLists(): StateFlow<ListsWithErrors> {
+        calledFunctions += Thread.currentThread().stackTrace[1].methodName
         delay(300)
         return testMutableAllListsWithErrors
     }
 
     override suspend fun createList(itemList: ItemList): ItemList {
+        calledFunctions += Thread.currentThread().stackTrace[1].methodName
         val newList = itemList.copy(id = ++listIdsIncrement)
         testMutableAllListsWithErrors.value =
             ListsWithErrors(testMutableAllListsWithErrors.value.lists + newList)
@@ -44,6 +49,7 @@ class FakeOneListRepository(
     }
 
     override suspend fun saveList(itemList: ItemList) {
+        calledFunctions += Thread.currentThread().stackTrace[1].methodName
         delay(300)
         testMutableAllListsWithErrors.value = ListsWithErrors(testMutableAllListsWithErrors.value
             .lists.map { if (it.id == itemList.id) itemList else it })
@@ -54,6 +60,7 @@ class FakeOneListRepository(
         deleteBackupFile: Boolean,
         onFileDeleted: () -> Unit
     ) {
+        calledFunctions += Thread.currentThread().stackTrace[1].methodName
         testMutableAllListsWithErrors.value =
             ListsWithErrors(testMutableAllListsWithErrors.value.lists
                 .filter { it.id != itemList.id })
@@ -65,7 +72,7 @@ class FakeOneListRepository(
     }
 
     override suspend fun importList(uri: Uri): ItemList {
-
+        calledFunctions += Thread.currentThread().stackTrace[1].methodName
         val newList = createTestList(
             position = testMutableAllListsWithErrors.value.lists.size,
             id = listIdsIncrement
@@ -80,19 +87,23 @@ class FakeOneListRepository(
     }
 
     override fun selectList(list: ItemList) {
+        calledFunctions += Thread.currentThread().stackTrace[1].methodName
         preferenceHelper.selectedListIndex =
             testMutableAllListsWithErrors.value.lists.indexOf(list)
     }
 
-    override suspend fun backupLists(lists: List<ItemList>) {
+    override suspend fun backupListsAsync(lists: List<ItemList>) {
+        calledFunctions += Thread.currentThread().stackTrace[1].methodName
         testMutableAllListsWithErrors.value = ListsWithErrors(lists)
     }
 
     override suspend fun backupAllListsToFiles() {
+        calledFunctions += Thread.currentThread().stackTrace[1].methodName
         delay(300)
     }
 
     override suspend fun setBackupUri(uri: Uri?, displayPath: String?) {
+        calledFunctions += Thread.currentThread().stackTrace[1].methodName
         delay(300)
     }
 }

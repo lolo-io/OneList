@@ -3,9 +3,8 @@ package com.lolo.io.onelist.core.domain.use_cases
 data class OneListUseCases(
     val createList: CreateList,
     val importList: ImportList,
-    val moveList: MoveList,
     val clearList: ClearList,
-    val setItemsOfList: SetItemOfList,
+    val setItemsOfList: SetItemsOfList,
     val reorderLists: ReorderLists,
     val addItemToList: AddItemToList,
     val editItemOfList: EditItemOfList,

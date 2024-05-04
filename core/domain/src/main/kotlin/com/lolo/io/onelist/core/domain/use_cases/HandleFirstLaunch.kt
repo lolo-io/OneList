@@ -18,6 +18,6 @@ class HandleFirstLaunch(private val repository: OneListRepository,
             }
             preferencesHelper.firstLaunch = false
         }
-        return firstLaunch
+        return preferencesHelper.firstLaunch
     }
 }

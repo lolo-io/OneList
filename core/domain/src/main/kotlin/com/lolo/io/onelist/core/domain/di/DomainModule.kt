@@ -8,15 +8,14 @@ import com.lolo.io.onelist.core.domain.use_cases.GetAllLists
 import com.lolo.io.onelist.core.domain.use_cases.HandleFirstLaunch
 import com.lolo.io.onelist.core.domain.use_cases.ImportList
 import com.lolo.io.onelist.core.domain.use_cases.LoadAllLists
-import com.lolo.io.onelist.core.domain.use_cases.MoveList
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
 import com.lolo.io.onelist.core.domain.use_cases.RemoveItemFromList
 import com.lolo.io.onelist.core.domain.use_cases.RemoveList
 import com.lolo.io.onelist.core.domain.use_cases.ReorderLists
-import com.lolo.io.onelist.core.domain.use_cases.SaveListToDb
+import com.lolo.io.onelist.core.domain.use_cases.SaveListToDbImpl
 import com.lolo.io.onelist.core.domain.use_cases.SelectList
 import com.lolo.io.onelist.core.domain.use_cases.SetBackupUri
-import com.lolo.io.onelist.core.domain.use_cases.SetItemOfList
+import com.lolo.io.onelist.core.domain.use_cases.SetItemsOfList
 import com.lolo.io.onelist.core.domain.use_cases.ShouldShowWhatsNew
 import com.lolo.io.onelist.core.domain.use_cases.SwitchItemCommentShown
 import com.lolo.io.onelist.core.domain.use_cases.SwitchItemStatus
@@ -26,7 +25,7 @@ import org.koin.dsl.module
 val domainModule = module {
 
     single {
-        val saveListToDb = SaveListToDb(get())
+        val saveListToDb = SaveListToDbImpl(get())
         OneListUseCases(
             createList = CreateList(get()),
             loadAllLists = LoadAllLists(get()),
@@ -35,7 +34,6 @@ val domainModule = module {
             handleFirstLaunch = HandleFirstLaunch(get(), get()),
             saveListToDb = saveListToDb,
             importList = ImportList(get()),
-            moveList = MoveList(get()),
             setBackupUri = SetBackupUri(get()),
             syncAllLists = SyncAllLists(get()),
             shouldShowWhatsNew = ShouldShowWhatsNew(get()),
@@ -44,7 +42,7 @@ val domainModule = module {
             clearList = ClearList(saveListToDb),
             removeItemFromList = RemoveItemFromList(saveListToDb),
             switchItemStatus = SwitchItemStatus(saveListToDb),
-            setItemsOfList = SetItemOfList(saveListToDb),
+            setItemsOfList = SetItemsOfList(saveListToDb),
             switchItemCommentShown = SwitchItemCommentShown(saveListToDb),
             reorderLists = ReorderLists(get()),
             selectList = SelectList(get())

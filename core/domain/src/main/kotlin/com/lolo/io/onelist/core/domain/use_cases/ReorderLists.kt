@@ -7,10 +7,12 @@ class ReorderLists(
     val repository: OneListRepository,
 ) {
     suspend operator fun invoke(lists: List<ItemList>, selectedList: ItemList): List<ItemList> {
-        return lists.also {
-            repository.backupLists(it.mapIndexed { index, itemList -> itemList.apply {
-                itemList.position = index
-            } })
+        return lists.mapIndexed { index, itemList ->
+            itemList.apply {
+                itemList.position = index + 1
+            }
+        }.also {
+            repository.backupListsAsync(it)
             repository.selectList(selectedList)
         }
     }

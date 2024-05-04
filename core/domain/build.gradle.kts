@@ -13,4 +13,6 @@ android {
 dependencies {
     implementation(libs.gson)
     api(project(":core:data"))
+
+    testImplementation(libs.robolectric)
 }

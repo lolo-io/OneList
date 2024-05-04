@@ -18,7 +18,7 @@ interface OneListRepository {
     )
     suspend fun importList(uri: Uri): ItemList
     fun selectList(list: ItemList)
-    suspend fun backupLists(lists: List<ItemList>)
+    suspend fun backupListsAsync(lists: List<ItemList>)
     suspend fun backupAllListsToFiles()
     suspend fun setBackupUri(uri: Uri?, displayPath: String?)
 }

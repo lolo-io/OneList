@@ -145,7 +145,7 @@ class OneListRepositoryTest {
         val lists = (1..3).map { i ->
             ItemList("Item List $i", id = i.toLong())
         }
-        oneListRepository.backupLists(lists)
+        oneListRepository.backupListsAsync(lists)
 
         assertWaiting { lists.size == dao.lists.size }
         assertEquals(0, fileAccess.tempSavedFiles.size)
@@ -156,7 +156,7 @@ class OneListRepositoryTest {
         val lists = (1..3).map { i ->
             ItemList("Item List $i", id = i.toLong())
         }
-        oneListRepository.backupLists(lists)
+        oneListRepository.backupListsAsync(lists)
 
         preferences.backupUri = "URI"
 
