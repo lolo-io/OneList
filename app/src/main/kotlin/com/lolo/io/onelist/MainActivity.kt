@@ -29,6 +29,8 @@ import com.lolo.io.onelist.feature.whatsnew.navigation.navigateToWhatsNewScreen
 import com.lolo.io.onelist.navigation.OneListNavHost
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.compose.KoinAndroidContext
+import org.koin.core.annotation.KoinExperimentalAPI
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by inject<MainActivityViewModel>()
     private val updateHelper by inject<UpdateHelper>()
 
+    @OptIn(KoinExperimentalAPI::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -73,22 +76,27 @@ class MainActivity : AppCompatActivity() {
             val navController = rememberNavController()
             val showWhatsNew = viewModel.showWhatsNew.collectAsStateWithLifecycle().value
 
-            LaunchedEffect(showWhatsNew) {
-                if(showWhatsNew) {
-                    navController.navigateToWhatsNewScreen()
-                }
-            }
+            KoinAndroidContext {
 
-            OneListTheme(isDynamic = sharedPreferencesHelper.theme == SharedPreferencesHelper.THEME_DYNAMIC) {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    Surface(modifier = Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding()) {
-                        OneListNavHost(
-                            navController =  navController,
-                            simpleStorageHelper = storageHelper,
-                            startDestination = LISTS_SCREEN_ROUTE
-                        )
+                LaunchedEffect(showWhatsNew) {
+                    if (showWhatsNew) {
+                        navController.navigateToWhatsNewScreen()
+                    }
+                }
+
+                OneListTheme(isDynamic = sharedPreferencesHelper.theme == SharedPreferencesHelper.THEME_DYNAMIC) {
+                    Surface(modifier = Modifier.fillMaxSize()) {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .statusBarsPadding()
+                        ) {
+                            OneListNavHost(
+                                navController = navController,
+                                simpleStorageHelper = storageHelper,
+                                startDestination = LISTS_SCREEN_ROUTE
+                            )
+                        }
                     }
                 }
             }

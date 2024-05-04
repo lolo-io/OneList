@@ -37,6 +37,7 @@ kotlin-android-plugin="1.9.22"
 google-services-plugin = "4.4.1"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
+test-logger = "4.0.0"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -96,6 +97,7 @@ android-application = { id = "com.android.application", version.ref = "android-a
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-android-plugin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services-plugin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-gradle-plugin" }
+test-logger = { id = "com.adarshr.test-logger", version.ref = "test-logger" }
 
 # Plugins defined by this project
 onelist-android-application = { id = "onelist.android.application", version = "unspecified" }

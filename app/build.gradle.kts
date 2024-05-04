@@ -47,6 +47,13 @@ android {
         generateLocaleConfig = true
     }
 
+    testOptions {
+        unitTests {
+            // For Robolectric
+            isIncludeAndroidResources = true
+        }
+    }
+
     buildFeatures {
         buildConfig = true
         compose = true
