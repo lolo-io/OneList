@@ -21,6 +21,7 @@ dependencies {
 
     implementation(libs.androidx.preference.ktx)
     implementation (libs.storage)
+    implementation (libs.fragment.testing)
 
     implementation(project(":core:common"))
     implementation(project(":core:domain"))

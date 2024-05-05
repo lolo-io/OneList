@@ -30,6 +30,7 @@ kotlinxCoroutines = "1.7.3"
 mockitoVersion = "5.11.0"
 mockitoKotlinVersion = "5.3.1"
 robolectric = "4.12.1"
+fragmentVersion= "1.7.0"
 
 # plugins versions
 android-application-plugin= "8.3.0"
@@ -89,7 +90,7 @@ koin-android-test = { module = "io.insert-koin:koin-android-test", version.ref =
 mockito = { group = "org.mockito",  name = "mockito-core",  version.ref = "mockitoVersion"}
 mockito-kotlin = { group = "org.mockito.kotlin",  name = "mockito-kotlin",  version.ref = "mockitoKotlinVersion"}
 robolectric = { group="org.robolectric", name="robolectric", version.ref = "robolectric"}
-
+fragment-testing = { group="androidx.fragment", name="fragment-testing", version.ref = "fragmentVersion"}
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }
