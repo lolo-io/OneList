@@ -116,7 +116,7 @@ class SettingsFragmentViewModelTest {
     }
 
 
-    fun assertGetterFunctionCalled(calledFunctions: List<String>, functionName: String) {
+    private fun assertGetterFunctionCalled(calledFunctions: List<String>, functionName: String) {
         assertContains(
             fakeUseCases.calledFunctions.map { it.lowercase() },
             "get${functionName.lowercase()}"

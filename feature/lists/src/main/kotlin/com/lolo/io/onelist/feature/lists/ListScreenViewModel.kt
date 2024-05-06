@@ -42,7 +42,7 @@ class ListScreenViewModel(
     private val selectedListIndex =
         preferences.selectedListIndexStateFlow
 
-    var selectedList = combine(allLists, selectedListIndex) { pAllLists, pIndex ->
+    val selectedList = combine(allLists, selectedListIndex) { pAllLists, pIndex ->
         (pAllLists.getOrNull(pIndex)).also {
             _displayedItems.value = it?.items ?: listOf()
         }
