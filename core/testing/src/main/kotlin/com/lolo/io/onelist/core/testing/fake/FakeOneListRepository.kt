@@ -37,7 +37,6 @@ class FakeOneListRepository(
 
     override suspend fun getAllLists(): StateFlow<ListsWithErrors> {
         calledFunctions += Thread.currentThread().stackTrace[1].methodName
-        delay(300)
         return testMutableAllListsWithErrors
     }
 

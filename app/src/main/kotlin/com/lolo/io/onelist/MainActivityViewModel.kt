@@ -1,10 +1,11 @@
 package com.lolo.io.onelist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
-import com.lolo.io.onelist.feature.lists.tuto.FirstLaunchLists
+import com.lolo.io.onelist.core.model.FirstLaunchLists
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first

@@ -14,7 +14,6 @@ import com.lolo.io.onelist.core.testing.core.testListChipIsShown
 import com.lolo.io.onelist.core.testing.rules.KoinTestRule
 import com.lolo.io.onelist.di.appModule
 import com.lolo.io.onelist.feature.lists.di.listsModule
-import com.lolo.io.onelist.feature.lists.tuto.FirstLaunchLists
 import com.lolo.io.onelist.feature.settings.di.settingsModule
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule

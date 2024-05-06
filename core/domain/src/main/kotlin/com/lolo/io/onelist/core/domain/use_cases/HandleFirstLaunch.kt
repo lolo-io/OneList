@@ -9,8 +9,6 @@ class HandleFirstLaunch(private val repository: OneListRepository,
                         private val preferencesHelper: SharedPreferencesHelper
 ) {
     suspend operator fun invoke(lists: List<ItemList>): Boolean {
-        delay(200)
-
         val firstLaunch = preferencesHelper.firstLaunch
         if (firstLaunch) {
             lists.forEach {

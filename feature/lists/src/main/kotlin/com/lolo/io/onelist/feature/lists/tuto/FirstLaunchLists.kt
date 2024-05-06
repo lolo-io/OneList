@@ -1,11 +1,12 @@
 package com.lolo.io.onelist.feature.lists.tuto
 
 import android.app.Application
+import com.lolo.io.onelist.core.model.FirstLaunchLists
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.feature.lists.R
 
-class FirstLaunchLists(private val application: Application) {
+class FirstLaunchListsImpl(private val application: Application) : FirstLaunchLists {
 
     private val context get() = application
     private fun firstLaunchListTutorial() = ItemList(
@@ -73,7 +74,7 @@ class FirstLaunchLists(private val application: Application) {
         )
     )
 
-    fun firstLaunchLists() = listOf(
+    override fun firstLaunchLists() = listOf(
         firstLaunchListTutorial(),
         firstLaunchListTodo()
     )
