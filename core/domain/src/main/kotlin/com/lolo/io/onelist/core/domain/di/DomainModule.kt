@@ -9,6 +9,7 @@ import com.lolo.io.onelist.core.domain.use_cases.HandleFirstLaunch
 import com.lolo.io.onelist.core.domain.use_cases.ImportList
 import com.lolo.io.onelist.core.domain.use_cases.LoadAllLists
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
+import com.lolo.io.onelist.core.domain.use_cases.OneListUseCasesImpl
 import com.lolo.io.onelist.core.domain.use_cases.RemoveItemFromList
 import com.lolo.io.onelist.core.domain.use_cases.RemoveList
 import com.lolo.io.onelist.core.domain.use_cases.ReorderLists
@@ -26,7 +27,7 @@ val domainModule = module {
 
     single {
         val saveListToDb = SaveListToDbImpl(get())
-        OneListUseCases(
+        OneListUseCasesImpl(
             createList = CreateList(get()),
             loadAllLists = LoadAllLists(get()),
             getAllLists = GetAllLists(get()),

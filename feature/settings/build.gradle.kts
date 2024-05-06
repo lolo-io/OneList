@@ -23,6 +23,8 @@ dependencies {
     implementation (libs.storage)
     implementation (libs.fragment.testing)
 
+    testImplementation(libs.robolectric)
+
     implementation(project(":core:common"))
     implementation(project(":core:domain"))
 }

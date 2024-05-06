@@ -5,7 +5,7 @@ import com.lolo.io.onelist.core.data.datamodel.ListsWithErrors
 import com.lolo.io.onelist.core.testing.data.testLists
 import com.lolo.io.onelist.core.testing.fake.FakeOneListRepository
 import com.lolo.io.onelist.core.testing.fake.FakeSharedPreferenceHelper
-import com.lolo.io.onelist.core.testing.fake.createFakeUseCases
+import com.lolo.io.onelist.core.testing.fake.FakeUseCases
 import com.lolo.io.onelist.core.testing.rules.MainDispatcherRule
 import org.junit.Before
 import org.junit.Rule
@@ -25,7 +25,7 @@ class ListScreenViewModelTest {
     @Before
     fun setup() {
         viewModel = ListScreenViewModel(
-            createFakeUseCases(fakeRepository), FakeSharedPreferenceHelper()
+            FakeUseCases(fakeRepository), FakeSharedPreferenceHelper()
         )
     }
 
