@@ -85,17 +85,11 @@ android {
 
         create("instrumented") {
             initWith(getByName("debug"))
-            applicationIdSuffix = ".test"
+            applicationIdSuffix = ".tst"
             versionNameSuffix = "-TEST"
             matchingFallbacks.add("debug")
         }
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
 }
 
 dependencies {
@@ -105,11 +99,11 @@ dependencies {
     implementation(libs.storage)
 
     // projects
-    implementation(project(":core:designsystem"))
-    implementation(project(":core:domain"))
+    implementation(projects.core.designsystem)
+    implementation(projects.core.domain)
 
-    implementation(project(":feature:lists"))
-    implementation(project(":feature:settings"))
-    implementation(project(":feature:whatsnew"))
+    implementation(projects.feature.lists)
+    implementation(projects.feature.settings)
+    implementation(projects.feature.whatsnew)
 
 }

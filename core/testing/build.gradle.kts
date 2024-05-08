@@ -27,5 +27,5 @@ dependencies {
 
     implementation(libs.storage)
 
-    implementation(project(":core:domain"))
+    implementation(projects.core.domain)
 }

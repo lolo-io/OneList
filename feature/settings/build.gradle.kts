@@ -24,6 +24,6 @@ dependencies {
 
     testImplementation(libs.robolectric)
 
-    implementation(project(":core:common"))
-    implementation(project(":core:domain"))
+    implementation(projects.core.common)
+    implementation(projects.core.domain)
 }

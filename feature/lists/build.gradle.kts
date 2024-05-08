@@ -24,8 +24,8 @@ dependencies {
     implementation(libs.reorderable)
     implementation(libs.lazylist.hijacker)
 
-    implementation(project(":core:common"))
-    implementation(project(":core:domain"))
+    implementation(projects.core.common)
+    implementation(projects.core.domain)
 
-    androidTestImplementation(project(":core:testing"))
+    androidTestImplementation(projects.core.testing)
 }
