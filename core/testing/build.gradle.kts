@@ -20,9 +20,12 @@ dependencies {
     api(libs.androidx.test.runner)
     api(libs.junit4)
     api(libs.kotlinx.coroutines.test)
-    api(libs.mockito)
-    api(libs.mockito.kotlin)
+    //api(libs.mockito)
+    //api(libs.mockito.kotlin)
+    api(libs.fragment.testing)
     debugApi(libs.androidx.compose.ui.test.manifest)
+
+    implementation(libs.storage)
 
     implementation(project(":core:domain"))
 }

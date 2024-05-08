@@ -21,7 +21,6 @@ dependencies {
 
     implementation(libs.androidx.preference.ktx)
     implementation (libs.storage)
-    implementation (libs.fragment.testing)
 
     testImplementation(libs.robolectric)
 

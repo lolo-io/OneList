@@ -25,7 +25,7 @@ import org.koin.dsl.module
 
 val domainModule = module {
 
-    single {
+    single<OneListUseCases> {
         val saveListToDb = SaveListToDbImpl(get())
         OneListUseCasesImpl(
             createList = CreateList(get()),

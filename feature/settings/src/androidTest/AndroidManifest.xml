@@ -4,8 +4,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
-    <application>
-        <activity android:name="com.lolo.io.onelist.feature.settings.TestActivityWithSimpleStorage"/>
+    <application android:name="com.lolo.io.onelist.core.testing.TestApplication">
+        <activity android:name="com.lolo.io.onelist.core.testing.TestActivityWithSimpleStorage"/>
     </application>
 
 </manifest>

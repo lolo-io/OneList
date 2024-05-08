@@ -27,13 +27,13 @@ androidxTestCore = "1.5.0"
 androidxTestRules = "1.5.0"
 androidxTestRunner = "1.5.2"
 kotlinxCoroutines = "1.7.3"
-mockitoVersion = "5.11.0"
-mockitoKotlinVersion = "5.3.1"
+#mockitoVersion = "5.11.0"
+#mockitoKotlinVersion = "5.3.1"
 robolectric = "4.12.1"
 fragmentVersion= "1.7.0"
 
 # plugins versions
-android-application-plugin= "8.3.0"
+android-application-plugin= "8.4.0"
 kotlin-android-plugin="1.9.22"
 google-services-plugin = "4.4.1"
 junitVersion = "1.1.5"
@@ -87,8 +87,8 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 koin-android-test = { module = "io.insert-koin:koin-android-test", version.ref = "koin" }
-mockito = { group = "org.mockito",  name = "mockito-core",  version.ref = "mockitoVersion"}
-mockito-kotlin = { group = "org.mockito.kotlin",  name = "mockito-kotlin",  version.ref = "mockitoKotlinVersion"}
+#mockito = { group = "org.mockito",  name = "mockito-core",  version.ref = "mockitoVersion"}
+#mockito-kotlin = { group = "org.mockito.kotlin",  name = "mockito-kotlin",  version.ref = "mockitoKotlinVersion"}
 robolectric = { group="org.robolectric", name="robolectric", version.ref = "robolectric"}
 fragment-testing = { group="androidx.fragment", name="fragment-testing", version.ref = "fragmentVersion"}
 

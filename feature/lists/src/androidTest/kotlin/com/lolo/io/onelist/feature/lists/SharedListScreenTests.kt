@@ -176,7 +176,9 @@ fun ComposeTestRule.sharedAddItemToList(itemTitle: String, itemComment: String) 
             TestTags.itemCommentArrowItemTitle(itemTitle),
             useUnmergedTree = true
         ).assertExists()
-        onNodeWithText(itemComment).assertExists()
+        waitUntilExactlyOneExists(
+            hasText(itemComment)
+        )
     } else {
         onNodeWithTag(
             TestTags.itemCommentArrowItemTitle(itemTitle),
