@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -35,7 +37,8 @@ internal fun WhatsNewScreen(
     data: WhatsNewData = currentReleaseWhatsNewData(LocalContext.current),
     onClickContinue: () -> Unit,
 ) {
-    Surface(modifier = Modifier.fillMaxSize().testTag(TestTags.WhatsNewScreen)) {
+    Surface(modifier = Modifier.fillMaxSize()
+        .navigationBarsPadding().testTag(TestTags.WhatsNewScreen)) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
