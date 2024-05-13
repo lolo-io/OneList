@@ -161,7 +161,10 @@ class OneListRepositoryTest {
         preferences.backupUri = "URI"
 
         assertWaiting { lists.size == dao.lists.size }
-        assertEquals(lists.size, fileAccess.tempSavedFiles.size)
+
+        assertWaiting {
+            lists.size == fileAccess.tempSavedFiles.size
+        }
     }
 
 

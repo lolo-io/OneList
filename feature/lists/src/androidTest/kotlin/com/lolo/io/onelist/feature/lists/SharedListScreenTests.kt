@@ -29,6 +29,7 @@ import com.lolo.io.onelist.core.testing.core.testListChipIsShown
 import com.lolo.io.onelist.core.testing.core.waitUntilDeleteBackgroundIsNotDisplayed
 import com.lolo.io.onelist.core.testing.core.waitUntilEditBackgroundIsNotDoesNotExist
 import com.lolo.io.onelist.core.data.utils.TestTags
+import com.lolo.io.onelist.core.testing.util.assertWaitingNode
 import com.lolo.io.onelist.feature.lists.components.list_chips.ListChipState
 import kotlin.test.assertEquals
 
@@ -150,40 +151,65 @@ fun ComposeTestRule.sharedTestEditList(listName: String, editedListSuffix: Strin
 
 }
 
-@OptIn(ExperimentalTestApi::class)
-fun ComposeTestRule.sharedAddItemToList(itemTitle: String, itemComment: String) {
-    onNodeWithTag(TestTags.AddItemInput).assertIsDisplayed()
-    onNodeWithTag(TestTags.AddItemInput).performTextInput(itemTitle)
-    if (itemComment.isNotEmpty()) {
-        if (!onNodeWithTag(TestTags.AddItemCommentInput).isDisplayed()) {
-            onNodeWithTag(TestTags.AddItemCommentArrowButton).assertIsDisplayed()
-            onNodeWithTag(TestTags.AddItemCommentArrowButton).performClick()
-        }
-        waitUntilExactlyOneExists(hasTestTag(TestTags.AddItemCommentInput), 3000)
-        onNodeWithTag(TestTags.AddItemCommentInput).assertIsDisplayed()
-        onNodeWithTag(TestTags.AddItemCommentInput).performTextInput(itemComment)
+suspend fun printStackTraceOnError(block: suspend () -> Unit) {
+    try {
+        block()
+    } catch (e: AssertionError) {
+        throw AssertionError(e.stackTraceToString())
     }
+}
 
-    onNodeWithTag(TestTags.AddItemInputSubmitButton).assertIsDisplayed()
-    onNodeWithTag(TestTags.AddItemInputSubmitButton).performClick()
+@OptIn(ExperimentalTestApi::class)
+suspend fun ComposeTestRule.sharedAddItemToList(itemTitle: String, itemComment: String) {
+    printStackTraceOnError {
+        onNodeWithTag(TestTags.AddItemInput).assertIsDisplayed()
 
-    waitUntilExactlyOneExists(
-        hasText(itemTitle)
-    )
+        onNodeWithTag(TestTags.AddItemInput).performTextInput(itemTitle)
+        if (itemComment.isNotEmpty()) {
+            if (!onNodeWithTag(TestTags.AddItemCommentInput).isDisplayed()) {
+                onNodeWithTag(TestTags.AddItemCommentArrowButton).assertIsDisplayed()
+                onNodeWithTag(TestTags.AddItemCommentArrowButton).performClick()
+            }
+            waitUntilExactlyOneExists(hasTestTag(TestTags.AddItemCommentInput), 3000)
+            onNodeWithTag(TestTags.AddItemCommentInput).assertIsDisplayed()
+            onNodeWithTag(TestTags.AddItemCommentInput).performTextInput(itemComment)
+        }
 
-    if (itemComment.isNotEmpty()) {
-        onNodeWithTag(
-            TestTags.itemCommentArrowItemTitle(itemTitle),
-            useUnmergedTree = true
-        ).assertExists()
+        onNodeWithTag(TestTags.AddItemInputSubmitButton).assertIsDisplayed()
+        onNodeWithTag(TestTags.AddItemInputSubmitButton).performClick()
+
+        assertWaitingNode {
+            onNodeWithTag(TestTags.AddItemInput).assertTextContains(
+                this.activity.getString(R.string.add_item_placeholder)
+            )
+        }
+
         waitUntilExactlyOneExists(
-            hasText(itemComment)
+            hasText(itemTitle)
         )
-    } else {
-        onNodeWithTag(
-            TestTags.itemCommentArrowItemTitle(itemTitle),
-            useUnmergedTree = true
-        ).assertDoesNotExist()
+
+        if (itemComment.isNotEmpty()) {
+            assertWaitingNode {
+                onNodeWithTag(TestTags.AddItemCommentInput).assertTextContains(
+                    this.activity.getString(R.string.add_comment_placeholder)
+                )
+            }
+
+
+            onNodeWithTag(
+                TestTags.itemCommentArrowItemTitle(itemTitle),
+                useUnmergedTree = true
+            ).assertExists()
+
+            waitUntilAtLeastOneExists(
+                hasText(itemComment),
+            )
+        } else {
+            onNodeWithTag(
+                TestTags.itemCommentArrowItemTitle(itemTitle),
+                useUnmergedTree = true
+            ).assertDoesNotExist()
+        }
     }
 }
 

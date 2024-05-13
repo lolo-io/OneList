@@ -4,7 +4,9 @@ import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.preference.PreferenceManager
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.rule.GrantPermissionRule
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
@@ -61,7 +63,7 @@ class SettingsFragmentTest {
     fun setUp() {
         scenario = launchFragmentInContainer<SettingsFragment>()
         setSharedPref(SharedPreferencesHelper.THEME_PREF, "light")
-        scenario.onFragment{ fragment ->
+        scenario.onFragment { fragment ->
             fragment.onClickOnShowReleaseNote = {}
         }
     }
@@ -85,6 +87,9 @@ class SettingsFragmentTest {
             }
         }
 
+        onView(ViewMatchers.withId(androidx.preference.R.id.recycler_view))
+            .perform(ViewActions.swipeUp())
+
         clickOn(R.string.show_last_release_note)
 
         assertTrue(methodCalled)
@@ -96,7 +101,9 @@ class SettingsFragmentTest {
                 ViewMatchers.withText(resId),
                 ViewMatchers.isDisplayed()
             )
-        ).perform(ViewActions.click())
+        )
+            .perform(ViewActions.scrollTo())
+            .perform(ViewActions.click())
     }
 
     private fun assertSharedPrefEquals(prefKey: String, expected: String) {

@@ -40,12 +40,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
+import com.lolo.io.onelist.feature.lists.R
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
 
 @Composable
@@ -91,7 +93,7 @@ internal fun AddItemInput(
                 .focusRequester(focusRequester)
                 .testTag(TestTags.AddItemInput),
             value = value,
-            placeholder = "Add",
+            placeholder = stringResource(R.string.add_item_placeholder),
             onValueChange = onValueChange,
             singleLine = true,
             leadingIcon = {
@@ -109,7 +111,8 @@ internal fun AddItemInput(
                 if (value.isNotEmpty()) {
                     if (animatedSubmitAlpha > 0) {
                         IconButton(
-                            modifier = Modifier.alpha(animatedSubmitAlpha)
+                            modifier = Modifier
+                                .alpha(animatedSubmitAlpha)
                                 .testTag(TestTags.AddItemInputSubmitButton),
                             onClick = {
                                 onSubmit()
@@ -147,7 +150,7 @@ internal fun AddItemInput(
                         .padding(top = MaterialTheme.space.Tiny)
                         .testTag(TestTags.AddItemCommentInput),
                     value = commentValue,
-                    placeholder = "Comment",
+                    placeholder = stringResource(R.string.add_comment_placeholder),
                     onValueChange = {
                         onCommentValueChange(it)
                     },

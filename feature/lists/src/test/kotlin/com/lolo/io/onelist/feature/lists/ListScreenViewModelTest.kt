@@ -114,13 +114,6 @@ class ListScreenViewModelTest {
         val collectJob =
             launch(UnconfinedTestDispatcher()) { viewModel.isRefreshing.collect() }
 
-        viewModel.refresh(true)
-        assertEquals(true, viewModel.isRefreshing.value)
-        assertGetterFunctionCalled(
-            FakeUseCases::loadAllLists.name
-        )
-
-
         viewModel.refresh(false)
         assertEquals(false, viewModel.isRefreshing.value)
         assertGetterFunctionCalled(

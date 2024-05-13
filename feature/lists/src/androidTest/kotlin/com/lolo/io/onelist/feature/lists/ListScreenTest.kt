@@ -14,6 +14,7 @@ import com.lolo.io.onelist.core.testing.fake.FakeOneListRepository
 import com.lolo.io.onelist.core.testing.fake.FakeSharedPreferenceHelper
 import com.lolo.io.onelist.core.testing.rules.KoinTestRule
 import com.lolo.io.onelist.feature.lists.di.listsModule
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -21,6 +22,7 @@ import org.koin.androidx.compose.KoinAndroidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.util.UUID
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.seconds
 
 class ListScreenTest : AbstractComposeTest(
     ComponentActivity::class.java,
@@ -128,7 +130,7 @@ class ListScreenTest : AbstractComposeTest(
 
 
     @Test
-    fun addItemsToList() {
+    fun addItemsToList() = runBlocking {
         val itemList = createEmptyTestList()
         repository.setFakeLists(
             listOf(itemList)
