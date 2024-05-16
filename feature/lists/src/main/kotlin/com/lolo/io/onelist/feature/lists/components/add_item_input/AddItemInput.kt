@@ -39,11 +39,15 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
+import com.lolo.io.onelist.feature.lists.R
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
 
 @Composable
@@ -74,7 +78,6 @@ internal fun AddItemInput(
             mutableStateOf(false)
         }
 
-
         val animatedSubmitAlpha by animateFloatAsState(
             targetValue = if (value.isEmpty()) 0f else 1f,
             animationSpec = tween(
@@ -87,9 +90,10 @@ internal fun AddItemInput(
         OneListTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(focusRequester),
+                .focusRequester(focusRequester)
+                .testTag(TestTags.AddItemInput),
             value = value,
-            placeholder = "Add",
+            placeholder = stringResource(R.string.add_item_placeholder),
             onValueChange = onValueChange,
             singleLine = true,
             leadingIcon = {
@@ -107,7 +111,9 @@ internal fun AddItemInput(
                 if (value.isNotEmpty()) {
                     if (animatedSubmitAlpha > 0) {
                         IconButton(
-                            modifier = Modifier.alpha(animatedSubmitAlpha),
+                            modifier = Modifier
+                                .alpha(animatedSubmitAlpha)
+                                .testTag(TestTags.AddItemInputSubmitButton),
                             onClick = {
                                 onSubmit()
                                 view.playSoundEffect(SoundEffectConstants.CLICK)
@@ -141,9 +147,10 @@ internal fun AddItemInput(
                 OneListTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.space.Tiny),
+                        .padding(top = MaterialTheme.space.Tiny)
+                        .testTag(TestTags.AddItemCommentInput),
                     value = commentValue,
-                    placeholder = "Comment",
+                    placeholder = stringResource(R.string.add_comment_placeholder),
                     onValueChange = {
                         onCommentValueChange(it)
                     },
@@ -194,7 +201,8 @@ internal fun AddItemInput(
             modifier = Modifier
                 .size(36.dp)
                 .padding(MaterialTheme.space.Tiny)
-                .alpha(animatedArrowVisibility),
+                .alpha(animatedArrowVisibility)
+                .testTag(TestTags.AddItemCommentArrowButton),
             onClick = {
                 arrowRotation += 180f
                 if (arrowRotation == 340f) arrowRotation = 180f
@@ -229,7 +237,7 @@ internal fun AddItemInput(
 
 @Preview
 @Composable
-private fun Preview_AddItemInput() = ComposePreview {
+private fun Preview_AddItemInput() = ThemedPreview {
     var text by remember { mutableStateOf("Preview text") }
     var comment by remember { mutableStateOf("") }
     AddItemInput(

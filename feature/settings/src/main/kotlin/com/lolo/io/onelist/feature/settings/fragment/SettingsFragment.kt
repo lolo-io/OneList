@@ -3,6 +3,7 @@ package com.lolo.io.onelist.feature.settings.fragment
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,9 +48,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private var onSharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
 
-    private var _binding: FragmentSettingsBinding? = null
-    private val binding: FragmentSettingsBinding
-        get() = _binding!!
+    private var binding: FragmentSettingsBinding? = null
 
     var onClickOnShowReleaseNote: () -> Unit = {}
     var storageHelper: SimpleStorageHelper? = null
@@ -65,7 +64,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         savedInstanceState: Bundle?
     ): View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentSettingsBinding.bind(view)
+        try {
+            binding = FragmentSettingsBinding.bind(view)
+        } catch(e: Exception) {
+            // No binding provided in tests
+        }
         return view
     }
 
@@ -73,7 +76,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as? AppCompatActivity)?.let { activity ->
-            binding.customToolbar.let { activity.setSupportActionBar(it) }
+            binding?.customToolbar.let { activity.setSupportActionBar(it) }
             activity.supportActionBar?.apply {
                 title = getString(R.string.settings)
                 setDisplayShowHomeEnabled(true)
@@ -225,7 +228,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
         onSharedPreferenceChangeListener?.let {
             preferenceManager.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(it)
         }

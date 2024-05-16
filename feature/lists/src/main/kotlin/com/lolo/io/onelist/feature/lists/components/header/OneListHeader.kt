@@ -25,14 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
-import com.lolo.io.onelist.feature.lists.R
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.core.common.R as commonR
 
 
@@ -74,7 +75,9 @@ internal fun OneListHeader(
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            IconButton(onClick = {
+            IconButton(
+                modifier = Modifier.testTag(TestTags.SettingsButton),
+                onClick = {
                 actions.onClickSettings()
                 view.playSoundEffect(SoundEffectConstants.CLICK)
             }) {
@@ -109,14 +112,19 @@ internal fun OneListHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = {
-                if (showSelectedListControls) {
-                    actions.onClickEditList()
-                } else {
-                    actions.onClickShareList()
-                }
-                view.playSoundEffect(SoundEffectConstants.CLICK)
-            }) {
+            IconButton(
+                modifier = with(Modifier) {
+                    if (showSelectedListControls) testTag(TestTags.EditListButton)
+                    else testTag(TestTags.ShareListButton)
+                },
+                onClick = {
+                    if (showSelectedListControls) {
+                        actions.onClickEditList()
+                    } else {
+                        actions.onClickShareList()
+                    }
+                    view.playSoundEffect(SoundEffectConstants.CLICK)
+                }) {
                 Icon(
                     modifier = Modifier.alpha(targetRotationDefaultsControls.value),
                     imageVector = Icons.Default.Share, contentDescription = "Share List",
@@ -130,23 +138,34 @@ internal fun OneListHeader(
 
             }
 
-            IconButton(onClick = {
-                if (showSelectedListControls) {
-                    actions.onClickDeleteList()
-                } else {
-                    actions.onClickCreateList()
-                }
-                view.playSoundEffect(SoundEffectConstants.CLICK)
-            }) {
+            IconButton(
+                modifier = with(Modifier) {
+                    if (showSelectedListControls) {
+                        testTag(TestTags.DeleteListButton)
+                    } else {
+                        testTag(TestTags.AddListButton)
+                    }
+                },
+                onClick = {
+                    if (showSelectedListControls) {
+                        actions.onClickDeleteList()
+                    } else {
+                        actions.onClickCreateList()
+                    }
+                    view.playSoundEffect(SoundEffectConstants.CLICK)
+                }) {
                 Icon(
                     modifier = Modifier
                         .alpha(targetRotationDefaultsControls.value)
-                        .scale(1.2f),
+                        .scale(1.2f)
+                        .testTag(TestTags.AddListIcon),
                     imageVector = Icons.Default.Add, contentDescription = "Create List",
                 )
 
                 Icon(
-                    modifier = Modifier.alpha(targetRotationListsControls.value),
+                    modifier = Modifier
+                        .alpha(targetRotationListsControls.value)
+                        .testTag(TestTags.DeleteListIcon),
                     imageVector = Icons.Default.Delete, contentDescription = "Delete List",
                     tint = MaterialTheme.appColors.deleteListIcon
                 )
@@ -157,6 +176,6 @@ internal fun OneListHeader(
 
 @Preview
 @Composable
-private fun Preview_OneListHeader() = ComposePreview {
+private fun Preview_OneListHeader() = ThemedPreview {
     OneListHeader()
 }

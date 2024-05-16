@@ -6,9 +6,12 @@ plugins {
     alias(libs.plugins.onelist.android.application.compose)
     alias(libs.plugins.onelist.android.koin)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
 }
+if (gradle.startParameter.taskNames.toString().contains("Release")) {
+    plugins.apply("com.google.gms.google-services")
+}
+
 android {
     namespace = "com.lolo.io.onelist"
 
@@ -26,10 +29,23 @@ android {
         versionCode = versionCodeCI ?: 19
         versionName = "1.5.0"
         vectorDrawables.useSupportLibrary = true
+        testBuildType = "instrumented"
+
+        testInstrumentationRunner =
+            "com.lolo.io.onelist.core.testing.OneListTestRunner"
+
+
     }
 
     androidResources {
         generateLocaleConfig = true
+    }
+
+    testOptions {
+        unitTests {
+            // For Robolectric
+            isIncludeAndroidResources = true
+        }
     }
 
     buildFeatures {
@@ -46,13 +62,16 @@ android {
         }
     }
 
+
     buildTypes {
-        getByName("debug") {
+        debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
-            resValue("string", "app_name", "1ListDev")
         }
-        getByName("release") {
+
+
+
+        release {
             isMinifyEnabled = true
             isShrinkResources = true
 
@@ -63,27 +82,28 @@ android {
             resValue("string", "app_name", "1List")
             signingConfig = signingConfigs.getByName("release")
         }
-    }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        create("instrumented") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".tst"
+            versionNameSuffix = "-TEST"
+            matchingFallbacks.add("debug")
+        }
     }
-
 }
 
 dependencies {
 
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.firebase.crashlytics)
-    implementation (libs.storage)
+    releaseImplementation(libs.firebase.crashlytics)
+    implementation(libs.storage)
 
     // projects
-    implementation(project(":core:designsystem"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:domain"))
+    implementation(projects.core.designsystem)
+    implementation(projects.core.domain)
 
-    implementation(project(":feature:lists"))
-    implementation(project(":feature:settings"))
-    implementation(project(":feature:whatsnew"))
+    implementation(projects.feature.lists)
+    implementation(projects.feature.settings)
+    implementation(projects.feature.whatsnew)
+
 }

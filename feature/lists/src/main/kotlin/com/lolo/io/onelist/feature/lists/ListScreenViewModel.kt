@@ -2,12 +2,12 @@ package com.lolo.io.onelist.feature.lists
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lolo.io.onelist.core.data.model.ErrorLoadingList
+import com.lolo.io.onelist.core.data.datamodel.ErrorLoadingList
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.domain.use_cases.OneListUseCases
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
-import com.lolo.io.onelist.core.ui.util.UIString
+import com.lolo.io.onelist.core.data.utils.UIString
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,7 +42,7 @@ class ListScreenViewModel(
     private val selectedListIndex =
         preferences.selectedListIndexStateFlow
 
-    var selectedList = combine(allLists, selectedListIndex) { pAllLists, pIndex ->
+    val selectedList = combine(allLists, selectedListIndex) { pAllLists, pIndex ->
         (pAllLists.getOrNull(pIndex)).also {
             _displayedItems.value = it?.items ?: listOf()
         }
@@ -94,7 +94,9 @@ class ListScreenViewModel(
 
     fun createList(itemList: ItemList) {
         viewModelScope.launch {
-            useCases.createList(itemList)
+            useCases.selectList(
+                useCases.createList(itemList)
+            )
         }
     }
 
@@ -123,7 +125,15 @@ class ListScreenViewModel(
     ) {
         viewModelScope.launch {
             try {
+
+                val position = allLists.value.indexOf(itemList)
+                val nextSelectedIndex = if (position == allLists.value.size - 1) position - 1
+                else position + 1
+                val nextSelectedList = allLists.value[nextSelectedIndex
+                    .coerceAtLeast(0)]
+
                 useCases.removeList(itemList, deleteBackupFile, onFileDeleted)
+                useCases.selectList(nextSelectedList)
             } catch (e: IOException) {
                 if (deleteBackupFile) {
                     _errorMessage.value = UIString
@@ -185,7 +195,9 @@ class ListScreenViewModel(
 
     fun createListThenAddItem(itemList: ItemList, item: Item) {
         viewModelScope.launch {
-            useCases.createList(itemList)
+            useCases.selectList(
+                useCases.createList(itemList)
+            )
             selectedList.value?.let {
                 _displayedItems.value = useCases.addItemToList(it, item).items
             }

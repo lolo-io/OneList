@@ -12,12 +12,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.Palette
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.Item
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.SwipeableRow
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.SwipeableRowScope
@@ -33,13 +35,14 @@ internal fun SwipeableRowScope.SwipeableItem(
 ) {
 
     SwipeableRow(
-        modifier = modifier,
+        modifier = modifier.testTag(TestTags.SwipeableItem),
         backgroundStartToEnd = {
             Box(
                 Modifier
                     .background(MaterialTheme.appColors.swipeEditBackground)
                     .fillMaxSize()
-                    .padding(start = MaterialTheme.space.Normal),
+                    .padding(start = MaterialTheme.space.Normal)
+                    .testTag(TestTags.SwipeableItemEditBackground),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Icon(
@@ -54,7 +57,8 @@ internal fun SwipeableRowScope.SwipeableItem(
                 Modifier
                     .background(MaterialTheme.appColors.swipeDeleteBackground)
                     .padding(end = MaterialTheme.space.Normal)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .testTag(TestTags.SwipeableItemDeleteBackground),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
@@ -83,7 +87,7 @@ internal fun SwipeableRowScope.SwipeableItem(
 
 @Preview
 @Composable
-private fun Preview_SwipeableItem() = ComposePreview {
+private fun Preview_SwipeableItem() = ThemedPreview {
 /*
     var swipeState by remember {
         mutableStateOf(SwipeState.NONE)

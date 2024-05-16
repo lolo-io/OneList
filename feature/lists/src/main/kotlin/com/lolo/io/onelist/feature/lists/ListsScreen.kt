@@ -25,16 +25,18 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.model.previewMany
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.components.add_item_input.AddItemInput
 import com.lolo.io.onelist.feature.lists.components.dialogs.CreateListDialog
 import com.lolo.io.onelist.feature.lists.components.dialogs.DeleteListDialog
@@ -57,7 +59,7 @@ import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
 @Composable
-internal fun ListsScreen(
+fun ListsScreen(
     navigateToSettings: () -> Unit
 ) {
     val viewModel = koinInject<ListScreenViewModel>()
@@ -125,7 +127,7 @@ internal fun ListsScreen(
 }
 
 @Composable
-private fun ListsScreenUI(
+internal fun ListsScreenUI(
     allLists: List<ItemList>,
     selectedList: ItemList?,
     displayedItems: List<Item>,
@@ -153,7 +155,8 @@ private fun ListsScreenUI(
                     showSelectedListControls = false
                     keyboardController?.hide()
                 })
-            }, horizontalAlignment = Alignment.CenterHorizontally
+            }
+            .testTag(TestTags.ListsScreen), horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
 
@@ -358,7 +361,7 @@ private fun ListsScreenUI(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
-private fun Preview_ListsScreen() = ComposePreview {
+private fun Preview_ListsScreen() = ThemedPreview {
 
     val allLists = ItemList.previewMany(5)
     val selectedList = allLists[0]

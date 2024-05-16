@@ -9,9 +9,10 @@
     <string name="first_list_tuto_six">Swipe an item left to delete it</string>
     <string name="first_list_tuto_seven">Swipe an item right to edit it</string>
     <string name="first_list_tuto_eight">💡 Quickly add a comment by clicking the "⌄" button appearing under the "Add" edit box when you start typing !</string>
-    <string name="first_list_tuto_eight_comment">Show an item comments by clicking on the "⌄" button at the end of the line ---> </string>
-    <string name="first_list_tuto_nine">And as undone by clicking on it again !</string>
-    <string name="first_list_tuto_nine_comment">Mark item as done simply by clicking on it</string>
-    <string name="first_list_tuto_ten">Access the settings from the ⚙ button at the top of the screen</string>
+    <string name="first_list_tuto_nine">Show an item comments by clicking on the "⌄" button at the end of the line ---> </string>
+    <string name="first_list_tuto_nine_comment">Hello 👋</string>
+    <string name="first_list_tuto_ten">Mark item as done simply by clicking on it</string>
+    <string name="first_list_tuto_ten_comment">And as undone by clicking on it again !</string>
+    <string name="first_list_tuto_eleven">Access the settings from the ⚙ button at the top of the screen</string>
     <string name="first_list_todo_one">Enjoy the app ! 😃 100% FREE / 0 ads !</string>
 </resources>

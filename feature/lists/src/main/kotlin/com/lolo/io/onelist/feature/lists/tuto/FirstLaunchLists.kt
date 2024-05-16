@@ -1,12 +1,12 @@
 package com.lolo.io.onelist.feature.lists.tuto
 
 import android.app.Application
-import android.content.Context
+import com.lolo.io.onelist.core.model.FirstLaunchLists
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.feature.lists.R
 
-class FirstLaunchLists(private val application: Application) {
+class FirstLaunchListsImpl(private val application: Application) : FirstLaunchLists {
 
     private val context get() = application
     private fun firstLaunchListTutorial() = ItemList(
@@ -47,22 +47,18 @@ class FirstLaunchLists(private val application: Application) {
                 id = 8L
             ),
             Item(
-                context.getString(R.string.first_list_tuto_eight_comment),
+                context.getString(R.string.first_list_tuto_nine),
+                comment = context.getString(R.string.first_list_tuto_nine_comment),
                 id = 9L
             ),
-
             Item(
-                context.getString(R.string.first_list_tuto_nine),
+                context.getString(R.string.first_list_tuto_ten),
+                comment = context.getString(R.string.first_list_tuto_ten_comment),
                 id = 10L
             ),
             Item(
-                context.getString(R.string.first_list_tuto_nine_comment),
+                context.getString(R.string.first_list_tuto_eleven),
                 id = 11L
-            ),
-
-            Item(
-                context.getString(R.string.first_list_tuto_ten),
-                id = 12L
             ),
         )
     )
@@ -78,7 +74,7 @@ class FirstLaunchLists(private val application: Application) {
         )
     )
 
-    fun firstLaunchLists() = listOf(
+    override fun firstLaunchLists() = listOf(
         firstLaunchListTutorial(),
         firstLaunchListTodo()
     )

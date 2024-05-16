@@ -6,9 +6,16 @@ plugins {
 
 android {
     defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.lolo.io.onelist.core.testing.OneListTestRunner"
     }
     namespace = "com.lolo.io.onelist.core.database"
+
+    testOptions {
+        unitTests {
+            // For Robolectric
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 ksp {
@@ -25,5 +32,9 @@ dependencies {
     // json
     implementation(libs.gson)
 
+    //implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
+
     api(project(":core:model"))
+
+    testImplementation(libs.robolectric)
 }

@@ -5,8 +5,8 @@ import com.lolo.io.onelist.core.database.model.ItemListEntity
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 
-fun com.lolo.io.onelist.core.model.ItemList.toItemListEntity() =
-    com.lolo.io.onelist.core.database.model.ItemListEntity(
+fun ItemList.toItemListEntity() =
+    ItemListEntity(
         id = this.id,
         items = this.items.toItemEntities().toMutableList(),
         uri = this.uri,
@@ -14,8 +14,8 @@ fun com.lolo.io.onelist.core.model.ItemList.toItemListEntity() =
         title = this.title
     )
 
-fun com.lolo.io.onelist.core.model.Item.toItemEntity() =
-    com.lolo.io.onelist.core.database.model.ItemEntity(
+fun Item.toItemEntity() =
+    ItemEntity(
         id = id,
         title = title,
         comment = comment,
@@ -23,4 +23,4 @@ fun com.lolo.io.onelist.core.model.Item.toItemEntity() =
         commentDisplayed = commentDisplayed,
     )
 
-fun List<com.lolo.io.onelist.core.model.Item>.toItemEntities() = map { it.toItemEntity() }
+fun List<Item>.toItemEntities() = map { it.toItemEntity() }
