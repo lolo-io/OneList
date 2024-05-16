@@ -49,10 +49,25 @@ jobs:
           ONELIST_KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ONELIST_KEYSTORE_ALIAS_PASSWORD }}
         run: ./gradlew bundleRelease
 
+      - name: Assemble & Sign App Release APK
+        if: inputs.upload-artifact
+        env:
+          ONELIST_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEYSTORE_PASSWORD }}
+          ONELIST_KEYSTORE_ALIAS: ${{ secrets.ONELIST_KEYSTORE_ALIAS }}
+          ONELIST_KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ONELIST_KEYSTORE_ALIAS_PASSWORD }}
+        run: ./gradlew assembleRelease
+
       - name: Upload aab
         if: inputs.upload-artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
           path: app/build/outputs/bundle/release/app-release.aab
+
+      - name: Upload apk
+        if: inputs.upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: app/build/outputs/apk/release/app-release.apk
   

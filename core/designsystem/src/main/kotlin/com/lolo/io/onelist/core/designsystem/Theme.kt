@@ -13,10 +13,10 @@ import com.lolo.io.onelist.core.designsystem.colors.lightColorScheme
 @Composable
 fun OneListTheme(
     isDynamic: Boolean = false,
+    isDark : Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
 
-    val isDark = isSystemInDarkTheme()
     val colorScheme =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
             && isDynamic

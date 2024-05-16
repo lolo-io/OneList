@@ -4,14 +4,16 @@ plugins {
     `kotlin-dsl`
 }
 
+private val javaVersion = JavaVersion.VERSION_17
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
 }
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = javaVersion.toString()
     }
 }
 
@@ -21,14 +23,6 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
 }
 
-/*
-tasks {
-    validatePlugins {
-        enableStricterValidation = true
-        failOnWarning = true
-    }
-}
- */
 
 gradlePlugin {
     plugins {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#b71c1c</color>
+    <color name="colorPrimaryDark">#7f0000</color>
+    <color name="colorAccent">#757575</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="pure_white">#FFFFFF</color>
+
+    <color name="system_on_surface_light">#FFFFFF</color>
+    <color name="windowSplashScreenBackground">@color/colorPrimary</color>
+
+    <color name="error_color">@color/colorPrimary</color>
+
+    <color name="systemBarsColors">@color/pure_white</color>
+
+    <color name="settingsTextColor">@android:color/primary_text_light</color>
+    <color name="settingsIconColor">@color/colorAccent</color>
+    <color name="settingsBackgroundColor">@android:color/background_light</color>
+</resources>

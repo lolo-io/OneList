@@ -29,4 +29,6 @@
     <string name="backup_all_lists">Fazer backup de todas as listas</string>
     <string name="list_imported">Sua lista foi importada.</string>
     <string name="error_import_list">Erro ao importar sua lista: Este arquivo não pode ser importado.</string>
+    <string name="add_item_placeholder">Adicionar</string>
+    <string name="add_comment_placeholder">Comentário</string>
 </resources>

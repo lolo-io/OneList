@@ -17,7 +17,10 @@
     <string name="personalization">Personalisation</string>
     <string name="app_version">Version de l\'application</string>
     <string name="show_last_release_note">Revoir la dernière note de version</string>
-
     <string name="error_import_list">Erreur lors de l\'importation de votre liste : Ce fichier ne peut pas être importé.</string>
-
+    <string name="settings_theme">Thème</string>
+    <string name="settings_theme_auto">Auto (Android OS)</string>
+    <string name="settings_theme_light">Clair</string>
+    <string name="settings_theme_dark">Sombre</string>
+    <string name="settings_theme_dynamic">Dynamique (Basé sur votre fond d\'écran)</string>
 </resources>

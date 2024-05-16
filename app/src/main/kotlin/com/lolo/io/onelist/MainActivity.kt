@@ -20,15 +20,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.anggrayudi.storage.SimpleStorageHelper
-import com.lolo.io.onelist.core.data.reporitory.OneListRepository
+import com.lolo.io.onelist.core.data.updates.UpdateHelper
+import com.lolo.io.onelist.core.data.repository.OneListRepository
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
 import com.lolo.io.onelist.core.designsystem.OneListTheme
-import com.lolo.io.onelist.core.ui.Config
 import com.lolo.io.onelist.feature.lists.navigation.LISTS_SCREEN_ROUTE
 import com.lolo.io.onelist.feature.whatsnew.navigation.navigateToWhatsNewScreen
 import com.lolo.io.onelist.navigation.OneListNavHost
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.compose.KoinAndroidContext
+import org.koin.core.annotation.KoinExperimentalAPI
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,14 +38,19 @@ class MainActivity : AppCompatActivity() {
 
     private val preferences by inject<SharedPreferencesHelper>()
     private val viewModel by inject<MainActivityViewModel>()
+    private val updateHelper by inject<UpdateHelper>()
 
+    @OptIn(KoinExperimentalAPI::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
-
-        this.apply {  }
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme)
-        Config.init(applicationContext)
+
+        updateHelper.applyMigrationsIfNecessary(preferences.version,
+            BuildConfig.VERSION_NAME,
+            this) {
+            viewModel.init()
+        }
 
         if (intent?.action == "android.intent.action.VIEW") {
             importListFromIntent(intent)
@@ -69,22 +76,27 @@ class MainActivity : AppCompatActivity() {
             val navController = rememberNavController()
             val showWhatsNew = viewModel.showWhatsNew.collectAsStateWithLifecycle().value
 
-            LaunchedEffect(showWhatsNew) {
-                if(showWhatsNew) {
-                    navController.navigateToWhatsNewScreen()
-                }
-            }
+            KoinAndroidContext {
 
-            OneListTheme(isDynamic = sharedPreferencesHelper.theme == SharedPreferencesHelper.THEME_DYNAMIC) {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    Surface(modifier = Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding()) {
-                        OneListNavHost(
-                            navController =  navController,
-                            simpleStorageHelper = storageHelper,
-                            startDestination = LISTS_SCREEN_ROUTE
-                        )
+                LaunchedEffect(showWhatsNew) {
+                    if (showWhatsNew) {
+                        navController.navigateToWhatsNewScreen()
+                    }
+                }
+
+                OneListTheme(isDynamic = sharedPreferencesHelper.theme == SharedPreferencesHelper.THEME_DYNAMIC) {
+                    Surface(modifier = Modifier.fillMaxSize()) {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .statusBarsPadding()
+                        ) {
+                            OneListNavHost(
+                                navController = navController,
+                                simpleStorageHelper = storageHelper,
+                                startDestination = LISTS_SCREEN_ROUTE
+                            )
+                        }
                     }
                 }
             }

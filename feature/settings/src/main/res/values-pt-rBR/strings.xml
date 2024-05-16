@@ -18,4 +18,9 @@
     <string name="app_version">Versão do app</string>
     <string name="show_last_release_note">Mostrar última nota de lançamento</string>
     <string name="error_import_list">Erro ao importar sua lista: Este arquivo não pode ser importado.</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_auto">Auto (Android OS)</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_dynamic">Dynamic (Based on your wallpaper)</string>
 </resources>

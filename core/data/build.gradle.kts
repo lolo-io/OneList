@@ -5,10 +5,18 @@ plugins {
 
 android {
     defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.lolo.io.onelist.core.testing.OneListTestRunner"
     }
     namespace = "com.lolo.io.onelist.core.data"
+
+    testOptions {
+        unitTests {
+            // For Robolectric
+            isIncludeAndroidResources = true
+        }
+    }
 }
+
 
 dependencies {
     implementation(libs.androidx.preference.ktx)
@@ -16,4 +24,6 @@ dependencies {
     implementation(libs.gson)
 
     api(project(":core:database"))
+
+    testImplementation(libs.robolectric)
 }

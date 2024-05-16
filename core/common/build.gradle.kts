@@ -4,7 +4,7 @@ plugins {
 
 android {
     defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.lolo.io.onelist.core.testing.OneListTestRunner"
     }
     namespace = "com.lolo.io.onelist.core.common"
 }

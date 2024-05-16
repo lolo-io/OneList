@@ -15,11 +15,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.space
 import com.lolo.io.onelist.core.model.ItemList
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.R
 import com.lolo.io.onelist.feature.lists.components.core.OneListTextField
 import com.lolo.io.onelist.feature.lists.components.dialogs.components.DialogButtons
@@ -45,7 +47,9 @@ fun DialogScope.EditListDialog(
         textField.requestFocus()
     }
 
-    Column {
+    Column(
+        modifier = Modifier.testTag(TestTags.EditListDialog)
+    ) {
         Box(
             modifier = Modifier.padding(
                 horizontal = MaterialTheme.space.Normal,
@@ -55,7 +59,8 @@ fun DialogScope.EditListDialog(
             OneListTextField(
                 modifier = Modifier
                     .focusRequester(textField)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .testTag(TestTags.EditListDialogInput),
                 value = value,
                 placeholder = stringResource(id = R.string.list_title),
                 onValueChange = { value = it },
@@ -91,7 +96,7 @@ fun DialogScope.CreateListDialog(
 
 @Preview
 @Composable
-private fun Preview_EditListDialog() = ComposePreview {
+private fun Preview_EditListDialog() = ThemedPreview {
     ScopedComposable(
         rememberDialogScope { showPreviewDialog("Dismiss") }) {
         EditListDialog {
@@ -102,7 +107,7 @@ private fun Preview_EditListDialog() = ComposePreview {
 
 @Preview
 @Composable
-private fun Preview_CreateListDialog() = ComposePreview {
+private fun Preview_CreateListDialog() = ThemedPreview {
     ScopedComposable(
         rememberDialogScope { showPreviewDialog("Dismiss") }) {
         CreateListDialog {

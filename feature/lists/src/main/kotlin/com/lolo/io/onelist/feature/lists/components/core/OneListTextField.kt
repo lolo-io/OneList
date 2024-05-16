@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
-import com.lolo.io.onelist.core.ui.util.ifThen
+import com.lolo.io.onelist.feature.lists.utils.ifThen
 
 /*
     Have to use BasicTextField with DecorationBox just because default compose TextField

@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.preview
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.ReorderableList
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list.hijacker.rememberLazyListStateHijacker
@@ -178,7 +178,7 @@ fun ReorderableAndSwipeableItemList(
 
 @Preview
 @Composable
-private fun Preview_SwipeableItemList() = ComposePreview {
+private fun Preview_SwipeableItemList() = ThemedPreview {
     val items = listOf(
         Item.preview.copy(id = 1),
         Item.preview.copy(
