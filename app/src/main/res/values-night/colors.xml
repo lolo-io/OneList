@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="app_color">#b71c1c</color>
 
-    <color name="textColorPrimary">@android:color/primary_text_dark</color>
-    <color name="textColorPrimaryDark">@android:color/primary_text_light</color>
-    <color name="textColorSecondary">@android:color/secondary_text_dark</color>
-
-    <color name="transparent">@android:color/transparent</color>
-    <color name="colorBackground">@android:color/background_dark</color>
-    <color name="colorBackgroundPopup">#121212</color>
-
-    <color name="list_seperator">#CFD8DC</color>
-
-    <color name="colorPrimary">#e53935</color>
-    <color name="colorPrimaryDark">#b71c1c</color>
     <color name="colorAccent">#eeeeee</color>
-    <color name="colorAccentDark">#f1f1f1</color>
-    <color name="colorAccentLight">#f1f1f1</color>
+    <color name="system_on_surface_light">#1B1B1F</color>
 
+    <color name="error_color">#c54949</color>
+
+    <color name="systemBarsColors">@color/system_on_surface_light</color>
+    <color name="windowSplashScreenBackground">@color/systemBarsColors</color>
+
+    <color name="settingsTextColor">@android:color/primary_text_dark</color>
+    <color name="settingsIconColor">@color/colorAccent</color>
+    <color name="settingsBackgroundColor">@color/system_on_surface_light</color>
 </resources>
