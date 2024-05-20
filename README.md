@@ -1,4 +1,4 @@
-# <img src="icon.png" width="32" /> 1List
+# <img src="fastlane/metadata/icon.png" width="32" /> 1List
 
 1List is a simple app to manage several lists from only one screen.
 
@@ -27,7 +27,7 @@ API 23 or later
 
 ## Screenshots :
 
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen1.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen2.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen3.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen4.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen5.png" width="200" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen6.png" width="200" />
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen1.png" width="150" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen2.png" width="150" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen3.png" width="150" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen4.png" width="150" /> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screen5.png" width="150" />
 
 ## Donations :
 
