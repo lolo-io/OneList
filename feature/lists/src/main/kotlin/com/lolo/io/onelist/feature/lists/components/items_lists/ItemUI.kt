@@ -34,21 +34,24 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.app
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.dimen
 import com.lolo.io.onelist.core.designsystem.space
+import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.preview
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.R
 
 @Composable
 fun ItemUI(
-    item: com.lolo.io.onelist.core.model.Item,
+    item: Item,
     onClick: () -> Unit = {},
     onClickDisplayComment: () -> Unit = {},
 ) {
@@ -59,7 +62,8 @@ fun ItemUI(
                 onClick = { onClick() },
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
-            ),
+            )
+            .testTag(TestTags.ItemUiSurface),
         color = Color.Transparent,
     ) {
         Column(
@@ -117,14 +121,18 @@ fun ItemUI(
                                 .heightIn(MaterialTheme.dimen.listItemMinHeight)
                                 .alignByBaseline()
                                 .padding(vertical = MaterialTheme.space.Tiny)
-                                .wrapContentHeight(align = Alignment.CenterVertically),
+                                .wrapContentHeight(align = Alignment.CenterVertically)
+                                .testTag(TestTags.ItemUiTitle),
                         )
 
 
                         if (item.comment.isNotEmpty()) {
-                            Box(modifier = Modifier
-                                .align(Alignment.Top)
-                                .padding(top = MaterialTheme.space.Tiny)) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.Top)
+                                    .padding(top = MaterialTheme.space.Tiny)
+                                    .testTag(TestTags.itemCommentArrowItemTitle(item.title))
+                            ) {
                                 val animatedArrowRotation by animateFloatAsState(
                                     targetValue = if (item.commentDisplayed) 0f else 180f,
                                     animationSpec = tween(
@@ -133,6 +141,7 @@ fun ItemUI(
                                     ), label = ""
                                 )
                                 IconButton(
+                                    modifier = Modifier.testTag(TestTags.ItemUiArrowComment),
                                     onClick = onClickDisplayComment
                                 ) {
                                     Image(
@@ -173,9 +182,9 @@ fun ItemUI(
 
 @Preview
 @Composable
-private fun Preview_ItemRow() = ComposePreview {
+private fun Preview_ItemRow() = ThemedPreview {
 
-    var item by remember { mutableStateOf(com.lolo.io.onelist.core.model.Item.preview) }
+    var item by remember { mutableStateOf(Item.preview) }
     ItemUI(item,
         onClickDisplayComment = {
             item = item.copy(commentDisplayed = !item.commentDisplayed)
@@ -185,15 +194,15 @@ private fun Preview_ItemRow() = ComposePreview {
 
 @Preview
 @Composable
-private fun Preview_ItemRowWithComment() = ComposePreview {
-    ItemUI(com.lolo.io.onelist.core.model.Item.preview.copy(commentDisplayed = true))
+private fun Preview_ItemRowWithComment() = ThemedPreview {
+    ItemUI(Item.preview.copy(commentDisplayed = true))
 }
 
 @Preview
 @Composable
-private fun Preview_ItemRowDone() = ComposePreview {
+private fun Preview_ItemRowDone() = ThemedPreview {
     ItemUI(
-        com.lolo.io.onelist.core.model.Item.preview.copy(
+        Item.preview.copy(
             done = true
         )
     )
@@ -202,9 +211,9 @@ private fun Preview_ItemRowDone() = ComposePreview {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
-private fun Preview_ItemRowDoneWithComment() = ComposePreview {
+private fun Preview_ItemRowDoneWithComment() = ThemedPreview {
     ItemUI(
-        com.lolo.io.onelist.core.model.Item.preview.copy(
+        Item.preview.copy(
             done = true,
             commentDisplayed = true
         )
@@ -213,7 +222,7 @@ private fun Preview_ItemRowDoneWithComment() = ComposePreview {
 
 @Preview
 @Composable
-private fun Preview_ItemRowLong() = ComposePreview {
-    ItemUI(com.lolo.io.onelist.core.model.Item.preview.copy(title = "Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long "))
+private fun Preview_ItemRowLong() = ThemedPreview {
+    ItemUI(Item.preview.copy(title = "Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long "))
 
 }

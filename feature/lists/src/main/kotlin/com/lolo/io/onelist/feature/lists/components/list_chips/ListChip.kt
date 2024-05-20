@@ -13,8 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.OneListTheme
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 
@@ -35,17 +37,21 @@ fun ListChip(
             state == ListChipState.DRAGGED ||
             state == ListChipState.SHADOW
 
+
     FilterChip(
         modifier = Modifier
             .scale(if (state == ListChipState.DRAGGED) 1.1f else 1f)
             .padding(2.dp)
-            .height(FilterChipDefaults.Height),
+            .height(FilterChipDefaults.Height)
+            .testTag(TestTags.listChipLabelState(label, state.name)),
         selected = asSelected,
         onClick = {
             view.playSoundEffect(SoundEffectConstants.CLICK)
             onClick()
         },
-        label = { Text(label) },
+        label = { Text(
+            modifier = Modifier.testTag(TestTags.listChipLabel(label)),
+            text = label) },
         colors = FilterChipDefaults.filterChipColors(
             containerColor = Color.Transparent,
             labelColor = MaterialTheme.appColors.listChipDefaultText,

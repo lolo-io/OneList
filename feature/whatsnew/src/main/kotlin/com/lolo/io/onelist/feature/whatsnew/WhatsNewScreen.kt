@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -19,21 +21,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.common.R as commonR
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 
 @Composable
 internal fun WhatsNewScreen(
     data: WhatsNewData = currentReleaseWhatsNewData(LocalContext.current),
     onClickContinue: () -> Unit,
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.fillMaxSize()
+        .navigationBarsPadding().testTag(TestTags.WhatsNewScreen)) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -129,7 +134,9 @@ internal fun WhatsNewScreen(
             }
 
             val view = LocalView.current
-            Button(onClick = {
+            Button(
+                modifier = Modifier.testTag(TestTags.WhatsNewContinue),
+                onClick = {
                 view.playSoundEffect(SoundEffectConstants.CLICK)
                 onClickContinue()
             }) {
@@ -143,7 +150,7 @@ internal fun WhatsNewScreen(
 
 @Preview
 @Composable
-private fun Preview_WhatsNewScreen() = ComposePreview {
+private fun Preview_WhatsNewScreen() = ThemedPreview {
 
     Surface(modifier = Modifier.fillMaxSize()) {
         WhatsNewScreen(

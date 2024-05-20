@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.designsystem.colors.appColors
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.components.core.SwipeState
 import kotlinx.coroutines.launch
 
@@ -128,7 +128,7 @@ fun SwipeableRowScope.SwipeableRow(
 
 @Preview
 @Composable
-private fun Preview_SwipeableRow() = ComposePreview {
+private fun Preview_SwipeableRow() = ThemedPreview {
 
     /*
     SwipeableRow(

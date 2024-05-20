@@ -15,10 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import com.lolo.io.onelist.core.data.utils.TestTags
 import com.lolo.io.onelist.core.designsystem.colors.appColors
 import com.lolo.io.onelist.core.designsystem.space
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 
 @Composable
 fun DialogButtons(
@@ -38,7 +40,9 @@ fun DialogButtons(
                 )
                 .align(Alignment.End)
         ) {
-            IconButton(onClick = {
+            IconButton(
+                modifier = Modifier.testTag(TestTags.CommonDialogNegativeButton),
+                onClick = {
                 onNegativeClicked()
                 view.playSoundEffect(SoundEffectConstants.CLICK)
             }) {
@@ -48,7 +52,8 @@ fun DialogButtons(
                     tint = MaterialTheme.appColors.dialogButtonCancel
                 )
             }
-            IconButton(onClick = {
+            IconButton( modifier = Modifier.testTag(TestTags.CommonDialogPositiveButton),
+                onClick = {
                 onPositiveClicked()
                 view.playSoundEffect(SoundEffectConstants.CLICK)
 
@@ -64,7 +69,7 @@ fun DialogButtons(
 
 @Preview
 @Composable
-private fun Preview_DialogButtons() = ComposePreview {
+private fun Preview_DialogButtons() = ThemedPreview {
     Column {
         DialogButtons(
             onPositiveClicked = {},

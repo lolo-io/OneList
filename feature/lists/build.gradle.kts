@@ -6,7 +6,7 @@ plugins {
 
 android {
     defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.lolo.io.onelist.core.testing.OneListTestRunner"
     }
     namespace = "com.lolo.io.onelist.feature.lists"
 }
@@ -24,6 +24,8 @@ dependencies {
     implementation(libs.reorderable)
     implementation(libs.lazylist.hijacker)
 
-    implementation(project(":core:common"))
-    implementation(project(":core:domain"))
+    implementation(projects.core.common)
+    implementation(projects.core.domain)
+
+    androidTestImplementation(projects.core.testing)
 }

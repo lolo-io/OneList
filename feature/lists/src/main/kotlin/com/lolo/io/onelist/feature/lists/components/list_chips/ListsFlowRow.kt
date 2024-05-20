@@ -12,9 +12,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.model.previewMany
-import com.lolo.io.onelist.core.ui.composables.ComposePreview
+import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
 import com.lolo.io.onelist.feature.lists.components.core.reorderable_flow_row.DraggableFlowRow
-import com.lolo.io.onelist.feature.lists.components.core.reorderable_flow_row.ReorderableFlowRowItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -76,7 +75,7 @@ fun ListsFlowRow(
 
 @Preview
 @Composable
-private fun Preview_ListsFlowRow() = ComposePreview {
+private fun Preview_ListsFlowRow() = ThemedPreview {
     val lists = ItemList.previewMany(5)
     val selectedList = lists.get(0)
     ListsFlowRow(lists = lists, selectedList = selectedList,

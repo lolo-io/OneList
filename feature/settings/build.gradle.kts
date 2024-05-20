@@ -6,7 +6,7 @@ plugins {
 
 android {
     defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.lolo.io.onelist.core.testing.OneListTestRunner"
     }
     namespace = "com.lolo.io.onelist.feature.settings"
 
@@ -22,6 +22,8 @@ dependencies {
     implementation(libs.androidx.preference.ktx)
     implementation (libs.storage)
 
-    implementation(project(":core:common"))
-    implementation(project(":core:domain"))
+    testImplementation(libs.robolectric)
+
+    implementation(projects.core.common)
+    implementation(projects.core.domain)
 }

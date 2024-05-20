@@ -5,11 +5,12 @@ plugins {
 
 android {
     defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.lolo.io.onelist.core.testing.OneListTestRunner"
     }
     namespace = "com.lolo.io.onelist.feature.whatsnew"
 }
 
 dependencies {
-    implementation(project(":core:common"))
+    implementation(projects.core.common)
+    implementation(projects.core.data)
 }

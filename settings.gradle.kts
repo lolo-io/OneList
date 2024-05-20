@@ -16,14 +16,15 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
-include(":core:ui")
 include(":core:designsystem")
 include(":core:model")
 include(":core:database")
 include(":core:data")
 include(":core:domain")
 include(":core:common")
+include(":core:testing")
 include(":feature:lists")
 include(":feature:settings")
 include(":feature:whatsnew")

@@ -29,4 +29,6 @@
     <string name="backup_all_lists">Backup all lists</string>
     <string name="list_imported">Your list has been imported.</string>
     <string name="error_import_list">Error while importing your list : This file can\'t be imported.</string>
+    <string name="add_item_placeholder">Add</string>
+    <string name="add_comment_placeholder">Comment</string>
 </resources>
