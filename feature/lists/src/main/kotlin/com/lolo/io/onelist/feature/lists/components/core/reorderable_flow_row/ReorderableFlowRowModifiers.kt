@@ -25,11 +25,11 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.round
+import com.lolo.io.onelist.core.domain.utils.moveItemToLeftOf
+import com.lolo.io.onelist.core.domain.utils.moveItemToRightOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import moveItemToLeftOf
-import moveItemToRightOf
 import kotlin.math.roundToInt
 
 class ReorderableFlowRowItem<T>(

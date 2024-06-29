@@ -1,3 +1,7 @@
+package com.lolo.io.onelist.core.domain.utils
+
+import com.lolo.io.onelist.core.model.ItemList
+
 fun String?.isNotNullOrEmpty(): Boolean {
     return this?.isNotEmpty() == true
 }
@@ -8,7 +12,7 @@ fun <T> List<T>.ifNotEmpty(block: (List<T>) -> Unit): List<T> {
     return this
 }
 
-fun <T>List<T>.insertAtIndex(item1: T, index: Int): List<T> {
+private fun <T>List<T>.insertAtIndex(item1: T, index: Int): List<T> {
     var listCopy = this.toList()
     listCopy -= item1
     return (listCopy.subList(
@@ -39,3 +43,5 @@ fun <T>List<T>.moveItemToLeftOf(
     val toItemIndex = listCopy.indexOf(toItem)
     return listCopy.insertAtIndex(item, toItemIndex)
 }
+
+
