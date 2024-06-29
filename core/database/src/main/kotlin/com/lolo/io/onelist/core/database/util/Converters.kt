@@ -10,17 +10,17 @@ import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 
 class Converters {
-    @TypeConverter
-    fun toItemEntityList(value: String?): List<ItemEntity> {
-        val listType = object : TypeToken<MutableList<ItemEntity?>?>() {}.type
-        return Gson().fromJson(value, listType)
-    }
+        @TypeConverter
+        fun toItemEntityList(value: String?): List<ItemEntity> {
+            val listType = object : TypeToken<MutableList<ItemEntity?>?>() {}.type
+            return Gson().fromJson(value, listType)
+        }
 
-    @TypeConverter
-    fun fromItemEntityList(list: List<ItemEntity?>?): String {
-        val gson = Gson()
-        return gson.toJson(list)
-    }
+        @TypeConverter
+        fun fromItemEntityList(list: List<ItemEntity?>?): String {
+            val gson = Gson()
+            return gson.toJson(list)
+        }
 
 
     @TypeConverter
@@ -34,7 +34,7 @@ class Converters {
     }
 }
 
-fun ItemListEntity.toItemListModel() = com.lolo.io.onelist.core.model.ItemList(
+fun ItemListEntity.toItemListModel() = ItemList(
     id = this.id,
     items = this.items.toItemModels().toMutableList(),
     uri = this.uri,
@@ -42,9 +42,9 @@ fun ItemListEntity.toItemListModel() = com.lolo.io.onelist.core.model.ItemList(
     title = this.title
 )
 
-fun List<ItemListEntity>.toItemListModels() = map { it.toItemListModel() }
 
-fun ItemEntity.toItemModel() = com.lolo.io.onelist.core.model.Item(
+
+fun ItemEntity.toItemModel() = Item(
     id = id,
     title = title,
     comment = comment,
