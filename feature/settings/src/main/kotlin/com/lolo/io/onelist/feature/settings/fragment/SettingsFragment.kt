@@ -23,9 +23,9 @@ import com.anggrayudi.storage.file.DocumentFileCompat
 import com.anggrayudi.storage.file.getAbsolutePath
 import com.anggrayudi.storage.file.toTreeDocumentFile
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
+import com.lolo.io.onelist.core.domain.utils.isNotNullOrEmpty
 import com.lolo.io.onelist.feature.settings.R
 import com.lolo.io.onelist.feature.settings.databinding.FragmentSettingsBinding
-import isNotNullOrEmpty
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 

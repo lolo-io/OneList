@@ -37,6 +37,7 @@ import com.lolo.io.onelist.core.model.Item
 import com.lolo.io.onelist.core.model.ItemList
 import com.lolo.io.onelist.core.model.previewMany
 import com.lolo.io.onelist.core.designsystem.preview.ThemedPreview
+import com.lolo.io.onelist.core.domain.utils.ifNotEmpty
 import com.lolo.io.onelist.feature.lists.components.add_item_input.AddItemInput
 import com.lolo.io.onelist.feature.lists.components.dialogs.CreateListDialog
 import com.lolo.io.onelist.feature.lists.components.dialogs.DeleteListDialog
@@ -50,7 +51,6 @@ import com.lolo.io.onelist.feature.lists.components.items_lists.ReorderableAndSw
 import com.lolo.io.onelist.feature.lists.components.items_lists.rememberSwipeableLazyListState
 import com.lolo.io.onelist.feature.lists.components.list_chips.ListsFlowRow
 import com.lolo.io.onelist.feature.lists.utils.shareList
-import ifNotEmpty
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
