@@ -7,11 +7,11 @@ import com.lolo.io.onelist.core.data.file_access.FileAccess
 import com.lolo.io.onelist.core.data.datamodel.ListsWithErrors
 import com.lolo.io.onelist.core.data.datamodel.ErrorLoadingList
 import com.lolo.io.onelist.core.data.shared_preferences.SharedPreferencesHelper
+import com.lolo.io.onelist.core.data.utils.ensureAllItemsIdsAreUnique
 import com.lolo.io.onelist.core.data.utils.toItemListEntity
 import com.lolo.io.onelist.core.data.utils.updateOneIf
 import com.lolo.io.onelist.core.database.dao.ItemListDao
 import com.lolo.io.onelist.core.database.util.toItemListModel
-import com.lolo.io.onelist.core.database.util.toItemListModels
 import com.lolo.io.onelist.core.model.ItemList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,10 +45,10 @@ class OneListRepositoryImpl(
                 preferences.backupUri != null
             ) {
                 allListsFromDb.map {
-                    val list = it.toItemListModel()
+                    val list = ensureAllItemsIdsAreUnique(it.toItemListModel())
                     try {
                         supervisorScope {
-                            fileAccess.getListFromLocalFile(list)
+                            ensureAllItemsIdsAreUnique(fileAccess.getListFromLocalFile(list))
                         }
                     } catch (e: SecurityException) {
                         errors += ErrorLoadingList.PermissionDeniedError
@@ -72,7 +72,9 @@ class OneListRepositoryImpl(
                     }
                 }
             } else {
-                allListsFromDb.toItemListModels()
+                allListsFromDb.map {
+                    ensureAllItemsIdsAreUnique(it.toItemListModel())
+                }
             }
 
             _allListsWithErrors.value = ListsWithErrors(
@@ -97,7 +99,9 @@ class OneListRepositoryImpl(
     // does upsert in dao, and if has backup uri -> save list file; can create a file
     // and also update allLists flow
     override suspend fun saveList(itemList: ItemList) {
-        upsertList(itemList).let {
+        upsertList(
+            ensureAllItemsIdsAreUnique(itemList)
+        ).let {
             _allListsWithErrors.value = ListsWithErrors(
                 _allListsWithErrors.value.lists.updateOneIf(itemList) { it.id == itemList.id })
         }
@@ -115,19 +119,21 @@ class OneListRepositoryImpl(
             }
         }
 
+        val listToSave = ensureAllItemsIdsAreUnique(list)
+
         return withContext(Dispatchers.IO) {
-            upsertInDao(list)
+            upsertInDao(listToSave)
             if (preferences.backupUri != null) {
                 fileAccess.saveListFile(
                     preferences.backupUri,
-                    list,
+                    listToSave,
                     onNewFileCreated = { list, uri ->
                         list.uri = uri
                         upsertInDao(list)
                         _allListsWithErrors.value = ListsWithErrors(
                             _allListsWithErrors.value.lists.updateOneIf(list) { it.id == list.id })
                     })
-            } else list
+            } else listToSave
         }
     }
 
@@ -157,9 +163,11 @@ class OneListRepositoryImpl(
         val list = fileAccess.createListFromUri(uri,
             onListCreated = {
                 saveList(
-                    it.copy(
-                        id = 0L,
-                        position = _allListsWithErrors.value.lists.size
+                    ensureAllItemsIdsAreUnique(
+                        it.copy(
+                            id = 0L,
+                            position = _allListsWithErrors.value.lists.size
+                        )
                     )
                 )
             })
