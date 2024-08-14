@@ -1,5 +1,6 @@
 package com.lolo.io.onelist.feature.lists.components.core.reorderable_swipeable_list
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,11 @@ import androidx.compose.material3.SwipeToDismissBoxValue.StartToEnd
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,6 +56,7 @@ fun SwipeableRowScope.SwipeableRow(
     onSwipedToEnd: () -> Unit = {},
     onSwipedToStart: () -> Unit = {},
     onSwipedBackToCenter: () -> Unit = {},
+    onInitiateSwipeBackToCenter: () -> Unit = {},
     content: @Composable() (() -> Unit),
 ) {
 
@@ -61,21 +67,35 @@ fun SwipeableRowScope.SwipeableRow(
             .fillMaxWidth()
     ) {
 
+        var localSwipeState = remember {
+            Settled
+        }
+
         val state = rememberSwipeToDismissBoxState(
             confirmValueChange = {
                 when (it) {
                     StartToEnd -> {
-                        onSwipedToEnd()
+                        if (localSwipeState != StartToEnd) {
+                            localSwipeState = StartToEnd
+                            onSwipedToEnd()
+                        }
                         true
                     }
 
                     EndToStart -> {
-                        onSwipedToStart()
+
+                        if (localSwipeState != EndToStart) {
+                            localSwipeState = EndToStart
+                            onSwipedToStart()
+                        }
                         true
                     }
 
                     Settled -> {
-                        onSwipedBackToCenter()
+                        if (localSwipeState != Settled) {
+                            localSwipeState = Settled
+                            onSwipedBackToCenter()
+                        }
                         true
                     }
                 }
@@ -92,12 +112,21 @@ fun SwipeableRowScope.SwipeableRow(
             }
         }
 
+        var hasInitiatedSwipeBackToCenter by remember {
+            mutableStateOf(false)
+        }
+
         SwipeToDismissBox(
             state = state, backgroundContent = when (state.dismissDirection) {
                 StartToEnd -> backgroundStartToEnd
                 EndToStart -> ({
                     Row(modifier = Modifier.pointerInput(Unit) {
-                        detectHorizontalDragGestures { change, dragAmount ->
+                        detectHorizontalDragGestures { _, _ ->
+                            if (!hasInitiatedSwipeBackToCenter) {
+                                hasInitiatedSwipeBackToCenter = true
+                                onInitiateSwipeBackToCenter()
+
+                            }
                             coroutineScope.launch {
                                 state.reset()
                             }
@@ -107,7 +136,9 @@ fun SwipeableRowScope.SwipeableRow(
                     }
                 })
 
-                Settled -> ({})
+                Settled -> ({
+                    hasInitiatedSwipeBackToCenter = false
+                })
             }
         ) {
             Row(
