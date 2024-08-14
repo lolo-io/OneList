@@ -31,4 +31,5 @@
     <string name="error_import_list">Error while importing your list : This file can\'t be imported.</string>
     <string name="add_item_placeholder">Add</string>
     <string name="add_comment_placeholder">Comment</string>
+    <string name="undo">Undo</string>
 </resources>

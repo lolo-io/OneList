@@ -31,4 +31,5 @@
     <string name="error_import_list">Erro ao importar sua lista: Este arquivo não pode ser importado.</string>
     <string name="add_item_placeholder">Adicionar</string>
     <string name="add_comment_placeholder">Comentário</string>
+    <string name="undo">Desfazer</string>
 </resources>
