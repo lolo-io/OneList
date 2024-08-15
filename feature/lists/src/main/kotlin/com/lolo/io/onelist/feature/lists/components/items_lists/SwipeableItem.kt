@@ -116,6 +116,14 @@ internal fun SwipeableRowScope.SwipeableItem(
                     ),
                     label = "deleteSwipe"
                 )
+
+                Icon(
+                    modifier = Modifier.padding(end = MaterialTheme.space.Normal),
+                    imageVector = Icons.Default.Delete,
+                    tint = Color.White,
+                    contentDescription = null
+                )
+
                 Box(
                     Modifier
                         .background(MaterialTheme.appColors.swipeDeleteBackground)
@@ -129,7 +137,7 @@ internal fun SwipeableRowScope.SwipeableItem(
                 Icon(
                     modifier = Modifier.padding(end = MaterialTheme.space.Normal),
                     imageVector = Icons.Default.Delete,
-                    tint = Palette.ONELIST_RED_LIGHT,
+                    tint = MaterialTheme.appColors.swipeDeleteText,
                     contentDescription = null
                 )
             }
