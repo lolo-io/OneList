@@ -1,0 +1,1 @@
+Small UI change - add animation when delete item.
