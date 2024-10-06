@@ -34,10 +34,13 @@ data class AppColors(
     val itemComment: Color,
     val itemDone: Color,
     val swipeDeleteBackground: Color,
+    val swipeDeleteText: Color,
+    val swipeDeleteProgressBackground: Color,
     val swipeEditBackground: Color,
     val itemArrow: Color,
     val itemRowForeground: Color,
     val itemRowBackground: Color,
+    val swipeIcons: Color,
 
     // Add Item
     val addItemCheck: Color,
@@ -127,6 +130,9 @@ fun appColors(
     textFieldPlaceholder = MaterialTheme.colorScheme.outline,
     textFieldBackgroundNoBorder = Color.Transparent,
     itemRowBackground = MaterialTheme.colorScheme.surface,
+    swipeIcons = MaterialTheme.colorScheme.onPrimary,
+    swipeDeleteText = MaterialTheme.colorScheme.tertiary,
+    swipeDeleteProgressBackground = MaterialTheme.colorScheme.tertiary,
     textFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.background,
         unfocusedContainerColor = MaterialTheme.colorScheme.background,

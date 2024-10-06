@@ -1,6 +1,7 @@
 package com.lolo.io.onelist.feature.lists
 
 import android.content.res.Configuration
+import android.util.Log
 import android.view.SoundEffectConstants
 import android.widget.Toast
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -58,6 +59,8 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
+const val DELETE_ANIMATION_DURATION = 800L
+
 @Composable
 fun ListsScreen(
     navigateToSettings: () -> Unit
@@ -97,6 +100,7 @@ fun ListsScreen(
             override fun createListThenAddItem(item: Item) = viewModel.createListThenAddItem(
                 ItemList(context.getString(R.string.list_default_name)), item
             )
+
             override fun switchItemStatus(item: Item) = viewModel.switchItemStatus(item)
             override fun removeItem(item: Item) = viewModel.removeItem(item)
             override fun switchItemCommentShown(item: Item) = viewModel.switchItemCommentShown(item)
@@ -226,12 +230,12 @@ internal fun ListsScreenUI(
             onCommentValueChange = { addItemComment = it },
             onSubmit = {
 
-                val itemToAdd =  Item(
+                val itemToAdd = Item(
                     title = addItemTitle,
                     comment = addItemComment,
                     commentDisplayed = addItemComment.isNotEmpty()
                 )
-                if(selectedList != null) {
+                if (selectedList != null) {
                     actions.addItem(itemToAdd)
                 } else {
                     actions.createListThenAddItem(itemToAdd)
@@ -259,13 +263,17 @@ internal fun ListsScreenUI(
             },
             items = displayedItems,
             onItemSwipedToStart = {
+                Log.d("ANIM", "onItemSwipedToStart")
                 if (deleteItemJobs[it.id] == null) {
                     deleteItemJobs[it.id] = coroutineScope.launch {
-                        delay(2000)
-                        actions.removeItem(it)
+                        delay(DELETE_ANIMATION_DURATION + 500)
+                        if (deleteItemJobs[it.id] != null) {
+                            Log.d("ANIM", "onItemSwipedToStart")
+                            actions.removeItem(it)
+                        }
+                        deleteItemJobs -= it.id
                     }
                 }
-
             },
             onItemSwipedToEnd = {
                 showDialog = DialogShown.EditItemDialog
@@ -274,6 +282,7 @@ internal fun ListsScreenUI(
             onItemSwipedBackToCenter = {
                 deleteItemJobs[it.id]?.cancel(CancellationException("Canceled by user"))
                 deleteItemJobs -= it.id
+                Log.d("ANIM", "onItemSwipedBackToCenter")
             },
             onShowOrHideComment = {
                 actions.switchItemCommentShown(it)
