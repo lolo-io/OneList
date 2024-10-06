@@ -1,3 +1,8 @@
+
+// FDroid uses applicationId (com.lolo.io.onelist) as repo dire name & gradle doesn't like it
+// this fixes build on FDroid by replacing the dots by dashes
+rootProject.name="com-lolo-io-onelist"
+
 pluginManagement {
     includeBuild("build-logic")
     repositories {
