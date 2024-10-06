@@ -29,7 +29,7 @@ fun OneListTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         content = content,
-        typography = typography(colorScheme),
+        typography = typography(),
         shapes = Shapes
     )
 }
