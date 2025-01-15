@@ -219,33 +219,31 @@ internal fun ListsScreenUI(
         var addItemComment by rememberSaveable { mutableStateOf("") }
 
 
-        AddItemInput(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = MaterialTheme.space.Normal)
-            .padding(top = MaterialTheme.space.Small)
-            .zIndex(10f),
+        AddItemInput(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MaterialTheme.space.Normal)
+                .padding(top = MaterialTheme.space.Small)
+                .zIndex(10f),
             value = addItemTitle,
             onValueChange = { addItemTitle = it },
             commentValue = addItemComment,
             onCommentValueChange = { addItemComment = it },
             onSubmit = {
-
-                val itemToAdd = Item(
-                    title = addItemTitle,
-                    comment = addItemComment,
-                    commentDisplayed = addItemComment.isNotEmpty()
-                )
-                if (selectedList != null) {
+                if (addItemTitle.isNotBlank()) {
+                    val itemToAdd = Item(
+                        title = addItemTitle.trim(),
+                        comment = addItemComment.trim(),
+                        commentDisplayed = addItemComment.isNotEmpty()
+                    )
                     actions.addItem(itemToAdd)
-                } else {
-                    actions.createListThenAddItem(itemToAdd)
+                    addItemTitle = ""
+                    addItemComment = ""
                 }
-                addItemTitle = ""
-                addItemComment = ""
-                coroutineScope.launch {
-                    swipeableListState.listState.animateScrollToItem(0)
-                }
-            })
+            }
+        )
+
+
 
         val themeSpaces = MaterialTheme.space
 

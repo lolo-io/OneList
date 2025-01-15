@@ -95,6 +95,7 @@ android {
 
 dependencies {
 
+
     implementation(libs.androidx.core.splashscreen)
     releaseImplementation(libs.firebase.crashlytics)
     implementation(libs.storage)
@@ -107,4 +108,11 @@ dependencies {
     implementation(projects.feature.settings)
     implementation(projects.feature.whatsnew)
 
+    implementation("androidx.compose.ui:ui:1.4.3") // Compose UI
+    implementation("androidx.compose.material3:material3:1.0.1") // Material 3
+    implementation("androidx.compose.foundation:foundation:1.4.3") // Foundation
+    implementation("androidx.compose.runtime:runtime:1.4.3") // Runtime
+
 }
+
+
