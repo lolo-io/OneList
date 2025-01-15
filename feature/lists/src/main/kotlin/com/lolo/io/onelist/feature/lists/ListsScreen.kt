@@ -219,33 +219,31 @@ internal fun ListsScreenUI(
         var addItemComment by rememberSaveable { mutableStateOf("") }
 
 
-        AddItemInput(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = MaterialTheme.space.Normal)
-            .padding(top = MaterialTheme.space.Small)
-            .zIndex(10f),
+        AddItemInput(
+            modifier = bu Modifierf
+                .fillMaxWidth()
+                .padding(horizontal = MaterialTheme.space.Normal)
+                .padding(top = MaterialTheme.space.Small)
+                .zIndex(10f),
             value = addItemTitle,
             onValueChange = { addItemTitle = it },
             commentValue = addItemComment,
             onCommentValueChange = { addItemComment = it },
             onSubmit = {
-
-                val itemToAdd = Item(
-                    title = addItemTitle,
-                    comment = addItemComment,
-                    commentDisplayed = addItemComment.isNotEmpty()
-                )
-                if (selectedList != null) {
+                if (addItemTitle.isNotBlank()) {
+                    val itemToAdd = Item(
+                        title = addItemTitle.trim(),
+                        comment = addItemComment.trim(),
+                        commentDisplayed = addItemComment.isNotEmpty()
+                    )
                     actions.addItem(itemToAdd)
-                } else {
-                    actions.createListThenAddItem(itemToAdd)
+                    addItemTitle = ""
+                    addItemComment = ""
                 }
-                addItemTitle = ""
-                addItemComment = ""
-                coroutineScope.launch {
-                    swipeableListState.listState.animateScrollToItem(0)
-                }
-            })
+            }
+        )
+
+
 
         val themeSpaces = MaterialTheme.space
 
@@ -377,37 +375,51 @@ private fun Preview_ListsScreen() = ThemedPreview {
     val displayedItems = allLists[0].items
     var refreshing by remember { mutableStateOf(false) }
 
+    val existingListNames = allLists.map { it.title.trim() }.toSet()
+    val context = LocalContext.current
+
+
     val listScreenActions = remember {
         object : ListScreenActions {
-            override fun selectList(list: ItemList) = showPreviewDialog("selectList")
-            override fun reorderLists(lists: List<ItemList>) = showPreviewDialog("reorderLists")
-            override fun addItem(item: Item) = showPreviewDialog("addItem")
-            override fun switchItemStatus(item: Item) = showPreviewDialog("switchItemStatus")
-            override fun removeItem(item: Item) = showPreviewDialog("removeItem")
+            override fun selectList(list: ItemList) = showPreviewDialog(text = "selectList")
+            override fun reorderLists(lists: List<ItemList>) = showPreviewDialog(text = "reorderLists")
+            override fun addItem(item: Item) = showPreviewDialog(text = "addItem")
+            override fun switchItemStatus(item: Item) = showPreviewDialog(text = "switchItemStatus")
+            override fun removeItem(item: Item) = showPreviewDialog(text = "removeItem")
             override fun switchItemCommentShown(item: Item) =
-                showPreviewDialog("switchItemCommentShown")
+                showPreviewDialog(text = "switchItemCommentShown")
 
             override fun onSelectedListReordered(items: List<Item>) =
-                showPreviewDialog("onSelectedListReordered")
+                showPreviewDialog(text = "onSelectedListReordered")
 
             override fun refresh() {
                 refreshing = true
             }
 
-            override fun createList(list: ItemList) = showPreviewDialog("createList")
-            override fun createListThenAddItem(item: Item) =
-                showPreviewDialog("createListThenAddItem")
+            override fun createList(list: ItemList) {
+                if (existingListNames.contains(list.title.trim())) {
+                    Toast.makeText(
+                        context,
+                        "A list with the name '${list.title.trim()}' already exists.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    showPreviewDialog(text = "createList")
+                }
+            }
 
-            override fun editList(list: ItemList) = showPreviewDialog("editList")
-            override fun editItem(item: Item) = showPreviewDialog("editItem")
+            override fun createListThenAddItem(item: Item) = showPreviewDialog(text = "createListThenAddItem")
+            override fun editList(list: ItemList) = showPreviewDialog(text = "editList")
+            override fun editItem(item: Item) = showPreviewDialog(text = "editItem")
             override fun deleteList(
                 list: ItemList, deleteBackupFile: Boolean,
                 onFileDeleted: () -> Unit
-            ) = showPreviewDialog("deleteList")
+            ) = showPreviewDialog(text = "deleteList")
 
-            override fun clearList(list: ItemList) = showPreviewDialog("clearList")
+            override fun clearList(list: ItemList) = showPreviewDialog(text = "clearList")
         }
     }
+
 
     ListsScreenUI(
         allLists = allLists,
