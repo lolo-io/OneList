@@ -27,8 +27,8 @@ android {
         multiDexEnabled = true
         applicationId = "com.lolo.io.onelist"
         // version code elvis right operand should be incremented too when publishing a new release, for fDroid build.
-        versionCode = versionCodeCI ?: 21
-        versionName = "1.5.2"
+        versionCode = versionCodeCI ?: 22
+        versionName = "1.5.3"
         vectorDrawables.useSupportLibrary = true
         testBuildType = "instrumented"
 
